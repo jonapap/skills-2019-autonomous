@@ -1,0 +1,167 @@
+#include "Robot.h"
+
+//advance distance in CM
+void Robot::advanceCM(double distance, double motorSpeed,
+		boolean stop) {
+	double revolution = (distance / wheelcirCM) * 1440; //get how many wheel turn we need to make, and multiply by 1440 (one revolution for encoder)
+	long revolution1 = (prizm.readEncoderCount(1) * motor1invert) + revolution; //add to current encoder value of motor 1. Here, the current encoder count is inverted because we inverted this motor at the beginning, but this function is not inverted by default
+	long revolution2 = (prizm.readEncoderCount(2) * motor2invert) + revolution; //add to current encoder value of motor 2
+
+	motorSpeed = (distance > 0) ? motorSpeed : -motorSpeed; //if distance is positive, robot will go forward, if negative, backwards
+	prizm.setMotorSpeeds(motorSpeed, motorSpeed); //set speed of robot
+	waitForEncoder(revolution1, revolution2); //wait until both motors reach specified number of revolutions
+	if (stop) {
+		prizm.setMotorPowers(125, 125); //if variable is true, stop motors
+	}
+}
+
+//turn specified value. Positive degrees will turn clockwise, negative anti-clockwise
+void Robot::turn(double degrees, int speed) {
+	double revolution = degrees * turnvalue; //calculate encoder count required to add for each wheel
+	double revolution1 = (prizm.readEncoderCount(1) * motor1invert)
+			+ revolution; //add to current encoder count of motor 1
+	double revolution2 = (prizm.readEncoderCount(2) * motor2invert)
+			- revolution; //negative of second motor so robot will turn on itself
+
+	prizm.setMotorTargets(speed, revolution1, speed, revolution2); //set target of both motors
+	waitForMotors(); //wait here while robot is turning
+}
+
+void Robot::advanceUntilLine(int speed, boolean stop) { //advance (or move back if speed is negative) until he sees a line. If stop is true, robot will stop at line
+	prizm.setMotorSpeeds(speed, speed);
+	while (prizm.readLineSensor(lineSensorBack) == 1)
+		; //continue advancing if robot currently sees a line
+
+	while (prizm.readLineSensor(lineSensorBack) == 0)
+		; //wait until robot see something
+
+	if (stop) {
+		prizm.setMotorSpeeds(0, 0); //stop when he sees the line
+	}
+}
+
+void Robot::alignWithLine(int speed, int direction){ //direction == 1, turn right; direction == -1, turn left
+	prizm.setMotorSpeeds(speed * -direction,speed * direction);
+
+	while(prizm.readLineSensor(lineSensorBack) == 0)
+		;
+	prizm.setMotorSpeeds(0,0);
+}
+
+void Robot::waitForMotors() { //when called, function will only finish when both motors are at rest.
+
+	while (prizm.readMotorBusy(1) == 1 || prizm.readMotorBusy(2) == 1)
+		//wait here while at least one motor is doing something
+		;
+}
+
+void Robot::forwardAndTurn(double turnLenght, double turnDistance, int speed,
+		boolean direction, boolean back) { //first var.:distance to go away from robot. second var.:distance to go sideways. third var.: speed to go at. fourth var.: true, robot will turn right, if false, will turn left. fifth var.: true, distance will be negative, so robot will go backward
+	double distance = sqrt((pow(turnLenght, 2) + pow(turnDistance, 2))); //calculate distance based on pythagorean theorem
+	double angle = atan2(turnDistance, turnLenght) * 57.29577; //calculate angle needed to turn with arctan
+	distance = back ? distance * -1 : distance; //if back is true, distance will be negative, so robot will go backward
+
+	int a = direction ? angle : -angle; //If direction is true, robot will turn right, if false, will turn left
+	turn(a, 150); //turn
+	advanceCM(distance, speed); //advance to specified distance
+	turn(-a, 150); //turn in other direction
+}
+
+void Robot::advanceToWall(int speed) { //robot will bump into wall and use limit switch to know when he is there. If speed is positive, use the switch at the back, negative, at the front.
+	unsigned long timeStart = 0; //this variable will be used to track how much time we have been waiting for the other limit switch
+	prizm.setMotorSpeeds(-speed, -speed); //advance robot at speed
+
+	int sensor1 = (speed > 0) ? 3 : 15; //choose correct pair of limit switchs based on whether or not speed is negative or positive
+	int sensor2 = (speed > 0) ? 5 : 16;
+
+	int direction = (speed > 0) ? -1 : 1; //will multiply the speed later on to do in the right direction
+
+	while (digitalRead(sensor1) == 0 || digitalRead(sensor2) == 0) { //as long both limit switch are not pressed
+		signed long diff = (timeStart == 0) ? 0 : millis() - timeStart; //calculate difference between millis and timeStart. If timeStart is 0, stays this variable at zero.
+
+		if (digitalRead(sensor1) == 0 && digitalRead(sensor2) == 0) {
+			prizm.setMotorSpeeds(-speed, -speed);
+			timeStart = 0;
+		}
+
+		else if (digitalRead(sensor1) == 1) { //if first sensor is pressed
+			prizm.setMotorSpeeds(((diff > 500) ? 720 * direction : -speed), 0); //stop one motor. If diff is greater then 1/2 secs, the other motor will go full speed
+
+			timeStart = (timeStart != 0) ? timeStart : millis(); //if we didn't already set timeStart, set it to current time. With this, we can know for how long we have been waiting for the other switch
+
+		}
+
+		else if (digitalRead(sensor2) == 1) { //same as above but for other side
+			prizm.setMotorSpeeds(0, ((diff > 500) ? 720 * direction : -speed));
+
+			timeStart = (timeStart != 0) ? timeStart : millis();
+		}
+
+		if (diff > 2000) { //if one switch clicked more than two seconds ago, assumes the other as also clicked, so get out of loop.
+			break;
+		}
+	}
+
+	prizm.setMotorSpeeds(0, 0); //stop, robot is straight
+
+}
+
+void Robot::waitForEncoder(long target1, long target2) { //this function takes the target we want to go for each. Function will finish only when we are at the correct encoder count for both motors. This function can only be used if both motors go in the same direction
+	signed long diff = target1 - (prizm.readEncoderCount(1) * -1); //check which side robot will go. This only check for one motor and assumes it is the same for the other.
+	if (diff > 0) { //if target is greater then current count
+		while (target1 >= (prizm.readEncoderCount(1) * motor1invert)
+				&& target2 >= (prizm.readEncoderCount(2) * motor2invert))
+			//wait here until both encoder counts are greater or equal to both targets
+			;
+	} else { //if target is lesser then current count
+		while (target1 <= (prizm.readEncoderCount(1) * motor1invert)
+				&& target2 <= (prizm.readEncoderCount(2) * motor2invert))
+			//wait until both encoder counts are lesser or equal to both targets
+			;
+	}
+}
+
+boolean Robot::checkForEncoder(long target1, long target2, long diff) {
+	if (diff > 0) { //if target is greater then current count
+		if (target1 >= (prizm.readEncoderCount(1) * motor1invert)
+				&& target2 >= (prizm.readEncoderCount(2) * motor2invert))
+			return false; //return false if count is not greater or equal to target
+
+	} else { //if target is lesser then current count
+		if (target1 <= (prizm.readEncoderCount(1) * motor1invert)
+				&& target2 <= (prizm.readEncoderCount(2) * motor2invert))
+			return false; //return false if count is not lesser or equal to target
+	}
+
+	return true; //if none of the others returned false, we reached target so return true
+}
+
+void Robot::invertMotor(int motor, int invert) {
+	motor1invert = motor == 1 ? (invert == 1 ? -1 : 1) : motor1invert;
+
+	motor2invert = motor == 2 ? (invert == 1 ? -1 : 1) : motor2invert;
+
+	prizm.setMotorInvert(motor, invert);
+
+}
+
+void Robot::gripperOpen(int direction){
+	prizm.setServoPosition(gripperHorizontal, direction);
+}
+
+void Robot::gripperUp(int direction){
+	prizm.setServoPosition(gripperVertical, direction);
+}
+
+void Robot::advanceUntilPing(int speed, int distance){
+	prizm.setMotorSpeeds(speed, speed);
+
+	while(prizm.readSonicSensorCM(pingSensor) > distance) {
+		delay(100);
+	}
+
+	prizm.setMotorSpeeds(0,0);
+}
+
+
+
