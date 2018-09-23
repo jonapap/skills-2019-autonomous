@@ -13,6 +13,10 @@ void Robot::advanceCM(double distance, double motorSpeed,
 	if (stop) {
 		prizm.setMotorPowers(125, 125); //if variable is true, stop motors
 	}
+
+	x += cos(heading)*distance;
+	y += sin(heading)*distance;
+
 }
 
 //turn specified value. Positive degrees will turn clockwise, negative anti-clockwise
@@ -25,6 +29,26 @@ void Robot::turn(double degrees, int speed) {
 
 	prizm.setMotorTargets(speed, revolution1, speed, revolution2); //set target of both motors
 	waitForMotors(); //wait here while robot is turning
+
+	heading = heading+degrees < 0 ? (heading+degrees)+360 : heading+degrees;
+	heading = heading > 360 ? heading-360 : heading;
+}
+
+void Robot::goToLocation(int x2, int y2, int speed){
+	int deltaX = x2 - x;
+	int deltaY = y2 - y;
+
+	double angle = atan2(deltaY, deltaX) * 180/PI;
+
+	double distance = sqrt(pow(deltaX,2) + pow(deltaX,2));
+
+	setHeading(angle < 0 ? 360-angle : angle, speed);
+	advanceCM(distance, speed);
+}
+
+void Robot::setHeading(int h, int speed){
+	double diff = h - heading;
+	turn(diff > 180 ? 360-diff : diff, speed);
 }
 
 void Robot::advanceUntilLine(int speed, boolean stop) { //advance (or move back if speed is negative) until he sees a line. If stop is true, robot will stop at line
@@ -162,6 +186,12 @@ void Robot::advanceUntilPing(int speed, int distance){
 
 	prizm.setMotorSpeeds(0,0);
 }
+
+void Robot::setPosition (int x, int y){
+	this->x = x;
+	this->y = y;
+}
+
 
 
 

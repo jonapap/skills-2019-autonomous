@@ -14,7 +14,7 @@ public:
 	void advanceCM(double distance, double motorSpeed, boolean stop = true);
 	void turn(double degrees, int speed);
 	void advanceUntilLine(int speed, boolean stop = true);
-	void Robot::alignWithLine(int speed, int direction);
+	void alignWithLine(int speed, int direction);
 	void forwardAndTurn(double turnLenght, double turnDistance, int speed,
 			boolean direction, boolean back);
 	void advanceToWall(int speed);
@@ -22,6 +22,9 @@ public:
 	void gripperOpen(int direction);
 	void gripperUp(int direction);
 	void advanceUntilPing(int speed, int distance);
+	void setPosition (int x, int y);
+	void goToLocation(int x, int y, int speed);
+	void setHeading(int heading, int speed);
 
 private:
 	PRIZM prizm;
@@ -36,6 +39,11 @@ private:
 
 	uint8_t motor1invert = 1;
 	uint8_t motor2invert = 1;
+
+	unsigned int heading = 90;
+	int x = 0;
+	int y = 0;
+
 
 	void waitForMotors();
 	void waitForEncoder(long target1, long target2);
