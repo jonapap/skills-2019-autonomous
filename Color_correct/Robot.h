@@ -2,7 +2,7 @@
 #define ROBOT_H
 
 #include <Arduino.h>
-#include "library/TETRIX_PRIZM/PRIZM.h"
+#include "TETRIX_PRIZM/PRIZM.h"
 
 class Robot {
 public:
@@ -24,7 +24,7 @@ public:
 	void advanceUntilPing(int speed, int distance);
 
 private:
-	PRIZM prizm;
+	PRIZM& prizm;
 	const double wheelcirCM;
 	const double turnvalue;
 
