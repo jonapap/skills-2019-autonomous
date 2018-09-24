@@ -163,5 +163,13 @@ void Robot::advanceUntilPing(int speed, int distance){
 	prizm.setMotorSpeeds(0,0);
 }
 
+void Robot::readColor(int &red, int &green, int &blue){
+	colorSensor.ledStatus = 1;
+	colorSensor.readRGB(&red, &green, &blue);
+	delay(300);
+	colorSensor.clearInterrupt();
+	colorSensor.ledStatus = 0;
+}
+
 
 
