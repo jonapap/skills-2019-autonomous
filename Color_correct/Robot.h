@@ -1,6 +1,15 @@
 #ifndef ROBOT_H
 #define ROBOT_H
 
+#define DEBUG
+
+#ifdef DEBUG
+ #define DEBUG_PRINTLN(x)  Serial.println (x)
+ #define DEBUG_PRINT(x)  Serial.print (x)
+#else
+ #define DEBUG_PRINT(x)
+#endif
+
 #include <Arduino.h>
 #include "TETRIX_PRIZM/PRIZM.h"
 #include "Color_sensor/GroveColorSensor.h"
@@ -21,13 +30,13 @@ public:
 	void advanceUntilPing(int speed, int distance);
 	void setPosition (int x, int y);
 	void goToLocation(int x, int y, int speed);
-	void setHeading(int heading, int speed);
+	void setHeading(double heading, int speed);
 	void readColor(int &red, int &green, int &blue);
 	void rampSpeed(unsigned int speed, unsigned int time);
 
 
 private:
-	PRIZM& prizm;
+	PRIZM prizm;
 
 	const double wheelcirIN = 20;
 	const double turnvalue = 6.625;
@@ -41,7 +50,7 @@ private:
 	int motor1invert = 1;
 	int motor2invert = 1;
 
-	unsigned int heading = 90;
+	double heading = 90;
 	int x = 0;
 	int y = 0;
 
@@ -49,6 +58,7 @@ private:
 	void waitForMotors();
 	void waitForEncoder(long target1, long target2);
 	boolean checkForEncoder(long target1, long target2, long diff);
+	long getEncoderCount(int motor);
 };
 
 #endif

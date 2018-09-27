@@ -1,12 +1,11 @@
 #include "Robot.h"
 
 //advance distance in CM
-void Robot::advanceIN(double distance, double motorSpeed,
-		boolean stop) {
+void Robot::advanceIN(double distance, double motorSpeed, boolean stop) {
 	Serial.println(wheelcirIN);
 	double revolution = (distance / wheelcirIN) * 1440; //get how many wheel turn we need to make, and multiply by 1440 (one revolution for encoder)
-	long revolution1 = (prizm.readEncoderCount(1) * motor1invert) + revolution; //add to current encoder value of motor 1. Here, the current encoder count is inverted because we inverted this motor at the beginning, but this function is not inverted by default
-	long revolution2 = (prizm.readEncoderCount(2) * motor2invert) + revolution; //add to current encoder value of motor 2
+	long revolution1 = getEncoderCount(1) + revolution; //add to current encoder value of motor 1. Here, the current encoder count is inverted because we inverted this motor at the beginning, but this function is not inverted by default
+	long revolution2 = getEncoderCount(2) + revolution; //add to current encoder value of motor 2
 
 	motorSpeed = (distance > 0) ? motorSpeed : -motorSpeed; //if distance is positive, robot will go forward, if negative, backwards
 	prizm.setMotorSpeeds(motorSpeed, motorSpeed); //set speed of robot
@@ -15,15 +14,14 @@ void Robot::advanceIN(double distance, double motorSpeed,
 		prizm.setMotorPowers(125, 125); //if variable is true, stop motors
 	}
 
-	x += cos(heading)*distance;
-	y += sin(heading)*distance;
+	x += cos(heading) * distance;
+	y += sin(heading) * distance;
 
 }
 
-void Robot::rampSpeed(unsigned int speed, unsigned int time){
-	for(unsigned int i = 0; i<speed; i++){
-		prizm.setMotorSpeeds(i,i);
-		delay(time/speed);
+void Robot::rampSpeed(unsigned int speed, unsigned int time) {
+	for (unsigned int i = 0; i < speed; i += speed/(time/10)) {
+		prizm.setMotorSpeeds(i, i);
 	}
 }
 
@@ -38,25 +36,38 @@ void Robot::turn(double degrees, int speed) {
 	prizm.setMotorTargets(speed, revolution1, speed, revolution2); //set target of both motors
 	waitForMotors(); //wait here while robot is turning
 
-	heading = heading+degrees < 0 ? (heading+degrees)+360 : heading+degrees;
-	heading = heading > 360 ? heading-360 : heading;
+	heading =
+			heading + degrees < 0 ?
+					(heading + degrees) + 360 : heading + degrees;
+	heading = heading > 360 ? heading - 360 : heading;
 }
 
-void Robot::goToLocation(int x2, int y2, int speed){
+void Robot::goToLocation(int x2, int y2, int speed) {
 	int deltaX = x2 - x;
 	int deltaY = y2 - y;
 
-	double angle = atan2(deltaY, deltaX) * 180/PI;
+	double angle = atan2(deltaY, deltaX) * 180 / PI;
 
-	double distance = sqrt(pow(deltaX,2) + pow(deltaX,2));
+	double distance = sqrt(pow(deltaX, 2) + pow(deltaX, 2));
 
-	setHeading(angle < 0 ? 360-angle : angle, speed);
-	advanceCM(distance, speed);
+	DEBUG_PRINT("Angle :");
+	DEBUG_PRINTLN(angle);
+	DEBUG_PRINT("Distance :");
+	DEBUG_PRINTLN(distance);
+	DEBUG_PRINTLN("");
+
+	setHeading(angle < 0 ? 360 - angle : angle, speed);
+	advanceIN(distance, speed);
 }
 
-void Robot::setHeading(int h, int speed){
+void Robot::setHeading(double h, int speed) {
 	double diff = h - heading;
-	turn(diff > 180 ? 360-diff : diff, speed);
+
+	DEBUG_PRINT("Diff : ");
+	DEBUG_PRINTLN(diff);
+	DEBUG_PRINTLN("");
+
+	turn(diff > 180 ? -360 + diff : ((diff < -180) ? 360 + diff : diff), speed);
 }
 
 void Robot::advanceUntilLine(int speed, boolean stop) { //advance (or move back if speed is negative) until he sees a line. If stop is true, robot will stop at line
@@ -72,12 +83,12 @@ void Robot::advanceUntilLine(int speed, boolean stop) { //advance (or move back 
 	}
 }
 
-void Robot::alignWithLine(int speed, int direction){ //direction == 1, turn right; direction == -1, turn left
-	prizm.setMotorSpeeds(speed * -direction,speed * direction);
+void Robot::alignWithLine(int speed, int direction) { //direction == 1, turn right; direction == -1, turn left
+	prizm.setMotorSpeeds(speed * -direction, speed * direction);
 
-	while(prizm.readLineSensor(lineSensorBack) == 0)
+	while (prizm.readLineSensor(lineSensorBack) == 0)
 		;
-	prizm.setMotorSpeeds(0,0);
+	prizm.setMotorSpeeds(0, 0);
 }
 
 void Robot::waitForMotors() { //when called, function will only finish when both motors are at rest.
@@ -169,44 +180,49 @@ boolean Robot::checkForEncoder(long target1, long target2, long diff) {
 }
 
 void Robot::invertMotor(int motor, int invert) {
-	motor1invert = motor == 1 ?
-			(invert == 1 ? -1 : 1) : motor1invert;
+	motor1invert = motor == 1 ? (invert == 1 ? -1 : 1) : motor1invert;
 
-	motor2invert = motor == 2 ?
-			(invert == 1 ? -1 : 1) : motor2invert;
+	motor2invert = motor == 2 ? (invert == 1 ? -1 : 1) : motor2invert;
 
 	prizm.setMotorInvert(motor, invert);
 
 }
 
-void Robot::gripperOpen(int direction){
+void Robot::gripperOpen(int direction) {
 	prizm.setServoPosition(gripperHorizontal, direction);
 }
 
-void Robot::gripperUp(int direction){
+void Robot::gripperUp(int direction) {
 	prizm.setServoPosition(gripperVertical, direction);
 }
 
-void Robot::advanceUntilPing(int speed, int distance){
+void Robot::advanceUntilPing(int speed, int distance) {
 	prizm.setMotorSpeeds(speed, speed);
 
-	while(prizm.readSonicSensorCM(pingSensor) > distance) {
+	while (prizm.readSonicSensorCM(pingSensor) > distance) {
 		delay(100);
 	}
 
-	prizm.setMotorSpeeds(0,0);
+	prizm.setMotorSpeeds(0, 0);
 }
 
-void Robot::setPosition (int x, int y){
+void Robot::setPosition(int x, int y) {
 	this->x = x;
 	this->y = y;
 }
 
-
+void Robot::readColor(int &red, int &green, int &blue) {
+	GroveColorSensor colorSensor;
 
 	colorSensor.ledStatus = 1;
 	colorSensor.readRGB(&red, &green, &blue);
 	delay(300);
 	colorSensor.clearInterrupt();
+}
+
+long Robot::getEncoderCount(int motor) {
+	return motor == 1 ?
+			(prizm.readEncoderCount(1) * motor1invert) :
+			(prizm.readEncoderCount(2) * motor2invert);
 }
 
