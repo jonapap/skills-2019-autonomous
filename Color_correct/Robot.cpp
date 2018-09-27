@@ -15,6 +15,13 @@ void Robot::advanceCM(double distance, double motorSpeed,
 	}
 }
 
+void Robot::rampSpeed(unsigned int speed, unsigned int time){
+	for(unsigned int i = 0; i<speed; i++){
+		prizm.setMotorSpeeds(i,i);
+		delay(time/speed);
+	}
+}
+
 //turn specified value. Positive degrees will turn clockwise, negative anti-clockwise
 void Robot::turn(double degrees, int speed) {
 	double revolution = degrees * turnvalue; //calculate encoder count required to add for each wheel
@@ -164,12 +171,12 @@ void Robot::advanceUntilPing(int speed, int distance){
 }
 
 void Robot::readColor(int &red, int &green, int &blue){
+	GroveColorSensor colorSensor;
+
 	colorSensor.ledStatus = 1;
 	colorSensor.readRGB(&red, &green, &blue);
 	delay(300);
 	colorSensor.clearInterrupt();
 	colorSensor.ledStatus = 0;
 }
-
-
 

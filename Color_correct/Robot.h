@@ -7,10 +7,6 @@
 
 class Robot {
 public:
-	Robot(PRIZM p, double w, double t) :
-			prizm(p), wheelcirCM(w), turnvalue(t) {
-	}
-	;
 
 	void advanceCM(double distance, double motorSpeed, boolean stop = true);
 	void turn(double degrees, int speed);
@@ -24,18 +20,18 @@ public:
 	void gripperUp(int direction);
 	void advanceUntilPing(int speed, int distance);
 	void readColor(int &red, int &green, int &blue);
+	void rampSpeed(unsigned int speed, unsigned int time);
 
 private:
-	PRIZM& prizm;
-	GroveColorSensor colorSensor;
-	const double wheelcirCM;
-	const double turnvalue;
+	PRIZM prizm;
+	const double wheelcirCM = 40;
+	const double turnvalue = 40;
 
 	const unsigned int lineSensorFront = 3;
 	const unsigned int lineSensorBack = 4;
 	const unsigned int pingSensor = 5;
-	const unsigned int gripperHorizontal = 6;
-	const unsigned int gripperVertical = 6;
+	const unsigned int gripperHorizontal = 1;
+	const unsigned int gripperVertical = 2;
 
 	uint8_t motor1invert = 1;
 	uint8_t motor2invert = 1;
