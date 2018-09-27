@@ -1,9 +1,10 @@
 #include "Robot.h"
 
 //advance distance in CM
-void Robot::advanceCM(double distance, double motorSpeed,
+void Robot::advanceIN(double distance, double motorSpeed,
 		boolean stop) {
-	double revolution = (distance / wheelcirCM) * 1440; //get how many wheel turn we need to make, and multiply by 1440 (one revolution for encoder)
+	Serial.println(wheelcirIN);
+	double revolution = (distance / wheelcirIN) * 1440; //get how many wheel turn we need to make, and multiply by 1440 (one revolution for encoder)
 	long revolution1 = (prizm.readEncoderCount(1) * motor1invert) + revolution; //add to current encoder value of motor 1. Here, the current encoder count is inverted because we inverted this motor at the beginning, but this function is not inverted by default
 	long revolution2 = (prizm.readEncoderCount(2) * motor2invert) + revolution; //add to current encoder value of motor 2
 
@@ -17,6 +18,13 @@ void Robot::advanceCM(double distance, double motorSpeed,
 	x += cos(heading)*distance;
 	y += sin(heading)*distance;
 
+}
+
+void Robot::rampSpeed(unsigned int speed, unsigned int time){
+	for(unsigned int i = 0; i<speed; i++){
+		prizm.setMotorSpeeds(i,i);
+		delay(time/speed);
+	}
 }
 
 //turn specified value. Positive degrees will turn clockwise, negative anti-clockwise
@@ -87,7 +95,7 @@ void Robot::forwardAndTurn(double turnLenght, double turnDistance, int speed,
 
 	int a = direction ? angle : -angle; //If direction is true, robot will turn right, if false, will turn left
 	turn(a, 150); //turn
-	advanceCM(distance, speed); //advance to specified distance
+	advanceIN(distance, speed); //advance to specified distance
 	turn(-a, 150); //turn in other direction
 }
 
@@ -161,9 +169,11 @@ boolean Robot::checkForEncoder(long target1, long target2, long diff) {
 }
 
 void Robot::invertMotor(int motor, int invert) {
-	motor1invert = motor == 1 ? (invert == 1 ? -1 : 1) : motor1invert;
+	motor1invert = motor == 1 ?
+			(invert == 1 ? -1 : 1) : motor1invert;
 
-	motor2invert = motor == 2 ? (invert == 1 ? -1 : 1) : motor2invert;
+	motor2invert = motor == 2 ?
+			(invert == 1 ? -1 : 1) : motor2invert;
 
 	prizm.setMotorInvert(motor, invert);
 
@@ -194,4 +204,9 @@ void Robot::setPosition (int x, int y){
 
 
 
+	colorSensor.ledStatus = 1;
+	colorSensor.readRGB(&red, &green, &blue);
+	delay(300);
+	colorSensor.clearInterrupt();
+}
 
