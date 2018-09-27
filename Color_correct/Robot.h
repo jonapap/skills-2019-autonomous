@@ -8,7 +8,7 @@
 class Robot {
 public:
 
-	void advanceCM(double distance, double motorSpeed, boolean stop = true);
+	void advanceIN(double distance, double motorSpeed, boolean stop = true);
 	void turn(double degrees, int speed);
 	void advanceUntilLine(int speed, boolean stop = true);
 	void alignWithLine(int speed, int direction);
@@ -22,10 +22,12 @@ public:
 	void readColor(int &red, int &green, int &blue);
 	void rampSpeed(unsigned int speed, unsigned int time);
 
+
 private:
 	PRIZM prizm;
-	const double wheelcirCM = 40;
-	const double turnvalue = 40;
+
+	const double wheelcirIN = 20;
+	const double turnvalue = 6.625;
 
 	const unsigned int lineSensorFront = 3;
 	const unsigned int lineSensorBack = 4;
@@ -33,8 +35,8 @@ private:
 	const unsigned int gripperHorizontal = 1;
 	const unsigned int gripperVertical = 2;
 
-	uint8_t motor1invert = 1;
-	uint8_t motor2invert = 1;
+	int motor1invert = 1;
+	int motor2invert = 1;
 
 	void waitForMotors();
 	void waitForEncoder(long target1, long target2);
