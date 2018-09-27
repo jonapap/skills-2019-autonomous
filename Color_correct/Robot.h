@@ -1,18 +1,14 @@
 #ifndef ROBOT_H
 #define ROBOT_H
 
-#define DEBUG
-
-#ifdef DEBUG
- #define DEBUG_PRINTLN(x)  Serial.println (x)
- #define DEBUG_PRINT(x)  Serial.print (x)
-#else
- #define DEBUG_PRINT(x)
-#endif
-
 #include <Arduino.h>
 #include "TETRIX_PRIZM/PRIZM.h"
 #include "Color_sensor/GroveColorSensor.h"
+#include "DEBUG.h"
+
+struct RGB {
+	int red,green,blue;
+};
 
 class Robot {
 public:
@@ -31,7 +27,7 @@ public:
 	void setPosition (int x, int y);
 	void goToLocation(int x, int y, int speed);
 	void setHeading(double heading, int speed);
-	void readColor(int &red, int &green, int &blue);
+	RGB readColor();
 	void rampSpeed(unsigned int speed, unsigned int time);
 
 
@@ -51,14 +47,16 @@ private:
 	int motor2invert = 1;
 
 	double heading = 90;
-	int x = 0;
-	int y = 0;
+	double x = 0;
+	double y = 0;
 
 
 	void waitForMotors();
 	void waitForEncoder(long target1, long target2);
 	boolean checkForEncoder(long target1, long target2, long diff);
 	long getEncoderCount(int motor);
+	void updatePosition(long encoder1, long encoder2);
+	void updateAngle(long encoder1, long encoder2);
 };
 
 #endif

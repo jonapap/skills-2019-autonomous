@@ -20,7 +20,7 @@ void Robot::advanceIN(double distance, double motorSpeed, boolean stop) {
 }
 
 void Robot::rampSpeed(unsigned int speed, unsigned int time) {
-	for (unsigned int i = 0; i < speed; i += speed/(time/10)) {
+	for (unsigned int i = 0; i < speed; i += speed / (time / 10)) {
 		prizm.setMotorSpeeds(i, i);
 	}
 }
@@ -28,10 +28,8 @@ void Robot::rampSpeed(unsigned int speed, unsigned int time) {
 //turn specified value. Positive degrees will turn clockwise, negative anti-clockwise
 void Robot::turn(double degrees, int speed) {
 	double revolution = degrees * turnvalue; //calculate encoder count required to add for each wheel
-	double revolution1 = (prizm.readEncoderCount(1) * motor1invert)
-			+ revolution; //add to current encoder count of motor 1
-	double revolution2 = (prizm.readEncoderCount(2) * motor2invert)
-			- revolution; //negative of second motor so robot will turn on itself
+	long revolution1 = (prizm.readEncoderCount(1) * motor1invert) + revolution; //add to current encoder count of motor 1
+	long revolution2 = (prizm.readEncoderCount(2) * motor2invert) - revolution; //negative of second motor so robot will turn on itself
 
 	prizm.setMotorTargets(speed, revolution1, speed, revolution2); //set target of both motors
 	waitForMotors(); //wait here while robot is turning
@@ -71,7 +69,11 @@ void Robot::setHeading(double h, int speed) {
 }
 
 void Robot::advanceUntilLine(int speed, boolean stop) { //advance (or move back if speed is negative) until he sees a line. If stop is true, robot will stop at line
+	long encoder1 = getEncoderCount(1);
+	long encoder2 = getEncoderCount(2);
+
 	prizm.setMotorSpeeds(speed, speed);
+
 	while (prizm.readLineSensor(lineSensorBack) == 1)
 		; //continue advancing if robot currently sees a line
 
@@ -81,6 +83,8 @@ void Robot::advanceUntilLine(int speed, boolean stop) { //advance (or move back 
 	if (stop) {
 		prizm.setMotorSpeeds(0, 0); //stop when he sees the line
 	}
+
+	updatePosition(encoder1, encoder2);
 }
 
 void Robot::alignWithLine(int speed, int direction) { //direction == 1, turn right; direction == -1, turn left
@@ -211,18 +215,45 @@ void Robot::setPosition(int x, int y) {
 	this->y = y;
 }
 
-void Robot::readColor(int &red, int &green, int &blue) {
+RGB Robot::readColor() {
 	GroveColorSensor colorSensor;
+
+	int red,green,blue;
 
 	colorSensor.ledStatus = 1;
 	colorSensor.readRGB(&red, &green, &blue);
 	delay(300);
 	colorSensor.clearInterrupt();
+
+	return RGB{red,green,blue};
 }
 
 long Robot::getEncoderCount(int motor) {
 	return motor == 1 ?
 			(prizm.readEncoderCount(1) * motor1invert) :
 			(prizm.readEncoderCount(2) * motor2invert);
+}
+
+void Robot::updatePosition(long encoder1, long encoder2) {
+	int revolutions = ((getEncoderCount(1) - encoder1)
+			+ (getEncoderCount(2) - encoder2)) / 2; //take the average of the two encoders
+	double distance = (revolutions / 1440) * wheelcirIN;
+
+	DEBUG_PRINT("Distance : ");
+	DEBUG_PRINTLN(distance);
+
+	x += cos(heading) * distance;
+	y += sin(heading) * distance;
+}
+
+void Robot::updateAngle(long encoder1, long encoder2) {
+	double revolutions = ((getEncoderCount(1) - encoder1)
+			+ (-getEncoderCount(2) + encoder2)) / 2;
+	double degrees = revolutions / turnvalue;
+
+	DEBUG_PRINT("Angle turned : ");
+	DEBUG_PRINTLN(degrees);
+
+	heading += degrees;
 }
 

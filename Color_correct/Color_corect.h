@@ -7,17 +7,10 @@
 #ifndef _Color_corect_H_
 #define _Color_corect_H_
 
-#define DEBUG
-
-#ifdef DEBUG
- #define DEBUG_PRINT(x)  Serial.println (x)
-#else
- #define DEBUG_PRINT(x)
-#endif
-
 #include "Arduino.h"
 #include "Robot.h"
 #include "TETRIX_PRIZM/PRIZM.h"
+#include "DEBUG.h"
 //add your includes for the project Color_corect here
 
 
