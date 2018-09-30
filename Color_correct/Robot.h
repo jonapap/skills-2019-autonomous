@@ -11,31 +11,16 @@
 struct RGB {
 	int red,green,blue;
 
-	int getColor(const RGB colors[], unsigned int size);
+	boolean isColor(const RGB &color, int error);
 
 };
-/*
-int RGB::getColor(const RGB colors[], unsigned int size){
-	int error = 10;
-
-	for(int i = 0; i < size; i++){
-		RGB color = colors[i];
-
-		if(IN_RANGE(color.red, red, error) && IN_RANGE(color.green, green, error) && IN_RANGE(color.blue, blue, error)){
-			return i;
-		}
-	}
-
-	throw "Color not in list!";
-}*/
-
 
 class Robot {
 public:
 
 	void advanceIN(double distance, double motorSpeed, boolean stop = true);
 	void turn(double degrees, int speed);
-	void advanceUntilLine(int speed, boolean stop = true);
+	void advanceUntilLine(int speed, const RGB &color, boolean stop = true);
 	void alignWithLine(int speed, int direction);
 	void forwardAndTurn(double turnLenght, double turnDistance, int speed,
 			boolean direction, boolean back);
@@ -57,8 +42,6 @@ private:
 	const double wheelcirIN = 20;
 	const double turnvalue = 5.82;
 
-	const unsigned int lineSensorFront = 3;
-	const unsigned int lineSensorBack = 4;
 	const unsigned int pingSensor = 5;
 	const unsigned int gripperHorizontal = 1;
 	const unsigned int gripperVertical = 2;
@@ -70,12 +53,11 @@ private:
 	double x = 0;
 	double y = 0;
 
-	static constexpr RGB colors[] = {
-			{0,0,0},
-			{255,0,0},
-			{255,255,0},
-			{0,0,255}
-	};
+	const int colorError = 10;
+	static constexpr RGB black = {255,255,255};
+	static constexpr RGB red = {255,0,0};
+	static constexpr RGB blue = {0,0,255};
+	static constexpr RGB yellow = {255,255,0};
 
 	void waitForMotors();
 	void waitForEncoder(long target1, long target2);

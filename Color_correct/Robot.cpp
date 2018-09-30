@@ -3,6 +3,14 @@
 #define toRadians(x) x*(PI/180)
 #define toDegrees(x) x/(PI/180)
 
+boolean RGB::isColor(const RGB &color, int error) {
+	if (IN_RANGE(color.red, red,
+			error) && IN_RANGE(color.green, green, error) && IN_RANGE(color.blue, blue, error)) {
+		return true;
+	}
+	return false;
+}
+
 //advance distance in CM
 void Robot::advanceIN(double distance, double motorSpeed, boolean stop) {
 	double revolution = (distance / wheelcirIN) * 1440; //get how many wheel turn we need to make, and multiply by 1440 (one revolution for encoder)
@@ -90,16 +98,16 @@ void Robot::setHeading(double h, int speed) {
 	turn(diff > 180 ? -360 + diff : ((diff < -180) ? 360 + diff : diff), speed);
 }
 
-void Robot::advanceUntilLine(int speed, boolean stop) { //advance (or move back if speed is negative) until he sees a line. If stop is true, robot will stop at line
+void Robot::advanceUntilLine(int speed, const RGB &color, boolean stop) { //advance (or move back if speed is negative) until he sees a line. If stop is true, robot will stop at line
 	long encoder1 = getEncoderCount(1);
 	long encoder2 = getEncoderCount(2);
 
 	prizm.setMotorSpeeds(speed, speed);
 
-	while (prizm.readLineSensor(lineSensorBack) == 1)
+	while (readColor().isColor(color, colorError))
 		; //continue advancing if robot currently sees a line
 
-	while (prizm.readLineSensor(lineSensorBack) == 0)
+	while (!readColor().isColor(color, colorError))
 		; //wait until robot see something
 
 	if (stop) {
@@ -112,7 +120,7 @@ void Robot::advanceUntilLine(int speed, boolean stop) { //advance (or move back 
 void Robot::alignWithLine(int speed, int direction) { //direction == 1, turn right; direction == -1, turn left
 	prizm.setMotorSpeeds(speed * -direction, speed * direction);
 
-	while (prizm.readLineSensor(lineSensorBack) == 0)
+	while (!readColor().isColor(black, colorError))
 		;
 	prizm.setMotorSpeeds(0, 0);
 }
