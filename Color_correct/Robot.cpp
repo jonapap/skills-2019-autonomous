@@ -1,7 +1,10 @@
 #include "Robot.h"
+#include "DEBUG.h"
 
 #define toRadians(x) x*(PI/180)
 #define toDegrees(x) x/(PI/180)
+#define IN_RANGE(x, y, r) abs(x-y) <= r
+#define mod(x,y) (x)-y*floor((x)/y)
 
 boolean RGB::isColor(const RGB &color, int error) {
 	if (IN_RANGE(color.red, red,
@@ -53,10 +56,7 @@ void Robot::turn(double degrees, int speed) {
 	prizm.setMotorTargets(speed, revolution1, speed, revolution2); //set target of both motors
 	waitForMotors(); //wait here while robot is turning
 
-	heading =
-			heading + degrees < 0 ?
-					(heading + degrees) + 360 : heading + degrees;
-	heading = heading > 360 ? heading - 360 : heading;
+	heading = mod(heading + degrees, 360);
 }
 
 void Robot::goToLocation(double x2, double y2, int speed) {
@@ -284,6 +284,6 @@ void Robot::updateAngle(long encoder1, long encoder2) {
 	DEBUG_PRINT("Angle turned : ");
 	DEBUG_PRINTLN(degrees);
 
-	heading += degrees;
+	heading = mod(heading + degrees, 360);
 }
 

@@ -1,12 +1,9 @@
 #ifndef ROBOT_H
 #define ROBOT_H
 
-#define IN_RANGE(x, y, r) abs(x-y) <= r
-
 #include <Arduino.h>
 #include "TETRIX_PRIZM/PRIZM.h"
 #include "Color_sensor/GroveColorSensor.h"
-#include "DEBUG.h"
 
 struct RGB {
 	int red,green,blue;
