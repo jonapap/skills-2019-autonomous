@@ -14,14 +14,28 @@ void setup() {
 
 	prizm.PrizmBegin();
 	robot.invertMotor(1, 1);
-	robot.goToLocation(12, 12, 100);
-
 	//prizm.setMotorSpeeds(300, 300);
 	//robot.rampSpeed(720, 1000);
 	//robot.advanceCM(30, 300);
 	//prizm.setMotorPowers(100,100);
 }
 
-// The loop function is called in an endless loop
+
 void loop() {
+	Serial.println("X :");
+	while(Serial.available() == 0);
+	int x = Serial.parseInt();
+	Serial.println("Y :");
+	while(Serial.available() == 0);
+	int y = Serial.parseInt();
+	robot.goToLocation(x, y, 100);
+	robot.setHeading(90, 100);
+/*
+	while(Serial.available() == 0);
+	double x = Serial.parseFloat();
+	Serial.println(x);
+
+	robot.turnvalue = x;
+	robot.turn(360, 100);
+*/
 }

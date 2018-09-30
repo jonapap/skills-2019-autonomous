@@ -1,8 +1,10 @@
 #include "Robot.h"
 
+#define toRadians(x) x*(PI/180)
+#define toDegrees(x) x/(PI/180)
+
 //advance distance in CM
 void Robot::advanceIN(double distance, double motorSpeed, boolean stop) {
-	Serial.println(wheelcirIN);
 	double revolution = (distance / wheelcirIN) * 1440; //get how many wheel turn we need to make, and multiply by 1440 (one revolution for encoder)
 	long revolution1 = getEncoderCount(1) + revolution; //add to current encoder value of motor 1. Here, the current encoder count is inverted because we inverted this motor at the beginning, but this function is not inverted by default
 	long revolution2 = getEncoderCount(2) + revolution; //add to current encoder value of motor 2
@@ -14,8 +16,14 @@ void Robot::advanceIN(double distance, double motorSpeed, boolean stop) {
 		prizm.setMotorPowers(125, 125); //if variable is true, stop motors
 	}
 
-	x += cos(heading) * distance;
-	y += sin(heading) * distance;
+	DEBUG_PRINTLN("Heading :");
+	DEBUG_PRINTLN(heading);
+
+	DEBUG_PRINTLN("Distance :");
+	DEBUG_PRINTLN(distance);
+
+	x += cos(toRadians(heading)) * distance;
+	y += sin(toRadians(heading)) * distance;
 
 }
 
@@ -28,8 +36,11 @@ void Robot::rampSpeed(unsigned int speed, unsigned int time) {
 //turn specified value. Positive degrees will turn clockwise, negative anti-clockwise
 void Robot::turn(double degrees, int speed) {
 	double revolution = degrees * turnvalue; //calculate encoder count required to add for each wheel
-	long revolution1 = (prizm.readEncoderCount(1) * motor1invert) + revolution; //add to current encoder count of motor 1
-	long revolution2 = (prizm.readEncoderCount(2) * motor2invert) - revolution; //negative of second motor so robot will turn on itself
+	long revolution1 = (prizm.readEncoderCount(1) * motor1invert) - revolution; //add to current encoder count of motor 1
+	long revolution2 = (prizm.readEncoderCount(2) * motor2invert) + revolution; //negative of second motor so robot will turn on itself
+
+	DEBUG_PRINTLN("Turning : ");
+	DEBUG_PRINTLN(degrees);
 
 	prizm.setMotorTargets(speed, revolution1, speed, revolution2); //set target of both motors
 	waitForMotors(); //wait here while robot is turning
@@ -40,13 +51,24 @@ void Robot::turn(double degrees, int speed) {
 	heading = heading > 360 ? heading - 360 : heading;
 }
 
-void Robot::goToLocation(int x2, int y2, int speed) {
-	int deltaX = x2 - x;
-	int deltaY = y2 - y;
+void Robot::goToLocation(double x2, double y2, int speed) {
+	DEBUG_PRINTLN("Current pos : ");
+	DEBUG_PRINTLN(x);
+	DEBUG_PRINTLN(y);
+
+	DEBUG_PRINTLN("Going to : ");
+	DEBUG_PRINTLN(x2);
+	DEBUG_PRINTLN(y2);
+	double deltaX = x2 - x;
+	double deltaY = y2 - y;
+
+	DEBUG_PRINTLN("Delta x and y :");
+	DEBUG_PRINTLN(deltaX);
+	DEBUG_PRINTLN(deltaY);
 
 	double angle = atan2(deltaY, deltaX) * 180 / PI;
 
-	double distance = sqrt(pow(deltaX, 2) + pow(deltaX, 2));
+	double distance = sqrt(pow(deltaX, 2) + pow(deltaY, 2));
 
 	DEBUG_PRINT("Angle :");
 	DEBUG_PRINTLN(angle);
@@ -54,7 +76,7 @@ void Robot::goToLocation(int x2, int y2, int speed) {
 	DEBUG_PRINTLN(distance);
 	DEBUG_PRINTLN("");
 
-	setHeading(angle < 0 ? 360 - angle : angle, speed);
+	setHeading(angle < 0 ? 360 + angle : angle, speed);
 	advanceIN(distance, speed);
 }
 
@@ -210,7 +232,7 @@ void Robot::advanceUntilPing(int speed, int distance) {
 	prizm.setMotorSpeeds(0, 0);
 }
 
-void Robot::setPosition(int x, int y) {
+void Robot::setPosition(double x, double y) {
 	this->x = x;
 	this->y = y;
 }
@@ -218,14 +240,14 @@ void Robot::setPosition(int x, int y) {
 RGB Robot::readColor() {
 	GroveColorSensor colorSensor;
 
-	int red,green,blue;
+	int red, green, blue;
 
 	colorSensor.ledStatus = 1;
 	colorSensor.readRGB(&red, &green, &blue);
 	delay(300);
 	colorSensor.clearInterrupt();
 
-	return RGB{red,green,blue};
+	return RGB { red, green, blue };
 }
 
 long Robot::getEncoderCount(int motor) {
@@ -247,8 +269,8 @@ void Robot::updatePosition(long encoder1, long encoder2) {
 }
 
 void Robot::updateAngle(long encoder1, long encoder2) {
-	double revolutions = ((getEncoderCount(1) - encoder1)
-			+ (-getEncoderCount(2) + encoder2)) / 2;
+	double revolutions = ((-getEncoderCount(1) + encoder1)
+			+ (getEncoderCount(2) - encoder2)) / 2;
 	double degrees = revolutions / turnvalue;
 
 	DEBUG_PRINT("Angle turned : ");
