@@ -6,6 +6,11 @@
 #define IN_RANGE(x, y, r) abs(x-y) <= r
 #define mod(x,y) (x)-y*floor((x)/y)
 
+const RGB Robot::black = {22,27,8};
+const RGB Robot::red = {52,13,4};
+const RGB Robot::blue = {10,36,35};
+const RGB Robot::yellow = {71,62,3};
+
 boolean RGB::isColor(const RGB &color, int error) {
 	if (IN_RANGE(color.red, red,
 			error) && IN_RANGE(color.green, green, error) && IN_RANGE(color.blue, blue, error)) {
@@ -234,7 +239,7 @@ void Robot::advanceUntilPing(int speed, int distance) {
 	prizm.setMotorSpeeds(speed, speed);
 
 	while (prizm.readSonicSensorCM(pingSensor) > distance) {
-		delay(100);
+		delay(50);
 	}
 
 	prizm.setMotorSpeeds(0, 0);

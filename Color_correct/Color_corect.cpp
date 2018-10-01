@@ -13,7 +13,9 @@ void setup() {
 #endif
 
 	prizm.PrizmBegin();
-	robot.invertMotor(1, 1);
+	robot.invertMotor(2, 1);
+
+	//robot.advanceUntilLine(100, Robot::yellow, 5);
 	//prizm.setMotorSpeeds(300, 300);
 	//robot.rampSpeed(720, 1000);
 	//robot.advanceCM(30, 300);
@@ -21,7 +23,7 @@ void setup() {
 }
 
 
-void loop() {
+void loop() {/*
 	Serial.println("X :");
 	while(Serial.available() == 0);
 	int x = Serial.parseInt();
@@ -29,13 +31,13 @@ void loop() {
 	while(Serial.available() == 0);
 	int y = Serial.parseInt();
 	robot.goToLocation(x, y, 100);
-	robot.setHeading(90, 100);
-/*
+	robot.setHeading(90, 100);*/
+
 	while(Serial.available() == 0);
 	double x = Serial.parseFloat();
 	Serial.println(x);
 
 	robot.turnvalue = x;
 	robot.turn(360, 100);
-*/
+
 }

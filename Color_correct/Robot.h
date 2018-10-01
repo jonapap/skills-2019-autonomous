@@ -32,12 +32,20 @@ public:
 	RGB readColor();
 	void rampSpeed(unsigned int speed, unsigned int time);
 
+	friend void changeDistVar();
+	friend void changeAngleVar();
+	friend void setupRobot();
+
+	static const RGB black;
+	static const RGB red;
+	static const RGB blue;
+	static const RGB yellow;
 
 private:
 	PRIZM prizm;
 
-	const double wheelcirIN = 20;
-	const double turnvalue = 5.82;
+	double wheelcirIN = 20;
+	double turnvalue = 5.82;
 
 	const unsigned int pingSensor = 5;
 	const unsigned int gripperHorizontal = 1;
@@ -51,10 +59,6 @@ private:
 	double y = 0;
 
 	const int colorError = 10;
-	static constexpr RGB black = {255,255,255};
-	static constexpr RGB red = {255,0,0};
-	static constexpr RGB blue = {0,0,255};
-	static constexpr RGB yellow = {255,255,0};
 
 	void waitForMotors();
 	void waitForEncoder(long target1, long target2);
