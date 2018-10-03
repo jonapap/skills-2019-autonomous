@@ -236,7 +236,7 @@ int PRIZM::readSonicSensorCM(int pin){   // Returns distance of object from sens
   
 }
 
-int PRIZM::readSonicSensorIN(int pin){   // Returns distance of object from sensor in Inches
+double PRIZM::readSonicSensorIN(int pin){   // Returns distance of object from sensor in Inches
 
   int duration;
   pinMode(pin, OUTPUT);

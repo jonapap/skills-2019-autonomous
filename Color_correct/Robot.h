@@ -17,7 +17,7 @@ public:
 
 	void advanceIN(double distance, double motorSpeed, boolean stop = true);
 	void turn(double degrees, int speed);
-	void advanceUntilLine(int speed, const RGB &color, boolean stop = true);
+	void advanceUntilLine(int speed, boolean stop = true);
 	void alignWithLine(int speed, int direction);
 	void forwardAndTurn(double turnLenght, double turnDistance, int speed,
 			boolean direction, boolean back);
@@ -41,22 +41,25 @@ public:
 	static const RGB blue;
 	static const RGB yellow;
 
+	double heading = 90;
+	double x = 0;
+	double y = 0;
 private:
 	PRIZM prizm;
 
-	double wheelcirIN = 20;
-	double turnvalue = 5.82;
+	double wheelcirIN = 6.3;
+	double turnvalue = 12.2;
 
-	const unsigned int pingSensor = 5;
+	const unsigned int pingSensor = 4;
+	const unsigned int lineSensor = 2;
 	const unsigned int gripperHorizontal = 1;
 	const unsigned int gripperVertical = 2;
 
 	int motor1invert = 1;
 	int motor2invert = 1;
 
-	double heading = 90;
-	double x = 0;
-	double y = 0;
+
+
 
 	const int colorError = 10;
 

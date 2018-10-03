@@ -49,7 +49,7 @@ class PRIZM
 
 		int readLineSensor(int pin);
 		int readSonicSensorCM(int pin);
-		int readSonicSensorIN(int pin);
+		double readSonicSensorIN(int pin);
 
 		int readBatteryVoltage(void);
 		

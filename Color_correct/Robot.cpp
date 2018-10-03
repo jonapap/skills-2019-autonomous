@@ -104,16 +104,16 @@ void Robot::setHeading(double h, int speed) {
 	turn(diff > 180 ? -360 + diff : ((diff < -180) ? 360 + diff : diff), speed);
 }
 
-void Robot::advanceUntilLine(int speed, const RGB &color, boolean stop) { //advance (or move back if speed is negative) until he sees a line. If stop is true, robot will stop at line
+void Robot::advanceUntilLine(int speed, boolean stop) { //advance (or move back if speed is negative) until he sees a line. If stop is true, robot will stop at line
 	long encoder1 = getEncoderCount(1);
 	long encoder2 = getEncoderCount(2);
 
 	prizm.setMotorSpeeds(speed, speed);
 
-	while (readColor().isColor(color, colorError))
+	while (prizm.readLineSensor(lineSensor) == 1)
 		; //continue advancing if robot currently sees a line
 
-	while (!readColor().isColor(color, colorError))
+	while (prizm.readLineSensor(lineSensor) == 0)
 		; //wait until robot see something
 
 	if (stop) {
@@ -126,7 +126,7 @@ void Robot::advanceUntilLine(int speed, const RGB &color, boolean stop) { //adva
 void Robot::alignWithLine(int speed, int direction) { //direction == 1, turn right; direction == -1, turn left
 	prizm.setMotorSpeeds(speed * -direction, speed * direction);
 
-	while (!readColor().isColor(black, colorError))
+	while (prizm.readLineSensor(lineSensor) == 0)
 		;
 	prizm.setMotorSpeeds(0, 0);
 }
@@ -237,13 +237,18 @@ void Robot::gripperUp(int direction) {
 }
 
 void Robot::advanceUntilPing(int speed, int distance) {
+	long encoder1 = getEncoderCount(1);
+	long encoder2 = getEncoderCount(2);
+
 	prizm.setMotorSpeeds(speed, speed);
 
-	while (prizm.readSonicSensorCM(pingSensor) > distance) {
+	while (prizm.readSonicSensorIN(pingSensor) > distance) {
 		delay(50);
 	}
 
 	prizm.setMotorSpeeds(0, 0);
+
+	updatePosition(encoder1, encoder2);
 }
 
 void Robot::setPosition(double x, double y) {
@@ -271,9 +276,17 @@ long Robot::getEncoderCount(int motor) {
 }
 
 void Robot::updatePosition(long encoder1, long encoder2) {
-	int revolutions = ((getEncoderCount(1) - encoder1)
+	long revolutions = ((getEncoderCount(1) - encoder1)
 			+ (getEncoderCount(2) - encoder2)) / 2; //take the average of the two encoders
-	double distance = (revolutions / 1440) * wheelcirIN;
+	double distance = ((double)revolutions / 1440.0) * wheelcirIN;
+
+	Serial.println(encoder1);
+	Serial.println(encoder2);
+
+	Serial.println(getEncoderCount(1));
+	Serial.println(getEncoderCount(2));
+
+	Serial.println(revolutions);
 
 	DEBUG_PRINT("Distance : ");
 	DEBUG_PRINTLN(distance);
@@ -283,7 +296,7 @@ void Robot::updatePosition(long encoder1, long encoder2) {
 }
 
 void Robot::updateAngle(long encoder1, long encoder2) {
-	double revolutions = ((-getEncoderCount(1) + encoder1)
+	long revolutions = ((-getEncoderCount(1) + encoder1)
 			+ (getEncoderCount(2) - encoder2)) / 2;
 	double degrees = revolutions / turnvalue;
 
