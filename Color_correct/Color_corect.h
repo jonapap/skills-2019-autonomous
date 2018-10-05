@@ -11,6 +11,7 @@
 #include "Robot.h"
 #include "TETRIX_PRIZM/PRIZM.h"
 #include "DEBUG.h"
+#include "Block.h"
 //add your includes for the project Color_corect here
 
 
@@ -23,6 +24,7 @@ void goToYellow();
 void goToRed();
 void goToBlue();
 void grabBlock();
+void printXY();
 
 
 //Do not add code below this line

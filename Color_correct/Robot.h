@@ -12,6 +12,10 @@ struct RGB {
 
 };
 
+struct Position {
+	double x,y;
+};
+
 class Robot {
 public:
 
@@ -48,7 +52,8 @@ private:
 	PRIZM prizm;
 
 	double wheelcirIN = 6.3;
-	double turnvalue = 12.2;
+	double turnvalue = 12.3;
+
 
 	const unsigned int pingSensor = 4;
 	const unsigned int lineSensor = 2;

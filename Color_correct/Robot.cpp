@@ -124,11 +124,16 @@ void Robot::advanceUntilLine(int speed, boolean stop) { //advance (or move back 
 }
 
 void Robot::alignWithLine(int speed, int direction) { //direction == 1, turn right; direction == -1, turn left
+	long encoder1 = getEncoderCount(1);
+	long encoder2 = getEncoderCount(2);
+
 	prizm.setMotorSpeeds(speed * -direction, speed * direction);
 
 	while (prizm.readLineSensor(lineSensor) == 0)
 		;
 	prizm.setMotorSpeeds(0, 0);
+
+	updateAngle(encoder1, encoder2);
 }
 
 void Robot::waitForMotors() { //when called, function will only finish when both motors are at rest.
@@ -278,15 +283,7 @@ long Robot::getEncoderCount(int motor) {
 void Robot::updatePosition(long encoder1, long encoder2) {
 	long revolutions = ((getEncoderCount(1) - encoder1)
 			+ (getEncoderCount(2) - encoder2)) / 2; //take the average of the two encoders
-	double distance = ((double)revolutions / 1440.0) * wheelcirIN;
-
-	Serial.println(encoder1);
-	Serial.println(encoder2);
-
-	Serial.println(getEncoderCount(1));
-	Serial.println(getEncoderCount(2));
-
-	Serial.println(revolutions);
+	double distance = (revolutions / 1440.0) * wheelcirIN;
 
 	DEBUG_PRINT("Distance : ");
 	DEBUG_PRINTLN(distance);
