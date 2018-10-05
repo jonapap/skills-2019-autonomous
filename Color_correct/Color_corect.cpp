@@ -33,7 +33,7 @@ void serialBlocks() {
 	int n = Serial.parseInt();
 
 	Position p = blocks[n].getLastPoint();
-	robot.goToLocation(p.x, p.y, 300);
+	robot.goToPosition(p.x, p.y, 300);
 	robot.goToHeading(blocks[n].getApproachHeading(), 100);
 	grabBlock(blocks[n].approachSide);
 	Position p2 = blocks[n].getRobotLinePosition();
@@ -45,19 +45,14 @@ void serialBlocks() {
 
 void cycleBlocks() {
 	for (Block b : blocks) {
-		Position p = b.getLastPoint();
-		robot.goToLocation(p.x, p.y, 300);
+		robot.goToPosition(b.getLastPoint(), 300);
 		robot.goToHeading(b.getApproachHeading(), 100);
+
 		grabBlock(b.approachSide);
 
-		Position p2 = b.getRobotLinePosition();
-
-		DEBUG_PRINTLN("Position :");
-		DEBUG_PRINTLN(p2.x);
-		DEBUG_PRINTLN(p2.y);
-
-		robot.setPosition(p2.x, p2.y);
+		robot.setPosition(b.getRobotLinePosition());
 		robot.setHeading(b.heading);
+
 		goToSquare(b.color);
 	}
 }
@@ -71,7 +66,7 @@ void testLocation() {
 	while (Serial.available() == 0)
 		;
 	double y = Serial.parseFloat();
-	robot.goToLocation(x, y, 300);
+	robot.goToPosition(x, y, 300);
 	robot.goToHeading(90, 100);
 
 }
@@ -79,13 +74,13 @@ void testLocation() {
 void goToSquare(int color) {
 	switch (color) {
 	case REDSQUARE:
-		robot.goToLocation(28, 88, 300);
+		robot.goToPosition(28, 88, 300);
 		break;
 	case YELLOWSQUARE:
-		robot.goToLocation(49, 88, 300);
+		robot.goToPosition(49, 88, 300);
 		break;
 	case BLUESQUARE:
-		robot.goToLocation(68, 88, 300);
+		robot.goToPosition(68, 88, 300);
 		break;
 	}
 }

@@ -28,7 +28,9 @@ public:
 	void gripperUp(int direction);
 	void advanceUntilPing(int speed, int distance);
 	void setPosition(double x, double y);
-	void goToLocation(double x, double y, int speed);
+	void setPosition(Position p);
+	void goToPosition(double x, double y, int speed);
+	void goToPosition(Position p, int speed);
 	Position getPosition();
 	double getHeading();
 	void goToHeading(double heading, int speed);

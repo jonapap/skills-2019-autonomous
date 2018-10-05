@@ -72,7 +72,11 @@ double Robot::getHeading() {
 	return heading;
 }
 
-void Robot::goToLocation(double x2, double y2, int speed) {
+void Robot::goToPosition(Position p, int speed) {
+	goToPosition(p.x, p.y, speed);
+}
+
+void Robot::goToPosition(double x2, double y2, int speed) {
 	DEBUG_PRINTLN("Current pos : ");
 	DEBUG_PRINTLN(x);
 	DEBUG_PRINTLN(y);
@@ -216,7 +220,15 @@ void Robot::advanceUntilPing(int speed, int distance) {
 	updatePosition(encoder1, encoder2);
 }
 
+void Robot::setPosition(Position p) {
+	setPosition(p.x,p.y);
+}
+
 void Robot::setPosition(double x, double y) {
+	DEBUG_PRINTLN("Setting position :");
+	DEBUG_PRINTLN(x);
+	DEBUG_PRINTLN(y);
+
 	this->x = x;
 	this->y = y;
 }
