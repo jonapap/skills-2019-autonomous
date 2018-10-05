@@ -6,10 +6,10 @@
 #define IN_RANGE(x, y, r) abs(x-y) <= r
 #define mod(x,y) (x)-y*floor((x)/y)
 
-const RGB Robot::black = {22,27,8};
-const RGB Robot::red = {52,13,4};
-const RGB Robot::blue = {10,36,35};
-const RGB Robot::yellow = {71,62,3};
+const RGB Robot::black = { 22, 27, 8 };
+const RGB Robot::red = { 52, 13, 4 };
+const RGB Robot::blue = { 10, 36, 35 };
+const RGB Robot::yellow = { 71, 62, 3 };
 
 boolean RGB::isColor(const RGB &color, int error) {
 	if (IN_RANGE(color.red, red,
@@ -64,11 +64,11 @@ void Robot::turn(double degrees, int speed) {
 	heading = mod(heading + degrees, 360);
 }
 
-Position Robot::getPosition(){
+Position Robot::getPosition() {
 	return {x,y};
 }
 
-double Robot::getHeading(){
+double Robot::getHeading() {
 	return heading;
 }
 
@@ -112,7 +112,7 @@ void Robot::goToHeading(double h, int speed) {
 	turn(diff > 180 ? -360 + diff : ((diff < -180) ? 360 + diff : diff), speed);
 }
 
-void Robot::setHeading(double h){
+void Robot::setHeading(double h) {
 	heading = h;
 }
 
@@ -152,57 +152,6 @@ void Robot::waitForMotors() { //when called, function will only finish when both
 	while (prizm.readMotorBusy(1) == 1 || prizm.readMotorBusy(2) == 1)
 		//wait here while at least one motor is doing something
 		;
-}
-
-void Robot::forwardAndTurn(double turnLenght, double turnDistance, int speed,
-		boolean direction, boolean back) { //first var.:distance to go away from robot. second var.:distance to go sideways. third var.: speed to go at. fourth var.: true, robot will turn right, if false, will turn left. fifth var.: true, distance will be negative, so robot will go backward
-	double distance = sqrt((pow(turnLenght, 2) + pow(turnDistance, 2))); //calculate distance based on pythagorean theorem
-	double angle = atan2(turnDistance, turnLenght) * 57.29577; //calculate angle needed to turn with arctan
-	distance = back ? distance * -1 : distance; //if back is true, distance will be negative, so robot will go backward
-
-	int a = direction ? angle : -angle; //If direction is true, robot will turn right, if false, will turn left
-	turn(a, 150); //turn
-	advanceIN(distance, speed); //advance to specified distance
-	turn(-a, 150); //turn in other direction
-}
-
-void Robot::advanceToWall(int speed) { //robot will bump into wall and use limit switch to know when he is there. If speed is positive, use the switch at the back, negative, at the front.
-	unsigned long timeStart = 0; //this variable will be used to track how much time we have been waiting for the other limit switch
-	prizm.setMotorSpeeds(-speed, -speed); //advance robot at speed
-
-	int sensor1 = (speed > 0) ? 3 : 15; //choose correct pair of limit switchs based on whether or not speed is negative or positive
-	int sensor2 = (speed > 0) ? 5 : 16;
-
-	int direction = (speed > 0) ? -1 : 1; //will multiply the speed later on to do in the right direction
-
-	while (digitalRead(sensor1) == 0 || digitalRead(sensor2) == 0) { //as long both limit switch are not pressed
-		signed long diff = (timeStart == 0) ? 0 : millis() - timeStart; //calculate difference between millis and timeStart. If timeStart is 0, stays this variable at zero.
-
-		if (digitalRead(sensor1) == 0 && digitalRead(sensor2) == 0) {
-			prizm.setMotorSpeeds(-speed, -speed);
-			timeStart = 0;
-		}
-
-		else if (digitalRead(sensor1) == 1) { //if first sensor is pressed
-			prizm.setMotorSpeeds(((diff > 500) ? 720 * direction : -speed), 0); //stop one motor. If diff is greater then 1/2 secs, the other motor will go full speed
-
-			timeStart = (timeStart != 0) ? timeStart : millis(); //if we didn't already set timeStart, set it to current time. With this, we can know for how long we have been waiting for the other switch
-
-		}
-
-		else if (digitalRead(sensor2) == 1) { //same as above but for other side
-			prizm.setMotorSpeeds(0, ((diff > 500) ? 720 * direction : -speed));
-
-			timeStart = (timeStart != 0) ? timeStart : millis();
-		}
-
-		if (diff > 2000) { //if one switch clicked more than two seconds ago, assumes the other as also clicked, so get out of loop.
-			break;
-		}
-	}
-
-	prizm.setMotorSpeeds(0, 0); //stop, robot is straight
-
 }
 
 void Robot::waitForEncoder(long target1, long target2) { //this function takes the target we want to go for each. Function will finish only when we are at the correct encoder count for both motors. This function can only be used if both motors go in the same direction

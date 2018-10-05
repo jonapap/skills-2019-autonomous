@@ -1,19 +1,17 @@
-// Do not remove the include below
 #include "Color_corect.h"
 
 PRIZM prizm;
 Robot robot;
 
-Block blocks[] = {
-		Block({ 66.75, 5.5 }, 270, RIGHTAPPROACH, YELLOWSQUARE), //block 1
-		Block({ 80, 33 }, 0, LEFTAPPROACH, REDSQUARE), //block 2
-		Block({ 90.75, 63.5 }, 0, RIGHTAPPROACH, BLUESQUARE), //block 3
-		Block({ 29.5, 5.5 }, 270, LEFTAPPROACH, BLUESQUARE), //block 4
-		Block({ 15.5, 33 }, 180, RIGHTAPPROACH, YELLOWSQUARE), //block 5
-		Block({ 4.25, 63.5 }, 0, LEFTAPPROACH, REDSQUARE)  //block 6
-};
+Block blocks[] = { Block( { 66.75, 5.5 }, 270, RIGHTAPPROACH, YELLOWSQUARE), //block 1
+Block( { 80, 33 }, 0, LEFTAPPROACH, REDSQUARE), //block 2
+Block( { 90.75, 63.5 }, 0, RIGHTAPPROACH, BLUESQUARE), //block 3
+Block( { 29.5, 5.5 }, 270, LEFTAPPROACH, BLUESQUARE), //block 4
+Block( { 15.5, 33 }, 180, RIGHTAPPROACH, YELLOWSQUARE), //block 5
+Block( { 4.25, 63.5 }, 0, LEFTAPPROACH, REDSQUARE)  //block 6
+		};
 
-//The setup function is called once at startup of the sketch
+
 void setup() {
 
 #ifdef DEBUG
@@ -23,41 +21,15 @@ void setup() {
 	prizm.PrizmBegin();
 	robot.invertMotor(2, 1);
 	robot.setPosition(47.5, 8);
-
-
-	/*
-	 robot.goToLocation(58, 14, 300);
-	 //grabBlock();
-	 goToYellow();
-	 printXY();
-
-	 robot.advanceIN(30, 100);
-	 */
-	/*
-	 robot.goToLocation(66.5, 17, 300);
-	 goToYellow();
-	 robot.goToLocation(28, 33, 300);
-	 goToYellow();
-
-	 robot.goToLocation(16, 64, 300);
-	 goToRed();
-	 robot.goToLocation(68, 33, 300);
-	 goToRed();
-
-	 robot.goToLocation(78, 63, 300);
-	 goToBlue();
-	 robot.goToLocation(29, 19, 300);
-	 goToBlue();*/
-
-	//robot.advanceUntilLine(100, Robot::yellow, 5);
-	//prizm.setMotorSpeeds(300, 300);
-	//robot.rampSpeed(720, 1000);
-	//robot.advanceCM(30, 300);
-	//prizm.setMotorPowers(100,100);
 }
 
 void loop() {
-	while(Serial.available() == 0);
+	cycleBlocks();
+}
+
+void serialBlocks() {
+	while (Serial.available() == 0)
+		;
 	int n = Serial.parseInt();
 
 	Position p = blocks[n].getLastPoint();
@@ -65,9 +37,7 @@ void loop() {
 	robot.goToHeading(blocks[n].getApproachHeading(), 100);
 	grabBlock(blocks[n].approachSide);
 	Position p2 = blocks[n].getRobotLinePosition();
-	Serial.println("Position : ");
-	Serial.println(p2.x);
-	Serial.println(p2.y);
+
 	robot.setPosition(p2.x, p2.y);
 	robot.setHeading(blocks[n].heading);
 	goToSquare(blocks[n].color);
@@ -77,8 +47,17 @@ void cycleBlocks() {
 	for (Block b : blocks) {
 		Position p = b.getLastPoint();
 		robot.goToLocation(p.x, p.y, 300);
-		robot.setHeading(b.getApproachHeading());
+		robot.goToHeading(b.getApproachHeading(), 100);
 		grabBlock(b.approachSide);
+
+		Position p2 = b.getRobotLinePosition();
+
+		DEBUG_PRINTLN("Position :");
+		DEBUG_PRINTLN(p2.x);
+		DEBUG_PRINTLN(p2.y);
+
+		robot.setPosition(p2.x, p2.y);
+		robot.setHeading(b.heading);
 		goToSquare(b.color);
 	}
 }

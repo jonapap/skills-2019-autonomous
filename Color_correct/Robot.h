@@ -23,9 +23,6 @@ public:
 	void turn(double degrees, int speed);
 	void advanceUntilLine(int speed, boolean stop = true);
 	void alignWithLine(int speed, int direction);
-	void forwardAndTurn(double turnLenght, double turnDistance, int speed,
-			boolean direction, boolean back);
-	void advanceToWall(int speed);
 	void invertMotor(int motor, int invert);
 	void gripperOpen(int direction);
 	void gripperUp(int direction);
