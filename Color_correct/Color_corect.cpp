@@ -5,12 +5,12 @@ PRIZM prizm;
 Robot robot;
 
 Block blocks[] = {
-		Block({ 80, 33 }, 0, LEFTAPPROACH, YELLOWSQUARE), //block 1
-		Block({ 80, 33 }, 0, LEFTAPPROACH, YELLOWSQUARE), //block 2
-		Block({ 80, 33 }, 0, LEFTAPPROACH, YELLOWSQUARE), //block 3
-		Block({ 80, 33 }, 0, LEFTAPPROACH, YELLOWSQUARE), //block 4
-		Block({ 80, 33 }, 0, LEFTAPPROACH, YELLOWSQUARE), //block 5
-		Block({ 80, 33 }, 0, LEFTAPPROACH, YELLOWSQUARE)  //block 6
+		Block({ 66.75, 5.5 }, 270, RIGHTAPPROACH, YELLOWSQUARE), //block 1
+		Block({ 80, 33 }, 0, LEFTAPPROACH, REDSQUARE), //block 2
+		Block({ 90.75, 63.5 }, 0, RIGHTAPPROACH, BLUESQUARE), //block 3
+		Block({ 29.5, 5.5 }, 270, LEFTAPPROACH, BLUESQUARE), //block 4
+		Block({ 15.5, 33 }, 180, RIGHTAPPROACH, YELLOWSQUARE), //block 5
+		Block({ 4.25, 63.5 }, 0, LEFTAPPROACH, REDSQUARE)  //block 6
 };
 
 //The setup function is called once at startup of the sketch
@@ -57,7 +57,20 @@ void setup() {
 }
 
 void loop() {
-	testLocation();
+	while(Serial.available() == 0);
+	int n = Serial.parseInt();
+
+	Position p = blocks[n].getLastPoint();
+	robot.goToLocation(p.x, p.y, 300);
+	robot.goToHeading(blocks[n].getApproachHeading(), 100);
+	grabBlock(blocks[n].approachSide);
+	Position p2 = blocks[n].getRobotLinePosition();
+	Serial.println("Position : ");
+	Serial.println(p2.x);
+	Serial.println(p2.y);
+	robot.setPosition(p2.x, p2.y);
+	robot.setHeading(blocks[n].heading);
+	goToSquare(blocks[n].color);
 }
 
 void cycleBlocks() {
@@ -65,7 +78,7 @@ void cycleBlocks() {
 		Position p = b.getLastPoint();
 		robot.goToLocation(p.x, p.y, 300);
 		robot.setHeading(b.getApproachHeading());
-		grabBlock();
+		grabBlock(b.approachSide);
 		goToSquare(b.color);
 	}
 }
@@ -107,18 +120,12 @@ void printXY() {
 	delay(500);
 }
 
-void grabBlock() {
-	robot.goToHeading(0, 100);
+void grabBlock(int side) {
 	robot.advanceUntilLine(100, true);
-	printXY();
 	robot.advanceIN(6, 100);
-	printXY();
-	robot.alignWithLine(100, -1);
-	printXY();
-
+	delay(200);
+	robot.alignWithLine(100, -side);
 	robot.advanceUntilPing(100, 2);
-	printXY();
-	robot.advanceIN(-10, 100);
-	printXY();
+	//robot.advanceIN(-10, 100);
 
 }

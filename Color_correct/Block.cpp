@@ -19,3 +19,8 @@ Position Block::getLastPoint(){
 double Block::getApproachHeading(){
 	return mod(heading + (90*approachSide), 360);
 }
+
+Position Block::getRobotLinePosition(){
+	double currentHeading = mod(180+heading, 360);
+	return {cos(toRadians(currentHeading))*8.25+position.x, sin(toRadians(currentHeading))*8.25+position.y};
+}

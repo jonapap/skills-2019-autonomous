@@ -29,10 +29,11 @@ public:
 
 	Position getLastPoint();
 	double getApproachHeading();
+	Position getRobotLinePosition();
 
 private:
-	const double shiftLength = 14.866;
-	const int shiftAngle = 47.73;
+	const double shiftLength = 13.45;
+	const double shiftAngle = 48.01;
 
 };
 

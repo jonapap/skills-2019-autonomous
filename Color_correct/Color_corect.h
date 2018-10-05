@@ -20,10 +20,7 @@
 
 //add your function definitions for the project Color_corect here
 
-void goToYellow();
-void goToRed();
-void goToBlue();
-void grabBlock();
+void grabBlock(int side);
 void printXY();
 void testLocation();
 void cycleBlocks();

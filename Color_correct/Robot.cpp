@@ -140,11 +140,10 @@ void Robot::alignWithLine(int speed, int direction) { //direction == 1, turn rig
 	long encoder2 = getEncoderCount(2);
 
 	prizm.setMotorSpeeds(speed * -direction, speed * direction);
-
 	while (prizm.readLineSensor(lineSensor) == 0)
 		;
-	prizm.setMotorSpeeds(0, 0);
 
+	prizm.setMotorSpeeds(0, 0);
 	updateAngle(encoder1, encoder2);
 }
 
