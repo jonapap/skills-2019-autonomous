@@ -4,8 +4,14 @@
 PRIZM prizm;
 Robot robot;
 
-Block block({80,33},0,-1);
-
+Block blocks[] = {
+		Block({ 80, 33 }, 0, LEFTAPPROACH, YELLOWSQUARE), //block 1
+		Block({ 80, 33 }, 0, LEFTAPPROACH, YELLOWSQUARE), //block 2
+		Block({ 80, 33 }, 0, LEFTAPPROACH, YELLOWSQUARE), //block 3
+		Block({ 80, 33 }, 0, LEFTAPPROACH, YELLOWSQUARE), //block 4
+		Block({ 80, 33 }, 0, LEFTAPPROACH, YELLOWSQUARE), //block 5
+		Block({ 80, 33 }, 0, LEFTAPPROACH, YELLOWSQUARE)  //block 6
+};
 
 //The setup function is called once at startup of the sketch
 void setup() {
@@ -18,20 +24,15 @@ void setup() {
 	robot.invertMotor(2, 1);
 	robot.setPosition(47.5, 8);
 
-	Position pos = block.getLastPoint();
 
-	Serial.println(pos.x);
-	Serial.println(pos.y);
+	/*
+	 robot.goToLocation(58, 14, 300);
+	 //grabBlock();
+	 goToYellow();
+	 printXY();
 
-	robot.goToLocation(pos.x, pos.y, 300);
-/*
-	robot.goToLocation(58, 14, 300);
-	//grabBlock();
-	goToYellow();
-	printXY();
-
-	robot.advanceIN(30, 100);
-*/
+	 robot.advanceIN(30, 100);
+	 */
 	/*
 	 robot.goToLocation(66.5, 17, 300);
 	 goToYellow();
@@ -55,6 +56,20 @@ void setup() {
 	//prizm.setMotorPowers(100,100);
 }
 
+void loop() {
+	testLocation();
+}
+
+void cycleBlocks() {
+	for (Block b : blocks) {
+		Position p = b.getLastPoint();
+		robot.goToLocation(p.x, p.y, 300);
+		robot.setHeading(b.getApproachHeading());
+		grabBlock();
+		goToSquare(b.color);
+	}
+}
+
 void testLocation() {
 	Serial.println("X :");
 	while (Serial.available() == 0)
@@ -65,36 +80,35 @@ void testLocation() {
 		;
 	double y = Serial.parseFloat();
 	robot.goToLocation(x, y, 300);
-	robot.setHeading(90, 100);
+	robot.goToHeading(90, 100);
 
 }
 
-void loop() {
-	testLocation();
+void goToSquare(int color) {
+	switch (color) {
+	case REDSQUARE:
+		robot.goToLocation(28, 88, 300);
+		break;
+	case YELLOWSQUARE:
+		robot.goToLocation(49, 88, 300);
+		break;
+	case BLUESQUARE:
+		robot.goToLocation(68, 88, 300);
+		break;
+	}
 }
 
-void printXY(){
-	Serial.println(robot.x);
-	Serial.println(robot.y);
-	Serial.println(robot.heading);
-	while(prizm.readStartButton() == 0);
+void printXY() {
+	Serial.println(robot.getPosition().x);
+	Serial.println(robot.getPosition().y);
+	Serial.println(robot.getHeading());
+	while (prizm.readStartButton() == 0)
+		;
 	delay(500);
 }
 
-void goToRed() {
-	robot.goToLocation(28, 88, 300);
-}
-
-void goToYellow() {
-	robot.goToLocation(49, 88, 300);
-}
-
-void goToBlue() {
-	robot.goToLocation(68, 88, 300);
-}
-
 void grabBlock() {
-	robot.setHeading(0, 100);
+	robot.goToHeading(0, 100);
 	robot.advanceUntilLine(100, true);
 	printXY();
 	robot.advanceIN(6, 100);

@@ -14,16 +14,21 @@
 
 class Block {
 public:
-	Block(Position p, int h, int s) : position(p), heading(h), approachSide(s) {}
+	Block(Position p, int h, int s, int c) : position(p), heading(h), approachSide(s), color(c) {}
+	Block(Position p, int h, int s, int c, Position pa[]) : position(p), heading(h), approachSide(s), color(c) {
+		path[0] = pa[0];
+		path[1] = pa[1];
+	}
 
 	Position position;
-	int heading;
-	int color = 0;
+	double heading;
 	int approachSide;
+	int color;
 	Position path[2];
 
 
 	Position getLastPoint();
+	double getApproachHeading();
 
 private:
 	const double shiftLength = 14.866;

@@ -15,3 +15,7 @@ Position Block::getLastPoint(){
 
 	return {x,y};
 }
+
+double Block::getApproachHeading(){
+	return mod(heading + (90*approachSide), 360);
+}

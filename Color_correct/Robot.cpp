@@ -64,6 +64,14 @@ void Robot::turn(double degrees, int speed) {
 	heading = mod(heading + degrees, 360);
 }
 
+Position Robot::getPosition(){
+	return {x,y};
+}
+
+double Robot::getHeading(){
+	return heading;
+}
+
 void Robot::goToLocation(double x2, double y2, int speed) {
 	DEBUG_PRINTLN("Current pos : ");
 	DEBUG_PRINTLN(x);
@@ -90,11 +98,11 @@ void Robot::goToLocation(double x2, double y2, int speed) {
 	DEBUG_PRINTLN(distance);
 	DEBUG_PRINTLN("");
 
-	setHeading(angle < 0 ? 360 + angle : angle, speed);
+	goToHeading(angle < 0 ? 360 + angle : angle, speed);
 	advanceIN(distance, speed);
 }
 
-void Robot::setHeading(double h, int speed) {
+void Robot::goToHeading(double h, int speed) {
 	double diff = h - heading;
 
 	DEBUG_PRINT("Diff : ");
@@ -102,6 +110,10 @@ void Robot::setHeading(double h, int speed) {
 	DEBUG_PRINTLN("");
 
 	turn(diff > 180 ? -360 + diff : ((diff < -180) ? 360 + diff : diff), speed);
+}
+
+void Robot::setHeading(double h){
+	heading = h;
 }
 
 void Robot::advanceUntilLine(int speed, boolean stop) { //advance (or move back if speed is negative) until he sees a line. If stop is true, robot will stop at line

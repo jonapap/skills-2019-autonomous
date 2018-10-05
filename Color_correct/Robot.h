@@ -6,14 +6,14 @@
 #include "Color_sensor/GroveColorSensor.h"
 
 struct RGB {
-	int red,green,blue;
+	int red, green, blue;
 
 	boolean isColor(const RGB &color, int error);
 
 };
 
 struct Position {
-	double x,y;
+	double x, y;
 };
 
 class Robot {
@@ -30,30 +30,25 @@ public:
 	void gripperOpen(int direction);
 	void gripperUp(int direction);
 	void advanceUntilPing(int speed, int distance);
-	void setPosition (double x, double y);
+	void setPosition(double x, double y);
 	void goToLocation(double x, double y, int speed);
-	void setHeading(double heading, int speed);
+	Position getPosition();
+	double getHeading();
+	void goToHeading(double heading, int speed);
+	void setHeading(double heading);
 	RGB readColor();
 	void rampSpeed(unsigned int speed, unsigned int time);
-
-	friend void changeDistVar();
-	friend void changeAngleVar();
-	friend void setupRobot();
 
 	static const RGB black;
 	static const RGB red;
 	static const RGB blue;
 	static const RGB yellow;
 
-	double heading = 90;
-	double x = 0;
-	double y = 0;
 private:
 	PRIZM prizm;
 
 	double wheelcirIN = 6.3;
 	double turnvalue = 12.3;
-
 
 	const unsigned int pingSensor = 4;
 	const unsigned int lineSensor = 2;
@@ -63,8 +58,9 @@ private:
 	int motor1invert = 1;
 	int motor2invert = 1;
 
-
-
+	double heading = 90;
+	double x = 0;
+	double y = 0;
 
 	const int colorError = 10;
 

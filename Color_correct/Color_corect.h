@@ -25,6 +25,9 @@ void goToRed();
 void goToBlue();
 void grabBlock();
 void printXY();
+void testLocation();
+void cycleBlocks();
+void goToSquare(int color);
 
 
 //Do not add code below this line
