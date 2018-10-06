@@ -32,6 +32,9 @@ void Robot::advanceIN(double distance, double motorSpeed, boolean stop) {
 		prizm.setMotorPowers(125, 125); //if variable is true, stop motors
 	}
 
+	DEBUG_PRINTLN(__PRETTY_FUNCTION__);
+	DEBUG_PRINTLN("");
+
 	DEBUG_PRINTLN("Heading :");
 	DEBUG_PRINTLN(heading);
 
@@ -55,6 +58,8 @@ void Robot::turn(double degrees, int speed) {
 	long revolution1 = (prizm.readEncoderCount(1) * motor1invert) - revolution; //add to current encoder count of motor 1
 	long revolution2 = (prizm.readEncoderCount(2) * motor2invert) + revolution; //negative of second motor so robot will turn on itself
 
+	DEBUG_PRINTLN(__PRETTY_FUNCTION__);
+	DEBUG_PRINTLN("");
 	DEBUG_PRINTLN("Turning : ");
 	DEBUG_PRINTLN(degrees);
 
@@ -81,6 +86,8 @@ void Robot::goToPosition(double x2, double y2, int speed) {
 }
 
 void Robot::goToPosition(double x2, double y2, int speed, int turningSpeed) {
+	DEBUG_PRINTLN(__PRETTY_FUNCTION__);
+	DEBUG_PRINTLN("");
 	DEBUG_PRINTLN("Current pos : ");
 	DEBUG_PRINTLN(x);
 	DEBUG_PRINTLN(y);
@@ -113,6 +120,8 @@ void Robot::goToPosition(double x2, double y2, int speed, int turningSpeed) {
 void Robot::goToHeading(double h, int speed) {
 	double diff = h - heading;
 
+	DEBUG_PRINTLN(__PRETTY_FUNCTION__);
+	DEBUG_PRINTLN("");
 	DEBUG_PRINT("Diff : ");
 	DEBUG_PRINTLN(diff);
 	DEBUG_PRINTLN("");
@@ -229,6 +238,8 @@ void Robot::setPosition(Position p) {
 }
 
 void Robot::setPosition(double x, double y) {
+	DEBUG_PRINTLN(__PRETTY_FUNCTION__);
+	DEBUG_PRINTLN("");
 	DEBUG_PRINTLN("Setting position :");
 	DEBUG_PRINTLN(x);
 	DEBUG_PRINTLN(y);
@@ -261,6 +272,8 @@ void Robot::updatePosition(long encoder1, long encoder2) {
 			+ (getEncoderCount(2) - encoder2)) / 2; //take the average of the two encoders
 	double distance = (revolutions / 1440.0) * wheelcirIN;
 
+	DEBUG_PRINTLN(__PRETTY_FUNCTION__);
+	DEBUG_PRINTLN("");
 	DEBUG_PRINT("Distance : ");
 	DEBUG_PRINTLN(distance);
 
@@ -273,6 +286,8 @@ void Robot::updateAngle(long encoder1, long encoder2) {
 			+ (getEncoderCount(2) - encoder2)) / 2;
 	double degrees = revolutions / turnvalue;
 
+	DEBUG_PRINTLN(__PRETTY_FUNCTION__);
+	DEBUG_PRINTLN("");
 	DEBUG_PRINT("Angle turned : ");
 	DEBUG_PRINTLN(degrees);
 
