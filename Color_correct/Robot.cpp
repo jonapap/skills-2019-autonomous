@@ -77,6 +77,10 @@ void Robot::goToPosition(Position p, int speed) {
 }
 
 void Robot::goToPosition(double x2, double y2, int speed) {
+	goToPosition(x2, y2, speed, speed);
+}
+
+void Robot::goToPosition(double x2, double y2, int speed, int turningSpeed) {
 	DEBUG_PRINTLN("Current pos : ");
 	DEBUG_PRINTLN(x);
 	DEBUG_PRINTLN(y);
@@ -102,7 +106,7 @@ void Robot::goToPosition(double x2, double y2, int speed) {
 	DEBUG_PRINTLN(distance);
 	DEBUG_PRINTLN("");
 
-	goToHeading(angle < 0 ? 360 + angle : angle, speed);
+	goToHeading(angle < 0 ? 360 + angle : angle, turningSpeed);
 	advanceIN(distance, speed);
 }
 
