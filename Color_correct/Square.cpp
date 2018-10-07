@@ -1,9 +1,5 @@
 #include "Square.h"
-
-#define toRadians(x) x*(PI/180)
-#define toDegrees(x) x/(PI/180)
-#define IN_RANGE(x, y, r) abs(x-y) <= r
-#define mod(x,y) (x)-y*floor((x)/y)
+#include "Functions.h"
 
 Position Square::getApproachPosition(){
 	int offsetHeading = mod(heading+180, 360);

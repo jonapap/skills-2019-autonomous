@@ -1,10 +1,6 @@
 #include "Robot.h"
 #include "DEBUG.h"
-
-#define toRadians(x) x*(PI/180)
-#define toDegrees(x) x/(PI/180)
-#define IN_RANGE(x, y, r) abs(x-y) <= r
-#define mod(x,y) (x)-y*floor((x)/y)
+#include "Functions.h"
 
 const RGB Robot::black = { 22, 27, 8 };
 const RGB Robot::red = { 52, 13, 4 };
@@ -12,8 +8,8 @@ const RGB Robot::blue = { 10, 36, 35 };
 const RGB Robot::yellow = { 71, 62, 3 };
 
 boolean RGB::isColor(const RGB &color, int error) {
-	if (IN_RANGE(color.red, red,
-			error) && IN_RANGE(color.green, green, error) && IN_RANGE(color.blue, blue, error)) {
+	if (inRange(color.red, red,
+			error) && inRange(color.green, green, error) && inRange(color.blue, blue, error)) {
 		return true;
 	}
 	return false;
