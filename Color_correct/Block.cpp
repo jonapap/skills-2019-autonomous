@@ -24,3 +24,7 @@ Position Block::getRobotLinePosition(){
 	double currentHeading = mod(180+heading, 360);
 	return {cos(toRadians(currentHeading))*8.25+position.x, sin(toRadians(currentHeading))*8.25+position.y};
 }
+
+Square &Block::getSquare(){
+	return square;
+}

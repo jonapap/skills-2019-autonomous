@@ -78,7 +78,11 @@ double Robot::getHeading() {
 }
 
 void Robot::goToPosition(Position p, int speed) {
-	goToPosition(p.x, p.y, speed);
+	goToPosition(p.x, p.y, speed, speed);
+}
+
+void Robot::goToPosition(Position p, int speed, int turningSpeed) {
+	goToPosition(p.x, p.y, speed, turningSpeed);
 }
 
 void Robot::goToPosition(double x2, double y2, int speed) {

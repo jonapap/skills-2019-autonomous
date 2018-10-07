@@ -3,14 +3,17 @@
 PRIZM prizm;
 Robot robot;
 
-Block blocks[] = { Block( { 66.75, 5.5 }, 270, RIGHTAPPROACH, YELLOWSQUARE), //block 1
-Block( { 80, 33 }, 0, LEFTAPPROACH, REDSQUARE), //block 2
-Block( { 90.75, 63.5 }, 0, RIGHTAPPROACH, BLUESQUARE), //block 3
-Block( { 29.5, 5.5 }, 270, LEFTAPPROACH, BLUESQUARE), //block 4
-Block( { 15.5, 33 }, 180, RIGHTAPPROACH, YELLOWSQUARE), //block 5
-Block( { 4.25, 63.5 }, 0, LEFTAPPROACH, REDSQUARE)  //block 6
-		};
+Square redSquare( { 28, 88 }, 90);
+Square blueSquare( { 68, 88 }, 90);
+Square yellowSquare( { 49, 88 }, 90);
 
+Block blocks[] = { Block( { 66.75, 5.5 }, 270, RIGHTAPPROACH, yellowSquare), //block 1
+Block( { 80, 33 }, 0, LEFTAPPROACH, redSquare), //block 2
+Block( { 90.75, 63.5 }, 0, RIGHTAPPROACH, blueSquare), //block 3
+Block( { 29.5, 5.5 }, 270, LEFTAPPROACH, blueSquare), //block 4
+Block( { 15.5, 33 }, 180, RIGHTAPPROACH, yellowSquare), //block 5
+Block( { 4.25, 63.5 }, 0, LEFTAPPROACH, redSquare)  //block 6
+		};
 
 void setup() {
 
@@ -40,7 +43,11 @@ void serialBlocks() {
 
 	robot.setPosition(p2.x, p2.y);
 	robot.setHeading(blocks[n].heading);
-	goToSquare(blocks[n].color);
+
+	Square &s = blocks[n].getSquare();
+	robot.goToPosition(s.getApproachPosition(), 300, 100);
+	robot.goToHeading(s.getApproachHeading(), 100);
+	depositBlock();
 }
 
 void cycleBlocks() {
@@ -53,7 +60,10 @@ void cycleBlocks() {
 		robot.setPosition(b.getRobotLinePosition());
 		robot.setHeading(b.heading);
 
-		goToSquare(b.color);
+		Square &s = b.getSquare();
+		robot.goToPosition(s.getApproachPosition(), 300, 100);
+		robot.goToHeading(s.getApproachHeading(), 100);
+		depositBlock();
 	}
 }
 
@@ -69,20 +79,6 @@ void testLocation() {
 	robot.goToPosition(x, y, 300);
 	robot.goToHeading(90, 100);
 
-}
-
-void goToSquare(int color) {
-	switch (color) {
-	case REDSQUARE:
-		robot.goToPosition(28, 88, 300);
-		break;
-	case YELLOWSQUARE:
-		robot.goToPosition(49, 88, 300);
-		break;
-	case BLUESQUARE:
-		robot.goToPosition(68, 88, 300);
-		break;
-	}
 }
 
 void printXY() {

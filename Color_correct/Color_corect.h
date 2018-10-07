@@ -6,6 +6,7 @@
 #include "TETRIX_PRIZM/PRIZM.h"
 #include "DEBUG.h"
 #include "Block.h"
+#include "Square.h"
 
 
 void grabBlock(int side);
@@ -13,7 +14,7 @@ void printXY();
 void testLocation();
 void cycleBlocks();
 void serialBlocks();
-void goToSquare(int color);
+void depositBlock(){}
 
 
 #endif /* _Color_corect_H_ */
