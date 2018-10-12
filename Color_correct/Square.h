@@ -13,7 +13,7 @@ private:
 	Position position;
 	double heading;
 
-	const int approachOffset = 12;
+	static constexpr int approachOffset = 12;
 };
 
 

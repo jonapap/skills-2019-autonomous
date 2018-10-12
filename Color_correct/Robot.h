@@ -52,7 +52,7 @@ private:
 	double turnvalue = 12.3;
 
 	const unsigned int pingSensor = 4;
-	const unsigned int lineSensor = 2;
+	const unsigned int lineSensor = 3;
 	const unsigned int gripperHorizontal = 1;
 	const unsigned int gripperVertical = 2;
 

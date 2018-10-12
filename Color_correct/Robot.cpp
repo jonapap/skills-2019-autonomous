@@ -8,8 +8,8 @@ const RGB Robot::blue = { 10, 36, 35 };
 const RGB Robot::yellow = { 71, 62, 3 };
 
 boolean RGB::isColor(const RGB &color, int error) {
-	if (inRange(color.red, red,
-			error) && inRange(color.green, green, error) && inRange(color.blue, blue, error)) {
+	if (inRange(color.red, red, error) && inRange(color.green, green, error)
+			&& inRange(color.blue, blue, error)) {
 		return true;
 	}
 	return false;
@@ -136,14 +136,24 @@ void Robot::setHeading(double h) {
 void Robot::advanceUntilLine(int speed, boolean stop) { //advance (or move back if speed is negative) until he sees a line. If stop is true, robot will stop at line
 	long encoder1 = getEncoderCount(1);
 	long encoder2 = getEncoderCount(2);
-
+	Serial.println(__PRETTY_FUNCTION__);
 	prizm.setMotorSpeeds(speed, speed);
 
-	while (prizm.readLineSensor(lineSensor) == 1)
-		; //continue advancing if robot currently sees a line
+	/*while (prizm.readLineSensor(lineSensor) == 1)
+	 ; //continue advancing if robot currently sees a line*/
 
-	while (prizm.readLineSensor(lineSensor) == 0)
-		; //wait until robot see something
+	while (true) {
+		int line = 0;
+		for (int i = 0; i < 10; i++) {
+			if (prizm.readLineSensor(lineSensor) == 1) {
+				line++;
+			}
+		}
+
+		if (line > 3)
+			break;
+	}
+	Serial.println("Line!");
 
 	if (stop) {
 		prizm.setMotorSpeeds(0, 0); //stop when he sees the line
@@ -156,7 +166,10 @@ void Robot::alignWithLine(int speed, int direction) { //direction == 1, turn rig
 	long encoder1 = getEncoderCount(1);
 	long encoder2 = getEncoderCount(2);
 
+	DEBUG_PRINTLN(__PRETTY_FUNCTION__);
+
 	prizm.setMotorSpeeds(speed * -direction, speed * direction);
+	delay(100);
 	while (prizm.readLineSensor(lineSensor) == 0)
 		;
 
@@ -226,6 +239,8 @@ void Robot::advanceUntilPing(int speed, int distance) {
 
 	while (prizm.readSonicSensorIN(pingSensor) > distance) {
 		delay(50);
+		Serial.println(prizm.readSonicSensorIN(pingSensor));
+		delay(50);
 	}
 
 	prizm.setMotorSpeeds(0, 0);
@@ -234,7 +249,7 @@ void Robot::advanceUntilPing(int speed, int distance) {
 }
 
 void Robot::setPosition(Position p) {
-	setPosition(p.x,p.y);
+	setPosition(p.x, p.y);
 }
 
 void Robot::setPosition(double x, double y) {

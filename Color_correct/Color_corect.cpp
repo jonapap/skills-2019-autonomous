@@ -12,7 +12,7 @@ Block( { 80, 33 }, 0, LEFTAPPROACH, redSquare), //block 2
 Block( { 90.75, 63.5 }, 0, RIGHTAPPROACH, blueSquare), //block 3
 Block( { 29.5, 5.5 }, 270, LEFTAPPROACH, blueSquare), //block 4
 Block( { 15.5, 33 }, 180, RIGHTAPPROACH, yellowSquare), //block 5
-Block( { 4.25, 63.5 }, 0, LEFTAPPROACH, redSquare)  //block 6
+Block( { 4.25, 63.5 }, 180, LEFTAPPROACH, redSquare)  //block 6
 		};
 
 void setup() {
@@ -90,8 +90,9 @@ void printXY() {
 
 void grabBlock(int side) {
 	robot.advanceUntilLine(100, true);
-	robot.advanceIN(6, 100);
-	delay(200);
+
+	robot.advanceIN(5.25, 100);
+
 	robot.alignWithLine(100, -side);
 	robot.advanceUntilPing(100, 2);
 	//robot.advanceIN(-10, 100);

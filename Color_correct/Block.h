@@ -14,6 +14,7 @@ public:
 			position(p), heading(h), approachSide(s), square(c) {
 	}
 
+
 	Position position;
 	double heading;
 	int approachSide;
@@ -25,8 +26,8 @@ public:
 	Square &getSquare();
 
 private:
-	static constexpr double shiftLength = 13.45;
-	static constexpr double shiftAngle = 48.01;
+	static constexpr double shiftLength = 14.21;
+	static constexpr double shiftAngle = 50.71;
 };
 
 #endif /* BLOCK_H_ */
