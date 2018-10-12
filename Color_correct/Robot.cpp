@@ -22,11 +22,9 @@ void Robot::advanceIN(double distance, double motorSpeed, boolean stop) {
 	long revolution2 = getEncoderCount(2) + revolution; //add to current encoder value of motor 2
 
 	motorSpeed = (distance > 0) ? motorSpeed : -motorSpeed; //if distance is positive, robot will go forward, if negative, backwards
-	prizm.setMotorSpeeds(motorSpeed, motorSpeed); //set speed of robot
-	waitForEncoder(revolution1, revolution2); //wait until both motors reach specified number of revolutions
-	if (stop) {
-		prizm.setMotorPowers(125, 125); //if variable is true, stop motors
-	}
+	prizm.setMotorTargets(motorSpeed, revolution1, motorSpeed, revolution2);
+
+	waitForMotors();
 
 	DEBUG_PRINTLN(__PRETTY_FUNCTION__);
 	DEBUG_PRINTLN("");
