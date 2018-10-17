@@ -16,7 +16,7 @@ boolean RGB::isColor(const RGB &color, int error) {
 }
 
 //advance distance in IN
-void Robot::advanceIN(double distance, double motorSpeed, boolean stop) {
+void Robot::advanceIN(double distance, double motorSpeed) {
 	double revolution = (distance / wheelcirIN) * 1440; //get how many wheel turn we need to make, and multiply by 1440 (one revolution for encoder)
 	long revolution1 = getEncoderCount(1) + revolution; //add to current encoder value of motor 1. Here, the current encoder count is inverted because we inverted this motor at the beginning, but this function is not inverted by default
 	long revolution2 = getEncoderCount(2) + revolution; //add to current encoder value of motor 2

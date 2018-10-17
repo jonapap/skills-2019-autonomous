@@ -19,7 +19,7 @@ struct Position {
 class Robot {
 public:
 
-	void advanceIN(double distance, double motorSpeed, boolean stop = true);
+	void advanceIN(double distance, double motorSpeed);
 	void turn(double degrees, int speed);
 	void advanceUntilLine(int speed, boolean stop = true);
 	void alignWithLine(int speed, int direction);
