@@ -13,7 +13,7 @@ inline double toDegrees(double x){
 
 template <typename T>
 inline T mod(T x, int y){
-	return (x)-y*floor((x)/y);
+	return x-y*floor(x/y);
 }
 
 template <typename T, typename U>

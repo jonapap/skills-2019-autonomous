@@ -1,6 +1,11 @@
 #ifndef ROBOT_H
 #define ROBOT_H
 
+#define OPEN 180
+#define CLOSE 0
+#define DOWN 180
+#define UP 0
+
 #include <Arduino.h>
 #include "TETRIX_PRIZM/PRIZM.h"
 #include "Color_sensor/GroveColorSensor.h"
@@ -24,8 +29,8 @@ public:
 	void advanceUntilLine(int speed, boolean stop = true);
 	void alignWithLine(int speed, int direction);
 	void invertMotor(int motor, int invert);
-	void gripperOpen(int direction);
-	void gripperUp(int direction);
+	void gripperHor(int direction);
+	void gripperVert(int direction);
 	void advanceUntilPing(int speed, int distance);
 	void setPosition(double x, double y);
 	void setPosition(Position p);
@@ -45,16 +50,18 @@ public:
 	static const RGB blue;
 	static const RGB yellow;
 
+	friend void loop();
+
 private:
 	PRIZM prizm;
 
-	double wheelcirIN = 6.3;
-	double turnvalue = 12.3;
+	double wheelcirIN = 18;
+	double turnvalue = 7.25;
 
 	const unsigned int pingSensor = 4;
-	const unsigned int lineSensor = 3;
-	const unsigned int gripperHorizontal = 1;
-	const unsigned int gripperVertical = 2;
+	const unsigned int lineSensor = 5;
+	const unsigned int gripperHorizontal = 2;
+	const unsigned int gripperVertical = 6;
 
 	int motor1invert = 1;
 	int motor2invert = 1;

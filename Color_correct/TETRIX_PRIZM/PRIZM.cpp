@@ -248,7 +248,7 @@ double PRIZM::readSonicSensorIN(int pin){   // Returns distance of object from s
   pinMode(pin,INPUT);
   duration = pulseIn(pin,HIGH);
 
-  return duration/74/2; // convert time of echo to centimeters distance
+  return duration/74.0/2.0; // convert time of echo to centimeters distance
   
 }
 

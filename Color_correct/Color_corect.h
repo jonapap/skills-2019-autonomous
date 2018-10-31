@@ -7,9 +7,10 @@
 #include "DEBUG.h"
 #include "Block.h"
 #include "Square.h"
+#include "Functions.h"
 
 
-void grabBlock(int side);
+void grabBlock(Block &b);
 void printXY();
 void testLocation();
 void cycleBlocks();

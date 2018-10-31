@@ -49,8 +49,8 @@ void Robot::rampSpeed(unsigned int speed, unsigned int time) {
 //turn specified value. Positive degrees will turn clockwise, negative anti-clockwise
 void Robot::turn(double degrees, int speed) {
 	double revolution = degrees * turnvalue; //calculate encoder count required to add for each wheel
-	long revolution1 = (prizm.readEncoderCount(1) * motor1invert) - revolution; //add to current encoder count of motor 1
-	long revolution2 = (prizm.readEncoderCount(2) * motor2invert) + revolution; //negative of second motor so robot will turn on itself
+	long revolution1 = (prizm.readEncoderCount(1) * motor1invert) + revolution; //add to current encoder count of motor 1
+	long revolution2 = (prizm.readEncoderCount(2) * motor2invert) - revolution; //negative of second motor so robot will turn on itself
 
 	DEBUG_PRINTLN(__PRETTY_FUNCTION__);
 	DEBUG_PRINTLN("");
@@ -128,13 +128,13 @@ void Robot::goToHeading(double h, int speed) {
 }
 
 void Robot::setHeading(double h) {
-	heading = h;
+	heading = mod(h, 360);
 }
 
 void Robot::advanceUntilLine(int speed, boolean stop) { //advance (or move back if speed is negative) until he sees a line. If stop is true, robot will stop at line
 	long encoder1 = getEncoderCount(1);
 	long encoder2 = getEncoderCount(2);
-	Serial.println(__PRETTY_FUNCTION__);
+	DEBUG_PRINTLN(__PRETTY_FUNCTION__);
 	prizm.setMotorSpeeds(speed, speed);
 
 	/*while (prizm.readLineSensor(lineSensor) == 1)
@@ -151,7 +151,6 @@ void Robot::advanceUntilLine(int speed, boolean stop) { //advance (or move back 
 		if (line > 3)
 			break;
 	}
-	Serial.println("Line!");
 
 	if (stop) {
 		prizm.setMotorSpeeds(0, 0); //stop when he sees the line
@@ -169,6 +168,8 @@ void Robot::alignWithLine(int speed, int direction) { //direction == 1, turn rig
 	prizm.setMotorSpeeds(speed * -direction, speed * direction);
 	delay(100);
 	while (prizm.readLineSensor(lineSensor) == 0)
+		;
+	while (prizm.readLineSensor(lineSensor) == 1)
 		;
 
 	prizm.setMotorSpeeds(0, 0);
@@ -221,11 +222,11 @@ void Robot::invertMotor(int motor, int invert) {
 
 }
 
-void Robot::gripperOpen(int direction) {
+void Robot::gripperHor(int direction) {
 	prizm.setServoPosition(gripperHorizontal, direction);
 }
 
-void Robot::gripperUp(int direction) {
+void Robot::gripperVert(int direction) {
 	prizm.setServoPosition(gripperVertical, direction);
 }
 
@@ -236,9 +237,7 @@ void Robot::advanceUntilPing(int speed, int distance) {
 	prizm.setMotorSpeeds(speed, speed);
 
 	while (prizm.readSonicSensorIN(pingSensor) > distance) {
-		delay(50);
-		Serial.println(prizm.readSonicSensorIN(pingSensor));
-		delay(50);
+		delay(10);
 	}
 
 	prizm.setMotorSpeeds(0, 0);
