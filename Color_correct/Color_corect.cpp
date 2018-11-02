@@ -25,22 +25,22 @@ void setup() {
 	robot.invertMotor(2, 1);
 	robot.setPosition(47.5, 8);
 
-	//robot.turn(360,100);
-	//grabBlock(blocks[1]);
+	//grabBlock(blocks[2]);
 	cycleBlocks();
+	//robot.alignWithLine(25);
 }
 
 void loop() {
-/*
-	while (Serial.available() == 0)
-		;
-	double x = Serial.parseFloat();
-	Serial.println(x);
-	while (Serial.available() == 0)
-		;
-	double y = Serial.parseFloat();
-	Serial.println(y);
-	robot.goToPosition(x, y, 100);*/
+	/*
+	 while (Serial.available() == 0)
+	 ;
+	 double x = Serial.parseFloat();
+	 Serial.println(x);
+	 while (Serial.available() == 0)
+	 ;
+	 double y = Serial.parseFloat();
+	 Serial.println(y);
+	 robot.goToPosition(x, y, 100);*/
 }
 
 void serialBlocks() {
@@ -69,7 +69,7 @@ void cycleBlocks() {
 		grabBlock(b);
 
 		robot.setPosition(b.getRobotLinePosition());
-		robot.setHeading(b.heading+180);
+		robot.setHeading(b.heading + 180);
 
 		Square &s = b.getSquare();
 		robot.goToPosition(s.getApproachPosition(), 100, 100);
@@ -104,17 +104,18 @@ void printXY() {
 void grabBlock(Block &b) {
 	robot.gripperVert(UP);
 	robot.gripperHor(OPEN);
-	robot.advanceUntilLine(50, true);
 
-	robot.advanceIN(b.approachSide == RIGHTAPPROACH ? 3 : 2.5, 50);
+	robot.alignWithLine(25);
 
-	robot.alignWithLine(50, b.approachSide);
+	robot.advanceIN(5, 50);
+	robot.turn(-90 * b.approachSide, 50);
+
 	robot.advanceUntilPing(50, 2);
 	robot.setPosition(b.getRobotLinePosition());
 
 	robot.advanceIN(-10, 50);
 
-	robot.turn(180,50);
+	robot.turn(180, 50);
 	//robot.turn(90, 50);
 	//robot.advanceIN(-2, 50);
 	//robot.turn(90, 50);
@@ -122,7 +123,7 @@ void grabBlock(Block &b) {
 	robot.advanceIN(-9, 50);
 
 	robot.gripperHor(CLOSE);
-
+	delay(500);
 	//robot.advanceIN(-10, 100);
 
 }

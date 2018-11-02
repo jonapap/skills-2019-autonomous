@@ -143,7 +143,7 @@ void Robot::advanceUntilLine(int speed, boolean stop) { //advance (or move back 
 	while (true) {
 		int line = 0;
 		for (int i = 0; i < 10; i++) {
-			if (prizm.readLineSensor(lineSensor) == 1) {
+			if (prizm.readLineSensor(lineSensorRight) == 1) {
 				line++;
 			}
 		}
@@ -159,21 +159,32 @@ void Robot::advanceUntilLine(int speed, boolean stop) { //advance (or move back 
 	updatePosition(encoder1, encoder2);
 }
 
-void Robot::alignWithLine(int speed, int direction) { //direction == 1, turn right; direction == -1, turn left
-	long encoder1 = getEncoderCount(1);
-	long encoder2 = getEncoderCount(2);
+void Robot::alignWithLine(int speed) { //direction == 1, turn right; direction == -1, turn left
+	prizm.setMotorSpeeds(speed, speed);
 
-	DEBUG_PRINTLN(__PRETTY_FUNCTION__);
+	int right = 0;
+	int left = 0;
+	while (true) {
+		delay(75);
+		right = prizm.readLineSensor(lineSensorRight);
+		left = prizm.readLineSensor(lineSensorLeft);
 
-	prizm.setMotorSpeeds(speed * -direction, speed * direction);
-	delay(100);
-	while (prizm.readLineSensor(lineSensor) == 0)
-		;
-	while (prizm.readLineSensor(lineSensor) == 1)
-		;
+		if (right == 1 && left == 1) {
+			break;
+		} else if (right == 0 && left == 0) {
+			prizm.setMotorSpeeds(speed, speed);
+		} else if (right == 1) {
+			prizm.setMotorSpeeds(-speed,0);
+			prizm.setMotorPower(2, 125);
+			delay(1000);
+		} else if (left == 1) {
+			prizm.setMotorSpeeds(0, -speed);
+			prizm.setMotorPower(1, 125);
+			delay(1000);
+		}
+	}
 
 	prizm.setMotorSpeeds(0, 0);
-	updateAngle(encoder1, encoder2);
 }
 
 void Robot::waitForMotors() { //when called, function will only finish when both motors are at rest.
@@ -304,5 +315,9 @@ void Robot::updateAngle(long encoder1, long encoder2) {
 	DEBUG_PRINTLN(degrees);
 
 	heading = mod(heading + degrees, 360);
+}
+
+void Robot::holdMotor(int motor){
+	//prizm.setMotorTarget(motor, 25, prizm.readE);
 }
 

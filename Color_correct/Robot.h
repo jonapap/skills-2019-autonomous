@@ -27,7 +27,7 @@ public:
 	void advanceIN(double distance, double motorSpeed);
 	void turn(double degrees, int speed);
 	void advanceUntilLine(int speed, boolean stop = true);
-	void alignWithLine(int speed, int direction);
+	void alignWithLine(int speed);
 	void invertMotor(int motor, int invert);
 	void gripperHor(int direction);
 	void gripperVert(int direction);
@@ -50,7 +50,7 @@ public:
 	static const RGB blue;
 	static const RGB yellow;
 
-	friend void loop();
+	friend void setup();
 
 private:
 	PRIZM prizm;
@@ -58,8 +58,10 @@ private:
 	double wheelcirIN = 18;
 	double turnvalue = 7.25;
 
-	const unsigned int pingSensor = 4;
-	const unsigned int lineSensor = 5;
+	const unsigned int pingSensor = 3;
+	const unsigned int lineSensorRight = 4;
+	const unsigned int lineSensorLeft = 5;
+
 	const unsigned int gripperHorizontal = 2;
 	const unsigned int gripperVertical = 6;
 
@@ -78,6 +80,7 @@ private:
 	long getEncoderCount(int motor);
 	void updatePosition(long encoder1, long encoder2);
 	void updateAngle(long encoder1, long encoder2);
+	void holdMotor(int motor);
 };
 
 #endif
