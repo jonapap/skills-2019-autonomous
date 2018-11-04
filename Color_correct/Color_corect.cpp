@@ -68,6 +68,10 @@ void cycleBlocks() {
 
 		grabBlock(b);
 
+		robot.advanceIN(5, 100);
+
+		robot.gripperVert(DOWN);
+
 		robot.setPosition(b.getRobotLinePosition());
 		robot.setHeading(b.heading + 180);
 
@@ -111,7 +115,7 @@ void grabBlock(Block &b) {
 	robot.turn(-90 * b.approachSide, 50);
 
 	robot.advanceUntilPing(50, 2);
-	robot.setPosition(b.getRobotLinePosition());
+	//robot.setPosition(b.getRobotLinePosition());
 
 	robot.advanceIN(-10, 50);
 
@@ -126,4 +130,10 @@ void grabBlock(Block &b) {
 	delay(500);
 	//robot.advanceIN(-10, 100);
 
+}
+
+void depositBlock(){
+	robot.turn(180, 50);
+	robot.gripperHor(OPEN);
+	robot.advanceIN(5, 100);
 }

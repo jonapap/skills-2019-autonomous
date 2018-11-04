@@ -15,7 +15,7 @@ void printXY();
 void testLocation();
 void cycleBlocks();
 void serialBlocks();
-void depositBlock(){}
+void depositBlock();
 
 
 #endif /* _Color_corect_H_ */

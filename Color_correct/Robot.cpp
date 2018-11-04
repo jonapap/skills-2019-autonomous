@@ -165,7 +165,7 @@ void Robot::alignWithLine(int speed) { //direction == 1, turn right; direction =
 	int right = 0;
 	int left = 0;
 	while (true) {
-		delay(75);
+		delay(50);
 		right = prizm.readLineSensor(lineSensorRight);
 		left = prizm.readLineSensor(lineSensorLeft);
 
