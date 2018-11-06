@@ -318,6 +318,10 @@ void Robot::updateAngle(long encoder1, long encoder2) {
 }
 
 void Robot::holdMotor(int motor){
-	//prizm.setMotorTarget(motor, 25, prizm.readE);
+	prizm.setMotorTarget(motor, 5, prizm.readEncoderCount(motor));
+}
+
+void Robot::holdAllMotors(){
+	prizm.setMotorTargets(5, prizm.readEncoderCount(1), 5, prizm.readEncoderCount(2));
 }
 

@@ -81,6 +81,7 @@ private:
 	void updatePosition(long encoder1, long encoder2);
 	void updateAngle(long encoder1, long encoder2);
 	void holdMotor(int motor);
+	void holdAllMotors();
 };
 
 #endif

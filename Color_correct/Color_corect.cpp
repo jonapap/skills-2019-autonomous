@@ -23,7 +23,7 @@ void setup() {
 
 	prizm.PrizmBegin();
 	robot.invertMotor(2, 1);
-	robot.setPosition(47.5, 8);
+	robot.setPosition(47.5, 12);
 
 	//grabBlock(blocks[2]);
 	cycleBlocks();
@@ -117,23 +117,24 @@ void grabBlock(Block &b) {
 	robot.advanceUntilPing(50, 2);
 	//robot.setPosition(b.getRobotLinePosition());
 
-	robot.advanceIN(-10, 50);
+	robot.advanceIN(-8, 50);
 
 	robot.turn(180, 50);
 	//robot.turn(90, 50);
 	//robot.advanceIN(-2, 50);
 	//robot.turn(90, 50);
 
-	robot.advanceIN(-9, 50);
+	robot.advanceIN(-7, 50);
 
 	robot.gripperHor(CLOSE);
-	delay(500);
+	delay(1000);
 	//robot.advanceIN(-10, 100);
 
 }
 
-void depositBlock(){
+void depositBlock() {
 	robot.turn(180, 50);
 	robot.gripperHor(OPEN);
-	robot.advanceIN(5, 100);
+	delay(3000);
+	robot.advanceIN(10, 100);
 }
