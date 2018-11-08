@@ -24,6 +24,10 @@ struct Position {
 class Robot {
 public:
 
+	Robot(double x, double y, double heading) :
+			heading(heading), x(x), y(y) {
+	}
+
 	void advanceIN(double distance, double motorSpeed);
 	void turn(double degrees, int speed);
 	void advanceUntilLine(int speed, boolean stop = true);
@@ -68,9 +72,9 @@ private:
 	int motor1invert = 1;
 	int motor2invert = 1;
 
-	double heading = 90;
-	double x = 0;
-	double y = 0;
+	double heading;
+	double x;
+	double y;
 
 	const int colorError = 10;
 

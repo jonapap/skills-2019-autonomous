@@ -1,18 +1,18 @@
 #include "Color_corect.h"
 
 PRIZM prizm;
-Robot robot;
-
-Square redSquare( { 28, 88 }, 90);
-Square blueSquare( { 68, 88 }, 90);
-Square yellowSquare( { 49, 88 }, 90);
+Robot robot(47.5, 12, 90);
+//88
+Square redSquare( { 28, 82.5 }, 90);
+Square blueSquare( { 68, 82.5 }, 90);
+Square yellowSquare( { 49, 82.5 }, 90);
 
 Block blocks[] = { Block( { 66.75, 5.5 }, 270, RIGHTAPPROACH, yellowSquare), //block 1
 Block( { 80, 33 }, 0, LEFTAPPROACH, redSquare), //block 2
-Block( { 90.75, 63.5 }, 0, RIGHTAPPROACH, blueSquare), //block 3
-Block( { 29.5, 5.5 }, 270, LEFTAPPROACH, blueSquare), //block 4
+Block( { 4.25, 63.5 }, 180, LEFTAPPROACH, redSquare),  //block 6
 Block( { 15.5, 33 }, 180, RIGHTAPPROACH, yellowSquare), //block 5
-Block( { 4.25, 63.5 }, 180, LEFTAPPROACH, redSquare)  //block 6
+Block( { 29.5, 5.5 }, 270, LEFTAPPROACH, blueSquare), //block 4
+Block( { 90.75, 63.5 }, 0, RIGHTAPPROACH, blueSquare) //block 3
 		};
 
 void setup() {
@@ -23,10 +23,10 @@ void setup() {
 
 	prizm.PrizmBegin();
 	robot.invertMotor(2, 1);
-	robot.setPosition(47.5, 12);
 
 	//grabBlock(blocks[2]);
 	cycleBlocks();
+	prizm.PrizmEnd();
 	//robot.alignWithLine(25);
 }
 
@@ -68,16 +68,18 @@ void cycleBlocks() {
 
 		grabBlock(b);
 
+		robot.setPosition(b.getRobotLinePosition());
+		robot.setHeading(b.heading + 180);
+
 		robot.advanceIN(5, 100);
 
 		robot.gripperVert(DOWN);
 
-		robot.setPosition(b.getRobotLinePosition());
-		robot.setHeading(b.heading + 180);
+
 
 		Square &s = b.getSquare();
 		robot.goToPosition(s.getApproachPosition(), 100, 100);
-		robot.goToHeading(s.getApproachHeading(), 100);
+		robot.goToHeading(mod(s.getApproachHeading() + 180, 360), 100);
 		depositBlock();
 	}
 }
@@ -111,7 +113,7 @@ void grabBlock(Block &b) {
 
 	robot.alignWithLine(25);
 
-	robot.advanceIN(5, 50);
+	robot.advanceIN(b.approachSide == RIGHTAPPROACH ? 5 : 3, 50);
 	robot.turn(-90 * b.approachSide, 50);
 
 	robot.advanceUntilPing(50, 2);
@@ -133,8 +135,8 @@ void grabBlock(Block &b) {
 }
 
 void depositBlock() {
-	robot.turn(180, 50);
+	robot.advanceIN(-10, 100);
 	robot.gripperHor(OPEN);
-	delay(3000);
+	delay(1000);
 	robot.advanceIN(10, 100);
 }
