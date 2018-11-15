@@ -2,7 +2,7 @@
 
 PRIZM prizm;
 Robot robot(47.5, 12, 90);
-//88
+
 Square redSquare( { 28, 82.5 }, 90);
 Square blueSquare( { 68, 82.5 }, 90);
 Square yellowSquare( { 49, 82.5 }, 90);

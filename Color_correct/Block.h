@@ -28,7 +28,10 @@ public:
 private:
 	static constexpr double shiftLength = 14.21;
 	static constexpr double shiftAngle = 50.71;
-	static constexpr double blockGrabOffset = 8.25;
+
+	static constexpr double blockGrabOffsetLength = 8.39;
+	static constexpr double blockGrabOffsetAngle = 10.3;
+
 };
 
 #endif /* BLOCK_H_ */

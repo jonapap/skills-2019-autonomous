@@ -18,8 +18,8 @@ double Block::getApproachHeading(){
 }
 
 Position Block::getRobotLinePosition(){
-	double currentHeading = mod(180+heading, 360);
-	return {cos(toRadians(currentHeading))*blockGrabOffset+position.x, sin(toRadians(currentHeading))*blockGrabOffset+position.y};
+	double currentHeading = mod((180-blockGrabOffsetAngle)+heading, 360);
+	return {cos(toRadians(currentHeading))*blockGrabOffsetLength+position.x, sin(toRadians(currentHeading))*blockGrabOffsetLength+position.y};
 }
 
 Square &Block::getSquare(){

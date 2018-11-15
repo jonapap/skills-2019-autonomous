@@ -128,7 +128,11 @@ void Robot::goToHeading(double h, int speed) {
 }
 
 void Robot::setHeading(double h) {
+	DEBUG_PRINTLN(__PRETTY_FUNCTION__);
+
 	heading = mod(h, 360);
+	DEBUG_PRINTLN(heading);
+	DEBUG_PRINTLN("");
 }
 
 void Robot::advanceUntilLine(int speed, boolean stop) { //advance (or move back if speed is negative) until he sees a line. If stop is true, robot will stop at line
