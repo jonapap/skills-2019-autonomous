@@ -24,10 +24,8 @@ void setup() {
 	prizm.PrizmBegin();
 	robot.invertMotor(2, 1);
 
-	//grabBlock(blocks[2]);
 	cycleBlocks();
 	prizm.PrizmEnd();
-	//robot.alignWithLine(25);
 }
 
 void loop() {

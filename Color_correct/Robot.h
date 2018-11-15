@@ -31,7 +31,7 @@ public:
 	void advanceIN(double distance, double motorSpeed);
 	void turn(double degrees, int speed);
 	void advanceUntilLine(int speed, boolean stop = true);
-	void alignWithLine(int speed);
+	void alignWithLine(int speed = 25);
 	void invertMotor(int motor, int invert);
 	void gripperHor(int direction);
 	void gripperVert(int direction);

@@ -178,12 +178,12 @@ void Robot::alignWithLine(int speed) { //direction == 1, turn right; direction =
 		} else if (right == 0 && left == 0) {
 			prizm.setMotorSpeeds(speed, speed);
 		} else if (right == 1) {
+			holdMotor(2);
 			prizm.setMotorSpeeds(-speed,0);
-			prizm.setMotorPower(2, 125);
 			delay(1000);
 		} else if (left == 1) {
+			holdMotor(2);
 			prizm.setMotorSpeeds(0, -speed);
-			prizm.setMotorPower(1, 125);
 			delay(1000);
 		}
 	}
