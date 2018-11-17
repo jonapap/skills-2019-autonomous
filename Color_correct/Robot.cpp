@@ -116,7 +116,7 @@ void Robot::goToPosition(double x2, double y2, int speed, int turningSpeed) {
 }
 
 void Robot::goToHeading(double h, int speed) {
-	double diff = h - heading;
+	double diff = mod(h, 360) - heading;
 
 	DEBUG_PRINTLN(__PRETTY_FUNCTION__);
 	DEBUG_PRINTLN("");
@@ -245,15 +245,20 @@ void Robot::gripperVert(int direction) {
 	prizm.setServoPosition(gripperVertical, direction);
 }
 
-void Robot::advanceUntilPing(int speed, int distance) {
+void Robot::goToPingDistance(int speed, int target) {
 	long encoder1 = getEncoderCount(1);
 	long encoder2 = getEncoderCount(2);
 
-	prizm.setMotorSpeeds(speed, speed);
+	double distance = 0.0;
+	do {
+		distance = prizm.readSonicSensorIN(pingSensor);
 
-	while (prizm.readSonicSensorIN(pingSensor) > distance) {
-		delay(10);
-	}
+		if(distance > target)
+			prizm.setMotorSpeeds(speed, speed);
+		else if (distance < target)
+			prizm.setMotorSpeeds(-speed, -speed);
+
+	} while(distance != target);
 
 	prizm.setMotorSpeeds(0, 0);
 

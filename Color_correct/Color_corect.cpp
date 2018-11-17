@@ -64,6 +64,12 @@ void cycleBlocks() {
 		robot.goToPosition(b.getLastPoint(), 100, 100);
 		robot.goToHeading(b.getApproachHeading(), 100);
 
+		if(b.approachSide == LEFTAPPROACH){
+			robot.turn(180, 100);
+			robot.advanceIN(-10, 100);
+		}
+
+
 		grabBlock(b);
 
 		robot.setPosition(b.getRobotLinePosition());
@@ -111,10 +117,10 @@ void grabBlock(Block &b) {
 
 	robot.alignWithLine(25);
 
-	robot.advanceIN(b.approachSide == RIGHTAPPROACH ? 5 : 3, 50);
-	robot.turn(-90 * b.approachSide, 50);
+	robot.advanceIN(5, 50);
+	robot.turn(-90, 50);
 
-	robot.advanceUntilPing(50, 2);
+	robot.goToPingDistance(50, 2);
 	//robot.setPosition(b.getRobotLinePosition());
 
 	robot.advanceIN(-8, 50);

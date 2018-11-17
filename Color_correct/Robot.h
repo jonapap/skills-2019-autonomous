@@ -35,7 +35,7 @@ public:
 	void invertMotor(int motor, int invert);
 	void gripperHor(int direction);
 	void gripperVert(int direction);
-	void advanceUntilPing(int speed, int distance);
+	void goToPingDistance(int speed, int distance);
 	void setPosition(double x, double y);
 	void setPosition(Position p);
 	void goToPosition(double x, double y, int speed);
