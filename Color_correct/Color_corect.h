@@ -10,7 +10,7 @@
 #include "Functions.h"
 
 
-void grabBlock(Block &b);
+void grabBlock();
 void printXY();
 void testLocation();
 void cycleBlocks();

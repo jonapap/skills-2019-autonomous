@@ -29,35 +29,9 @@ void setup() {
 }
 
 void loop() {
-	/*
-	 while (Serial.available() == 0)
-	 ;
-	 double x = Serial.parseFloat();
-	 Serial.println(x);
-	 while (Serial.available() == 0)
-	 ;
-	 double y = Serial.parseFloat();
-	 Serial.println(y);
-	 robot.goToPosition(x, y, 100);*/
+
 }
 
-void serialBlocks() {
-	while (Serial.available() == 0)
-		;
-	int n = Serial.parseInt();
-
-	robot.goToPosition(blocks[n].getLastPoint(), 100, 100);
-	robot.goToHeading(blocks[n].getApproachHeading(), 100);
-	grabBlock(blocks[n]);
-
-	robot.setPosition(blocks[n].getRobotLinePosition());
-	robot.setHeading(blocks[n].heading);
-
-	Square &s = blocks[n].getSquare();
-	robot.goToPosition(s.getApproachPosition(), 100, 100);
-	robot.goToHeading(s.getApproachHeading(), 100);
-	depositBlock();
-}
 
 void cycleBlocks() {
 	for (Block &b : blocks) {
@@ -66,11 +40,11 @@ void cycleBlocks() {
 
 		if(b.approachSide == LEFTAPPROACH){
 			robot.turn(180, 100);
-			robot.advanceIN(-10, 100);
+			robot.advanceIN(-20, 100);
 		}
 
 
-		grabBlock(b);
+		grabBlock();
 
 		robot.setPosition(b.getRobotLinePosition());
 		robot.setHeading(b.heading + 180);
@@ -88,30 +62,7 @@ void cycleBlocks() {
 	}
 }
 
-void testLocation() {
-	Serial.println("X :");
-	while (Serial.available() == 0)
-		;
-	double x = Serial.parseFloat();
-	Serial.println("Y :");
-	while (Serial.available() == 0)
-		;
-	double y = Serial.parseFloat();
-	robot.goToPosition(x, y, 100);
-	robot.goToHeading(90, 100);
-
-}
-
-void printXY() {
-	Serial.println(robot.getPosition().x);
-	Serial.println(robot.getPosition().y);
-	Serial.println(robot.getHeading());
-	while (prizm.readStartButton() == 0)
-		;
-	delay(500);
-}
-
-void grabBlock(Block &b) {
+void grabBlock() {
 	robot.gripperVert(UP);
 	robot.gripperHor(OPEN);
 
@@ -143,4 +94,49 @@ void depositBlock() {
 	robot.gripperHor(OPEN);
 	delay(1000);
 	robot.advanceIN(10, 100);
+}
+
+void testLocation() {
+	Serial.println("X :");
+	while (Serial.available() == 0)
+		;
+	double x = Serial.parseFloat();
+	Serial.println("Y :");
+	while (Serial.available() == 0)
+		;
+	double y = Serial.parseFloat();
+	robot.goToPosition(x, y, 100);
+	robot.goToHeading(90, 100);
+
+}
+
+void printXY() {
+	Serial.println(robot.getPosition().x);
+	Serial.println(robot.getPosition().y);
+	Serial.println(robot.getHeading());
+	while (prizm.readStartButton() == 0)
+		;
+	delay(500);
+}
+
+
+
+
+
+void serialBlocks() {
+	while (Serial.available() == 0)
+		;
+	int n = Serial.parseInt();
+
+	robot.goToPosition(blocks[n].getLastPoint(), 100, 100);
+	robot.goToHeading(blocks[n].getApproachHeading(), 100);
+	grabBlock();
+
+	robot.setPosition(blocks[n].getRobotLinePosition());
+	robot.setHeading(blocks[n].heading);
+
+	Square &s = blocks[n].getSquare();
+	robot.goToPosition(s.getApproachPosition(), 100, 100);
+	robot.goToHeading(s.getApproachHeading(), 100);
+	depositBlock();
 }
