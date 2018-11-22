@@ -40,7 +40,7 @@ void cycleBlocks() {
 
 		if(b.approachSide == LEFTAPPROACH){
 			robot.turn(180, 100);
-			robot.advanceIN(-20, 100);
+			robot.advanceIN(-15, 100);
 		}
 
 
