@@ -179,7 +179,7 @@ void Robot::alignWithLine(int speed) { //direction == 1, turn right; direction =
 			prizm.setMotorSpeeds(speed, speed);
 		} else if (right == 1) {
 			holdMotor(2);
-			prizm.setMotorSpeeds(-speed,0);
+			prizm.setMotorSpeeds(-speed, 0);
 			delay(1000);
 		} else if (left == 1) {
 			holdMotor(2);
@@ -249,16 +249,11 @@ void Robot::goToPingDistance(int speed, int target) {
 	long encoder1 = getEncoderCount(1);
 	long encoder2 = getEncoderCount(2);
 
-	double distance = 0.0;
-	do {
-		distance = prizm.readSonicSensorIN(pingSensor);
+	prizm.setMotorSpeeds(speed, speed);
 
-		if(distance > target)
-			prizm.setMotorSpeeds(speed, speed);
-		else if (distance < target)
-			prizm.setMotorSpeeds(-speed, -speed);
-
-	} while(distance != target);
+	while (prizm.readSonicSensorIN(pingSensor) > target) {
+		delay(10);
+	}
 
 	prizm.setMotorSpeeds(0, 0);
 
@@ -326,11 +321,12 @@ void Robot::updateAngle(long encoder1, long encoder2) {
 	heading = mod(heading + degrees, 360);
 }
 
-void Robot::holdMotor(int motor){
+void Robot::holdMotor(int motor) {
 	prizm.setMotorTarget(motor, 5, prizm.readEncoderCount(motor));
 }
 
-void Robot::holdAllMotors(){
-	prizm.setMotorTargets(5, prizm.readEncoderCount(1), 5, prizm.readEncoderCount(2));
+void Robot::holdAllMotors() {
+	prizm.setMotorTargets(5, prizm.readEncoderCount(1), 5,
+			prizm.readEncoderCount(2));
 }
 
