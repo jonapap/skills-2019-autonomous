@@ -170,8 +170,8 @@ void Robot::alignWithLine(int speed) { //direction == 1, turn right; direction =
 	int left = 0;
 	while (true) {
 		delay(50);
-		right = prizm.readLineSensor(lineSensorRight);
-		left = prizm.readLineSensor(lineSensorLeft);
+		right = readLineSensor(lineSensorRight);
+		left = readLineSensor(lineSensorLeft);
 
 		if (right == 1 && left == 1) {
 			break;
@@ -328,5 +328,19 @@ void Robot::holdMotor(int motor) {
 void Robot::holdAllMotors() {
 	prizm.setMotorTargets(5, prizm.readEncoderCount(1), 5,
 			prizm.readEncoderCount(2));
+}
+
+boolean Robot::readLineSensor(int sensor) {
+	int line = 0;
+	for (int i = 0; i < 10; i++) {
+		if (prizm.readLineSensor(sensor) == 1) {
+			line++;
+		}
+	}
+
+	if (line > 3)
+		return true;
+	else
+		return false;
 }
 

@@ -86,6 +86,7 @@ private:
 	void updateAngle(long encoder1, long encoder2);
 	void holdMotor(int motor);
 	void holdAllMotors();
+	boolean readLineSensor(int sensor);
 };
 
 #endif
