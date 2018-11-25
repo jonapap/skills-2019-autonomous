@@ -2,7 +2,8 @@
 #define BLOCK_H_
 
 #include <Arduino.h>
-#include "Robot.h"
+
+#include "OmniRobot.h"
 #include "Square.h"
 
 #define LEFTAPPROACH -1

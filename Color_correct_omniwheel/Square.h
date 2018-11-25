@@ -1,7 +1,7 @@
 #ifndef SQUARE_H_
 #define SQUARE_H_
 
-#include "Robot.h"
+#include "OmniRobot.h"
 
 class Square {
 public:
