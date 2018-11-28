@@ -1,7 +1,9 @@
 #include "Color_corect.h"
 
 PRIZM prizm;
-OmniRobot robot(47.5, 12, 90);
+EXPANSION exc;
+//OmniRobot robot(47.5, 12, 90);
+OmniRobot robot(0,0,90);
 
 Square redSquare( { 28, 82.5 }, 90);
 Square blueSquare( { 68, 82.5 }, 90);
@@ -22,13 +24,15 @@ void setup() {
 #endif
 
 	prizm.PrizmBegin();
+	robot.invertMotor(1, 1);
 	robot.invertMotor(2, 1);
 
-	cycleBlocks();
-	prizm.PrizmEnd();
+	//cycleBlocks();
+	//prizm.PrizmEnd();
 }
 
 void loop() {
+	testLocation();
 
 }
 
@@ -40,16 +44,16 @@ void cycleBlocks() {
 
 		if(b.approachSide == LEFTAPPROACH){
 			robot.turn(180, 100);
-			robot.advanceIN(-15, 100);
+			robot.advanceRelative(-15, 100, 180);
 		}
 
 
-		grabBlock();
+		//grabBlock();
 
 		robot.setPosition(b.getRobotLinePosition());
 		robot.setHeading(b.heading + 180);
 
-		robot.advanceIN(5, 100);
+		robot.advanceRelative(5, 100, 180);
 
 		robot.gripperVert(DOWN);
 
@@ -58,7 +62,7 @@ void cycleBlocks() {
 		Square &s = b.getSquare();
 		robot.goToPosition(s.getApproachPosition(), 100, 100);
 		robot.goToHeading(mod(s.getApproachHeading() + 180, 360), 100);
-		depositBlock();
+		//depositBlock();
 	}
 }
 
@@ -68,20 +72,20 @@ void grabBlock() {
 
 	robot.alignWithLine(25);
 
-	robot.advanceIN(5, 50);
+	robot.advanceRelative(5, 50);
 	robot.turn(-90, 50);
 
 	robot.goToPingDistance(50, 2);
 	//robot.setPosition(b.getRobotLinePosition());
 
-	robot.advanceIN(-8, 50);
+	robot.advanceRelative(-8, 50);
 
 	robot.turn(180, 50);
 	//robot.turn(90, 50);
 	//robot.advanceIN(-2, 50);
 	//robot.turn(90, 50);
 
-	robot.advanceIN(-7, 50);
+	robot.advanceRelative(7, 50, 180);
 
 	robot.gripperHor(CLOSE);
 	delay(1000);
@@ -90,10 +94,10 @@ void grabBlock() {
 }
 
 void depositBlock() {
-	robot.advanceIN(-10, 100);
+	robot.advanceRelative(10, 100, 180);
 	robot.gripperHor(OPEN);
 	delay(1000);
-	robot.advanceIN(10, 100);
+	robot.advanceRelative(10, 100, 180);
 }
 
 void testLocation() {
@@ -106,7 +110,7 @@ void testLocation() {
 		;
 	double y = Serial.parseFloat();
 	robot.goToPosition(x, y, 100);
-	robot.goToHeading(90, 100);
+	//robot.goToHeading(90, 100);
 
 }
 
@@ -129,7 +133,7 @@ void serialBlocks() {
 	int n = Serial.parseInt();
 
 	robot.goToPosition(blocks[n].getLastPoint(), 100, 100);
-	robot.goToHeading(blocks[n].getApproachHeading(), 100);
+	/*robot.goToHeading(blocks[n].getApproachHeading(), 100);
 	grabBlock();
 
 	robot.setPosition(blocks[n].getRobotLinePosition());
@@ -138,5 +142,5 @@ void serialBlocks() {
 	Square &s = blocks[n].getSquare();
 	robot.goToPosition(s.getApproachPosition(), 100, 100);
 	robot.goToHeading(s.getApproachHeading(), 100);
-	depositBlock();
+	depositBlock();*/
 }

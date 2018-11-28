@@ -16,25 +16,36 @@ boolean RGB::isColor(const RGB &color, int error) {
 	return false;
 }
 
-void OmniRobot::advanceAbsolute(double distance, double motorSpeed, double angle) {
+void OmniRobot::advanceAbsolute(double distance, double motorSpeed,
+		double angle) {
 	advanceRelative(distance, motorSpeed, getRelativeAngle(angle));
 }
 
 //advance distance in IN
-void OmniRobot::advanceRelative(double distance, double motorSpeed, double angle) {
-	double distanceX = cos(toRadians(angle)) * distance;
-	double distanceY = sin(toRadians(angle)) * distance;
+void OmniRobot::advanceRelative(double distance, double motorSpeed,
+		double angle) {
+
+	double angleOffset = mod(angle + 45, 360); //offset angle so 0 is the gripper
+
+	double distanceX = cos(toRadians(angleOffset)) * distance;
+	double distanceY = sin(toRadians(angleOffset)) * distance;
 
 	double revolutionX = (distanceX / wheelcirIN) * 1440; //get how many wheel turn we need to make, and multiply by 1440 (one revolution for encoder)
 	double revolutionY = (distanceY / wheelcirIN) * 1440;
+
+	DEBUG_PRINTLN("Encoders count :");
+	DEBUG_PRINTLN(getEncoderCount(1));
+	DEBUG_PRINTLN(getEncoderCount(2));
+	DEBUG_PRINTLN(getEncoderCount(3));
+	DEBUG_PRINTLN(getEncoderCount(4));
 
 	long revolution1 = getEncoderCount(1) + revolutionX; //add to current encoder value of motor 1. Here, the current encoder count is inverted because we inverted this motor at the beginning, but this function is not inverted by default
 	long revolution2 = getEncoderCount(2) + revolutionY; //add to current encoder value of motor 2
 	long revolution3 = getEncoderCount(3) + revolutionX;
 	long revolution4 = getEncoderCount(4) + revolutionY;
 
-	double speedX = cos(toRadians(angle)) * motorSpeed;
-	double speedY = sin(toRadians(angle)) * motorSpeed;
+	double speedX = cos(toRadians(angleOffset)) * motorSpeed;
+	double speedY = sin(toRadians(angleOffset)) * motorSpeed;
 
 	prizm.setMotorTargets(speedX, revolution1, speedY, revolution2);
 	exc.setMotorTargets(dcControllerAddr, speedX, revolution3, speedY,
@@ -42,8 +53,22 @@ void OmniRobot::advanceRelative(double distance, double motorSpeed, double angle
 
 	waitForMotors();
 
-	x += cos(toRadians(heading)) * distance;
-	y += sin(toRadians(heading)) * distance;
+	DEBUG_PRINTLN(__PRETTY_FUNCTION__);
+	DEBUG_PRINTLN("");
+	DEBUG_PRINTLN("Encoders target :");
+	DEBUG_PRINTLN(revolution1);
+	DEBUG_PRINTLN(revolution2);
+	DEBUG_PRINTLN(revolution3);
+	DEBUG_PRINTLN(revolution4);
+	DEBUG_PRINTLN("");
+	DEBUG_PRINTLN("Distance : ");
+	DEBUG_PRINTLN(distance);
+
+	DEBUG_PRINTLN("Angle : ");
+	DEBUG_PRINTLN(angle);
+
+	x += cos(toRadians(getAbsoluteAngle(angle))) * distance;
+	y += sin(toRadians(getAbsoluteAngle(angle))) * distance;
 
 }
 
@@ -112,9 +137,9 @@ void OmniRobot::goToPosition(double x2, double y2, int speed,
 
 	double distance = sqrt(pow(deltaX, 2) + pow(deltaY, 2));
 
-	DEBUG_PRINT("Angle :");
+	DEBUG_PRINT("Angle : ");
 	DEBUG_PRINTLN(angle);
-	DEBUG_PRINT("Distance :");
+	DEBUG_PRINT("Distance : ");
 	DEBUG_PRINTLN(distance);
 	DEBUG_PRINTLN("");
 
@@ -312,7 +337,7 @@ long OmniRobot::getEncoderCount(int motor) {
 	case 3:
 	case 4:
 		return exc.readEncoderCount(dcControllerAddr, motor - 2)
-				* getMotorInvert(motor - 2);
+				* getMotorInvert(motor);
 		break;
 	}
 	return 0;
@@ -372,6 +397,10 @@ int OmniRobot::getMotorInvert(int motor) {
 	return motorinvert[motor - 1];
 }
 
-double OmniRobot::getRelativeAngle(double angle){
-	return mod(heading-angle,360);
+double OmniRobot::getRelativeAngle(double angle) {
+	return mod(angle - heading, 360);
+}
+
+double OmniRobot::getAbsoluteAngle(double angle) {
+	return mod(angle + heading, 360);
 }

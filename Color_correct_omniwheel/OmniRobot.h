@@ -56,6 +56,7 @@ public:
 	static const RGB yellow;
 
 	friend void setup();
+	friend void loop();
 
 private:
 	PRIZM prizm;
@@ -63,17 +64,17 @@ private:
 
 	int dcControllerAddr = 1;
 
-	double wheelcirIN = 18;
-	double turnvalue = 7.25;
+	const double wheelcirIN = 4 * PI;
+	const double turnvalue = 12.3;
 
-	const unsigned int pingSensor = 3;
-	const unsigned int lineSensorRight = 4;
-	const unsigned int lineSensorLeft = 5;
+	const unsigned int pingSensor = A1;
+	const unsigned int lineSensorRight = 2;
+	const unsigned int lineSensorLeft = 3;
 
 	const unsigned int gripperHorizontal = 2;
 	const unsigned int gripperVertical = 6;
 
-	int motorinvert[4] = {1,1,1,1};
+	int motorinvert[4] = { 1, 1, 1, 1 };
 
 	double heading;
 	double x;
@@ -92,6 +93,7 @@ private:
 	boolean readLineSensor(int sensor);
 	int getMotorInvert(int motor);
 	double getRelativeAngle(double angle);
+	double getAbsoluteAngle(double angle);
 };
 
 #endif
