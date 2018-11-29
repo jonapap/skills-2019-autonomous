@@ -13,7 +13,7 @@ private:
 	Position position;
 	double heading;
 
-	static constexpr int approachOffset = 17.5;
+	static constexpr int approachOffset = 12;
 };
 
 

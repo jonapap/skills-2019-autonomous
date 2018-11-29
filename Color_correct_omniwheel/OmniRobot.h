@@ -30,9 +30,11 @@ public:
 
 	void advanceRelative(double distance, double motorSpeed, double angle = 0);
 	void advanceAbsolute(double distance, double motorSpeed, double angle = 0);
+	void goInRelativeDirection(double motorSpeed, double angle);
+	void goInAbsoluteDirection(double motorSpeed, double angle);
 	void turn(double degrees, int speed);
-	void advanceUntilLine(int speed, boolean stop = true);
-	void alignWithLine(int speed = 25);
+	void advanceUntilLine(int speed, double direction, boolean stop = true);
+	void advanceUntilColor(int speed, double direction, RGB color, boolean invert = false, boolean stop = true);
 	void invertMotor(int motor, int invert);
 	void gripperHor(int direction);
 	void gripperVert(int direction);
@@ -49,8 +51,10 @@ public:
 	void setHeading(double heading);
 	RGB readColor();
 	void rampSpeed(unsigned int speed, unsigned int time);
+	void stopAllMotors();
 
-	static const RGB black;
+
+	static const RGB white;
 	static const RGB red;
 	static const RGB blue;
 	static const RGB yellow;
@@ -65,11 +69,10 @@ private:
 	int dcControllerAddr = 1;
 
 	const double wheelcirIN = 4 * PI;
-	const double turnvalue = 12.3;
+	double turnvalue = 15.0;
 
-	const unsigned int pingSensor = A1;
-	const unsigned int lineSensorRight = 2;
-	const unsigned int lineSensorLeft = 3;
+	const unsigned int pingSensor = 4;
+	const unsigned int lineSensor = 5;
 
 	const unsigned int gripperHorizontal = 2;
 	const unsigned int gripperVertical = 6;

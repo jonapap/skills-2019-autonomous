@@ -3,10 +3,10 @@
 #include "DEBUG.h"
 #include "Functions.h"
 
-const RGB OmniRobot::black = { 22, 27, 8 };
-const RGB OmniRobot::red = { 52, 13, 4 };
-const RGB OmniRobot::blue = { 10, 36, 35 };
-const RGB OmniRobot::yellow = { 71, 62, 3 };
+const RGB OmniRobot::white = { 137, 118, 43 };
+const RGB OmniRobot::red = { 88, 6, 5 };
+const RGB OmniRobot::blue = { 6, 17, 63 };
+const RGB OmniRobot::yellow = { 141, 43, 4 };
 
 boolean RGB::isColor(const RGB &color, int error) {
 	if (inRange(color.red, red, error) && inRange(color.green, green, error)
@@ -32,12 +32,6 @@ void OmniRobot::advanceRelative(double distance, double motorSpeed,
 
 	double revolutionX = (distanceX / wheelcirIN) * 1440; //get how many wheel turn we need to make, and multiply by 1440 (one revolution for encoder)
 	double revolutionY = (distanceY / wheelcirIN) * 1440;
-
-	DEBUG_PRINTLN("Encoders count :");
-	DEBUG_PRINTLN(getEncoderCount(1));
-	DEBUG_PRINTLN(getEncoderCount(2));
-	DEBUG_PRINTLN(getEncoderCount(3));
-	DEBUG_PRINTLN(getEncoderCount(4));
 
 	long revolution1 = getEncoderCount(1) + revolutionX; //add to current encoder value of motor 1. Here, the current encoder count is inverted because we inverted this motor at the beginning, but this function is not inverted by default
 	long revolution2 = getEncoderCount(2) + revolutionY; //add to current encoder value of motor 2
@@ -72,6 +66,32 @@ void OmniRobot::advanceRelative(double distance, double motorSpeed,
 
 }
 
+void OmniRobot::goInRelativeDirection(double motorSpeed, double angle) {
+	DEBUG_PRINTLN(__PRETTY_FUNCTION__);
+	DEBUG_PRINTLN("");
+	DEBUG_PRINTLN("Angle :");
+	DEBUG_PRINTLN(angle);
+	DEBUG_PRINTLN("");
+
+	angle = mod(angle + 45, 360);
+
+	double speedX = cos(toRadians(angle)) * motorSpeed;
+	double speedY = sin(toRadians(angle)) * motorSpeed;
+
+	prizm.setMotorSpeeds(speedX, speedY);
+	exc.setMotorSpeeds(1, speedX, speedY);
+
+}
+
+void OmniRobot::goInAbsoluteDirection(double motorSpeed, double angle) {
+	goInRelativeDirection(motorSpeed, getRelativeAngle(angle));
+}
+
+void OmniRobot::stopAllMotors() {
+	prizm.setMotorSpeeds(0, 0);
+	exc.setMotorSpeeds(1, 0, 0);
+}
+
 void OmniRobot::rampSpeed(unsigned int speed, unsigned int time) {
 	for (unsigned int i = 0; i < speed; i += speed / (time / 10)) {
 		prizm.setMotorSpeeds(i, i);
@@ -81,9 +101,10 @@ void OmniRobot::rampSpeed(unsigned int speed, unsigned int time) {
 //turn specified value. Positive degrees will turn clockwise, negative anti-clockwise
 void OmniRobot::turn(double degrees, int speed) {
 	double revolution = degrees * turnvalue; //calculate encoder count required to add for each wheel
+
 	long revolution1 = getEncoderCount(1) - revolution; //add to current encoder count of motor 1
-	long revolution2 = getEncoderCount(2) + revolution; //negative of second motor so robot will turn on itself
-	long revolution3 = getEncoderCount(3) - revolution;
+	long revolution2 = getEncoderCount(2) - revolution; //negative of second motor so robot will turn on itself
+	long revolution3 = getEncoderCount(3) + revolution;
 	long revolution4 = getEncoderCount(4) + revolution;
 
 	prizm.setMotorTargets(speed, revolution1, speed, revolution2); //set target of both motors
@@ -166,60 +187,32 @@ void OmniRobot::setHeading(double h) {
 	DEBUG_PRINTLN("");
 }
 
-void OmniRobot::advanceUntilLine(int speed, boolean stop) { //advance (or move back if speed is negative) until he sees a line. If stop is true, robot will stop at line
-	long encoder1 = getEncoderCount(1);
-	long encoder2 = getEncoderCount(2);
+void OmniRobot::advanceUntilLine(int speed, double direction, boolean stop) { //advance (or move back if speed is negative) until he sees a line. If stop is true, robot will stop at line
 	DEBUG_PRINTLN(__PRETTY_FUNCTION__);
-	prizm.setMotorSpeeds(speed, speed);
 
-	/*while (prizm.readLineSensor(lineSensor) == 1)
-	 ; //continue advancing if robot currently sees a line*/
+	goInRelativeDirection(speed, direction);
 
-	while (true) {
-		int line = 0;
-		for (int i = 0; i < 10; i++) {
-			if (prizm.readLineSensor(lineSensorRight) == 1) {
-				line++;
-			}
-		}
-
-		if (line > 3)
-			break;
-	}
+	while (!readLineSensor(lineSensor))
+		;
 
 	if (stop) {
-		prizm.setMotorSpeeds(0, 0); //stop when he sees the line
+		stopAllMotors(); //stop when he sees the line
 	}
 
-	updatePosition(encoder1, encoder2);
 }
 
-void OmniRobot::alignWithLine(int speed) { //direction == 1, turn right; direction == -1, turn left
-	prizm.setMotorSpeeds(speed, speed);
+void OmniRobot::advanceUntilColor(int speed, double direction, RGB color, boolean invert, boolean stop) { //advance (or move back if speed is negative) until he sees a line. If stop is true, robot will stop at line
+	DEBUG_PRINTLN(__PRETTY_FUNCTION__);
 
-	int right = 0;
-	int left = 0;
-	while (true) {
-		delay(50);
-		right = readLineSensor(lineSensorRight);
-		left = readLineSensor(lineSensorLeft);
+	goInRelativeDirection(speed, direction);
 
-		if (right == 1 && left == 1) {
-			break;
-		} else if (right == 0 && left == 0) {
-			prizm.setMotorSpeeds(speed, speed);
-		} else if (right == 1) {
-			holdMotor(2);
-			prizm.setMotorSpeeds(-speed, 0);
-			delay(1000);
-		} else if (left == 1) {
-			holdMotor(1);
-			prizm.setMotorSpeeds(0, -speed);
-			delay(1000);
-		}
+	while (readColor().isColor(color, colorError) == invert);
+		;
+
+	if (stop) {
+		stopAllMotors(); //stop when he sees the line
 	}
 
-	prizm.setMotorSpeeds(0, 0);
 }
 
 void OmniRobot::waitForMotors() { //when called, function will only finish when both motors are at rest.
@@ -286,18 +279,13 @@ void OmniRobot::gripperVert(int direction) {
 }
 
 void OmniRobot::goToPingDistance(int speed, int target) {
-	long encoder1 = getEncoderCount(1);
-	long encoder2 = getEncoderCount(2);
-
-	prizm.setMotorSpeeds(speed, speed);
+	goInRelativeDirection(speed, 0);
 
 	while (prizm.readSonicSensorIN(pingSensor) > target) {
 		delay(10);
 	}
 
-	prizm.setMotorSpeeds(0, 0);
-
-	updatePosition(encoder1, encoder2);
+	stopAllMotors();
 }
 
 void OmniRobot::setPosition(Position p) {
@@ -322,7 +310,7 @@ RGB OmniRobot::readColor() {
 
 	colorSensor.ledStatus = 1;
 	colorSensor.readRGB(&red, &green, &blue);
-	delay(300);
+	//delay(300);
 	colorSensor.clearInterrupt();
 
 	return RGB { red, green, blue };

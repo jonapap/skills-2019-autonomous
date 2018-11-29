@@ -27,11 +27,11 @@ public:
 	Square &getSquare();
 
 private:
-	static constexpr double shiftLength = 14.21;
-	static constexpr double shiftAngle = 50.71;
+	static constexpr double shiftLength = 15;
+	static constexpr double shiftAngle = 20;
 
-	static constexpr double blockGrabOffsetLength = 8.39;
-	static constexpr double blockGrabOffsetAngle = 10.3;
+	static constexpr double blockGrabOffsetLength = 10;
+	static constexpr double blockGrabOffsetAngle = 0;
 
 };
 

@@ -2,8 +2,8 @@
 
 PRIZM prizm;
 EXPANSION exc;
-//OmniRobot robot(47.5, 12, 90);
-OmniRobot robot(0,0,0);
+OmniRobot robot(47.5, 7.5, 90);
+//OmniRobot robot(0,0,0);
 
 Square redSquare( { 28, 82.5 }, 90);
 Square blueSquare( { 68, 82.5 }, 90);
@@ -27,69 +27,40 @@ void setup() {
 	robot.invertMotor(1, 1);
 	robot.invertMotor(2, 1);
 
+	robot.advanceUntilColor(100, 0, robot.blue);
+
+	robot.advanceUntilColor(100, 270, robot.blue, true);
+
+	robot.advanceRelative(6, 100, 90);
+
 	//cycleBlocks();
 	//prizm.PrizmEnd();
 }
 
 void loop() {
-	testLocation();
-
 }
-
 
 void cycleBlocks() {
 	for (Block &b : blocks) {
 		robot.goToPosition(b.getLastPoint(), 100, 100);
-		robot.goToHeading(b.getApproachHeading(), 100);
+		robot.goToHeading(b.heading, 100);
 
-		if(b.approachSide == LEFTAPPROACH){
-			robot.turn(180, 100);
-			robot.advanceRelative(-15, 100, 180);
-		}
+		robot.advanceUntilLine(100, b.approachSide == RIGHTAPPROACH ? 90 : 270);
+		robot.advanceRelative(1.5, 100, 90);
+		robot.goToPingDistance(100, 2);
 
-
-		//grabBlock();
+		grabBlock();
 
 		robot.setPosition(b.getRobotLinePosition());
-		robot.setHeading(b.heading + 180);
 
-		robot.advanceRelative(5, 100, 180);
-
-		robot.gripperVert(DOWN);
-
-
-
-		Square &s = b.getSquare();
-		robot.goToPosition(s.getApproachPosition(), 100, 100);
-		robot.goToHeading(mod(s.getApproachHeading() + 180, 360), 100);
+		/*Square &s = b.getSquare();
+		 robot.goToPosition(s.getApproachPosition(), 100, 100);
+		 robot.goToHeading(mod(s.getApproachHeading() + 180, 360), 100);*/
 		//depositBlock();
 	}
 }
 
 void grabBlock() {
-	robot.gripperVert(UP);
-	robot.gripperHor(OPEN);
-
-	robot.alignWithLine(25);
-
-	robot.advanceRelative(5, 50);
-	robot.turn(-90, 50);
-
-	robot.goToPingDistance(50, 2);
-	//robot.setPosition(b.getRobotLinePosition());
-
-	robot.advanceRelative(-8, 50);
-
-	robot.turn(180, 50);
-	//robot.turn(90, 50);
-	//robot.advanceIN(-2, 50);
-	//robot.turn(90, 50);
-
-	robot.advanceRelative(7, 50, 180);
-
-	robot.gripperHor(CLOSE);
-	delay(1000);
-	//robot.advanceIN(-10, 100);
 
 }
 
@@ -123,10 +94,6 @@ void printXY() {
 	delay(500);
 }
 
-
-
-
-
 void serialBlocks() {
 	while (Serial.available() == 0)
 		;
@@ -134,13 +101,13 @@ void serialBlocks() {
 
 	robot.goToPosition(blocks[n].getLastPoint(), 100, 100);
 	/*robot.goToHeading(blocks[n].getApproachHeading(), 100);
-	grabBlock();
+	 grabBlock();
 
-	robot.setPosition(blocks[n].getRobotLinePosition());
-	robot.setHeading(blocks[n].heading);
+	 robot.setPosition(blocks[n].getRobotLinePosition());
+	 robot.setHeading(blocks[n].heading);
 
-	Square &s = blocks[n].getSquare();
-	robot.goToPosition(s.getApproachPosition(), 100, 100);
-	robot.goToHeading(s.getApproachHeading(), 100);
-	depositBlock();*/
+	 Square &s = blocks[n].getSquare();
+	 robot.goToPosition(s.getApproachPosition(), 100, 100);
+	 robot.goToHeading(s.getApproachHeading(), 100);
+	 depositBlock();*/
 }
