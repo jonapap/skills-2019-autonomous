@@ -33,6 +33,7 @@ public:
 	void goInRelativeDirection(double motorSpeed, double angle);
 	void goInAbsoluteDirection(double motorSpeed, double angle);
 	void turn(double degrees, int speed);
+	void turnInDirection(double motorSpeed);
 	void advanceUntilLine(int speed, double direction, boolean stop = true);
 	void advanceUntilColor(int speed, double direction, RGB color, int colorError = 10, boolean invert = false, boolean stop = true);
 	void invertMotor(int motor, int invert);
@@ -52,6 +53,7 @@ public:
 	RGB readColor();
 	void rampSpeed(unsigned int speed, unsigned int time);
 	void stopAllMotors();
+	void alignWithPing();
 
 	friend void setup();
 	friend void loop();
@@ -65,7 +67,8 @@ private:
 	const double wheelcirIN = 4 * PI;
 	double turnvalue = 15.0;
 
-	const unsigned int pingSensor = 4;
+	const unsigned int pingSensorRight = 3;
+	const unsigned int pingSensorLeft = 4;
 	const unsigned int lineSensor = 5;
 
 	const unsigned int gripperHorizontal = 2;

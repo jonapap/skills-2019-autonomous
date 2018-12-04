@@ -59,8 +59,8 @@ class PRIZM
 		void setMotorTargetPID (int P, int I, int D);
 
 		int readLineSensor(int pin);
-		int readSonicSensorCM(int pin);
-		int readSonicSensorIN(int pin);
+		double readSonicSensorCM(int pin);
+		double readSonicSensorIN(int pin);
 
 		int readBatteryVoltage(void);
 		

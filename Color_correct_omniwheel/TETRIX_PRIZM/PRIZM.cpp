@@ -441,10 +441,10 @@ int PRIZM::readLineSensor(int pin){     // Can sense black or white (follow the 
   return BWstate;
 }
 
-int PRIZM::readSonicSensorCM(int pin){   // Returns distance of object from sensor in Centimeters
+double PRIZM::readSonicSensorCM(int pin){   // Returns distance of object from sensor in Centimeters
 
   delayMicroseconds(1000);  // added in version 2 to help with reading accuracy, can't read sonic sensors very fast
-  int duration;
+  double duration;
   pinMode(pin, OUTPUT);
   digitalWrite(pin, LOW);
   delayMicroseconds(2);
@@ -453,14 +453,14 @@ int PRIZM::readSonicSensorCM(int pin){   // Returns distance of object from sens
   digitalWrite(pin,LOW);
   pinMode(pin,INPUT);
   duration = pulseIn(pin,HIGH);
-  return duration/29/2; // convert time of echo to centimeters distance
+  return duration/29.0/2.0; // convert time of echo to centimeters distance
   
 }
 
-int PRIZM::readSonicSensorIN(int pin){   // Returns distance of object from sensor in Inches
+double PRIZM::readSonicSensorIN(int pin){   // Returns distance of object from sensor in Inches
 
   delayMicroseconds(1000);  // added in version 2 to help with reading accuracy, can't read sonic sensors very fast
-  int duration;
+  double duration;
   pinMode(pin, OUTPUT);
   digitalWrite(pin, LOW);
   delayMicroseconds(2);
@@ -469,7 +469,7 @@ int PRIZM::readSonicSensorIN(int pin){   // Returns distance of object from sens
   digitalWrite(pin,LOW);
   pinMode(pin,INPUT);
   duration = pulseIn(pin,HIGH);
-  return duration/74/2; // convert time of echo to centimeters distance
+  return duration/74.0/2.0; // convert time of echo to centimeters distance
   
 }
 

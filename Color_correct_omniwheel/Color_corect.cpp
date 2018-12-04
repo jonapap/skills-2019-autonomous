@@ -30,7 +30,6 @@ void setup() {
 	robot.invertMotor(2, 1);
 
 
-
 	cycleBlocks();
 	prizm.PrizmEnd();
 }
@@ -49,6 +48,8 @@ void cycleBlocks() {
 		robot.goToHeading(b.heading, 100);
 
 		b.align(robot);
+
+		robot.alignWithPing();
 
 		grabBlock();
 

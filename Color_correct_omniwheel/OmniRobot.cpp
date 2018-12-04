@@ -110,6 +110,11 @@ void OmniRobot::turn(double degrees, int speed) {
 	heading = mod(heading + degrees, 360);
 }
 
+void OmniRobot::turnInDirection(double motorSpeed) {
+	prizm.setMotorSpeeds(motorSpeed, motorSpeed); //set target of both motors
+	exc.setMotorSpeeds(dcControllerAddr, -motorSpeed, -motorSpeed);
+}
+
 Position OmniRobot::getPosition() {
 	return {x,y};
 }
@@ -196,18 +201,42 @@ void OmniRobot::advanceUntilLine(int speed, double direction, boolean stop) { //
 
 }
 
-void OmniRobot::advanceUntilColor(int speed, double direction, RGB color, int colorError, boolean invert, boolean stop) { //advance (or move back if speed is negative) until he sees a line. If stop is true, robot will stop at line
+void OmniRobot::advanceUntilColor(int speed, double direction, RGB color,
+		int colorError, boolean invert, boolean stop) { //advance (or move back if speed is negative) until he sees a line. If stop is true, robot will stop at line
 	DEBUG_PRINTLN(__PRETTY_FUNCTION__);
 
 	goInRelativeDirection(speed, direction);
 
-	while (readColor().isColor(color, colorError) == invert);
-		;
+	while (readColor().isColor(color, colorError) == invert)
+		;;
 
 	if (stop) {
 		stopAllMotors(); //stop when he sees the line
 	}
 
+}
+
+void OmniRobot::alignWithPing() {
+	int speed = 25;
+
+	double pingRight;
+	double pingLeft;
+
+	do {
+		pingRight = prizm.readSonicSensorIN(pingSensorLeft);
+		delay(10);
+		pingLeft = prizm.readSonicSensorIN(pingSensorRight);
+
+
+		if (pingRight > pingLeft) {
+			turnInDirection(speed);
+		} else if (pingLeft > pingRight) {
+			turnInDirection(-speed);
+		}
+
+	} while (pingRight != pingLeft);
+
+	stopAllMotors();
 }
 
 void OmniRobot::waitForMotors() { //when called, function will only finish when both motors are at rest.
@@ -276,7 +305,7 @@ void OmniRobot::gripperVert(int direction) {
 void OmniRobot::goToPingDistance(int speed, int target) {
 	goInRelativeDirection(speed, 0);
 
-	while (prizm.readSonicSensorIN(pingSensor) > target) {
+	while (prizm.readSonicSensorIN(pingSensorRight) > target) {
 		delay(10);
 	}
 
