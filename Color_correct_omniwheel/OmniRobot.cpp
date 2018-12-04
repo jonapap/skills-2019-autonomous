@@ -3,11 +3,6 @@
 #include "DEBUG.h"
 #include "Functions.h"
 
-const RGB OmniRobot::white = { 137, 118, 43 };
-const RGB OmniRobot::red = { 88, 6, 5 };
-const RGB OmniRobot::blue = { 6, 17, 63 };
-const RGB OmniRobot::yellow = { 141, 43, 4 };
-
 boolean RGB::isColor(const RGB &color, int error) {
 	if (inRange(color.red, red, error) && inRange(color.green, green, error)
 			&& inRange(color.blue, blue, error)) {
@@ -201,7 +196,7 @@ void OmniRobot::advanceUntilLine(int speed, double direction, boolean stop) { //
 
 }
 
-void OmniRobot::advanceUntilColor(int speed, double direction, RGB color, boolean invert, boolean stop) { //advance (or move back if speed is negative) until he sees a line. If stop is true, robot will stop at line
+void OmniRobot::advanceUntilColor(int speed, double direction, RGB color, int colorError, boolean invert, boolean stop) { //advance (or move back if speed is negative) until he sees a line. If stop is true, robot will stop at line
 	DEBUG_PRINTLN(__PRETTY_FUNCTION__);
 
 	goInRelativeDirection(speed, direction);

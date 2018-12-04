@@ -5,9 +5,9 @@ EXPANSION exc;
 OmniRobot robot(47.5, 7.5, 90);
 //OmniRobot robot(0,0,0);
 
-Square redSquare( { 28, 82.5 }, 90);
-Square blueSquare( { 68, 82.5 }, 90);
-Square yellowSquare( { 49, 82.5 }, 90);
+Square redSquare( { 28, 82.5 }, 90, Square::red);
+Square blueSquare( { 68, 82.5 }, 90, Square::blue);
+Square yellowSquare( { 49, 82.5 }, 90, Square::yellow, 50);
 
 Block blocks[] = { Block( { 66.75, 5.5 }, 270, RIGHTAPPROACH, yellowSquare), //block 1
 Block( { 80, 33 }, 0, LEFTAPPROACH, redSquare), //block 2
@@ -23,21 +23,24 @@ void setup() {
 	Serial.begin(9600);
 #endif
 
+
+
 	prizm.PrizmBegin();
 	robot.invertMotor(1, 1);
 	robot.invertMotor(2, 1);
 
-	robot.advanceUntilColor(100, 0, robot.blue);
 
-	robot.advanceUntilColor(100, 270, robot.blue, true);
 
-	robot.advanceRelative(6, 100, 90);
-
-	//cycleBlocks();
-	//prizm.PrizmEnd();
+	cycleBlocks();
+	prizm.PrizmEnd();
 }
 
 void loop() {
+	/*RGB color = robot.readColor();
+	 Serial.println(color.red);
+	 Serial.println(color.green);
+	 Serial.println(color.blue);
+	 Serial.println("");*/
 }
 
 void cycleBlocks() {
@@ -45,31 +48,37 @@ void cycleBlocks() {
 		robot.goToPosition(b.getLastPoint(), 100, 100);
 		robot.goToHeading(b.heading, 100);
 
-		robot.advanceUntilLine(100, b.approachSide == RIGHTAPPROACH ? 90 : 270);
-		robot.advanceRelative(1.5, 100, 90);
-		robot.goToPingDistance(100, 2);
+		b.align(robot);
 
 		grabBlock();
 
-		robot.setPosition(b.getRobotLinePosition());
+		robot.setPosition(b.getRobotAlignedPosition());
 
-		/*Square &s = b.getSquare();
-		 robot.goToPosition(s.getApproachPosition(), 100, 100);
-		 robot.goToHeading(mod(s.getApproachHeading() + 180, 360), 100);*/
-		//depositBlock();
+		Square &s = b.getSquare();
+		robot.goToPosition(s.getApproachPosition(), 100, 100);
+		robot.goToHeading(s.getApproachHeading(), 100);
+
+		s.align(robot);
+		robot.setPosition(s.getRobotAlignedPosition());
+
+		depositBlock();
 	}
+}
+
+void depositBlock(){
+
 }
 
 void grabBlock() {
 
 }
-
-void depositBlock() {
-	robot.advanceRelative(10, 100, 180);
-	robot.gripperHor(OPEN);
-	delay(1000);
-	robot.advanceRelative(10, 100, 180);
-}
+/*
+ void depositBlock() {
+ robot.advanceRelative(10, 100, 180);
+ robot.gripperHor(OPEN);
+ delay(1000);
+ robot.advanceRelative(10, 100, 180);
+ }*/
 
 void testLocation() {
 	Serial.println("X :");

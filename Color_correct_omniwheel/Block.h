@@ -23,8 +23,9 @@ public:
 
 	Position getLastPoint();
 	double getApproachHeading();
-	Position getRobotLinePosition();
+	Position getRobotAlignedPosition();
 	Square &getSquare();
+	void align(OmniRobot &robot);
 
 private:
 	static constexpr double shiftLength = 15;

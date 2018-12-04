@@ -34,7 +34,7 @@ public:
 	void goInAbsoluteDirection(double motorSpeed, double angle);
 	void turn(double degrees, int speed);
 	void advanceUntilLine(int speed, double direction, boolean stop = true);
-	void advanceUntilColor(int speed, double direction, RGB color, boolean invert = false, boolean stop = true);
+	void advanceUntilColor(int speed, double direction, RGB color, int colorError = 10, boolean invert = false, boolean stop = true);
 	void invertMotor(int motor, int invert);
 	void gripperHor(int direction);
 	void gripperVert(int direction);
@@ -52,12 +52,6 @@ public:
 	RGB readColor();
 	void rampSpeed(unsigned int speed, unsigned int time);
 	void stopAllMotors();
-
-
-	static const RGB white;
-	static const RGB red;
-	static const RGB blue;
-	static const RGB yellow;
 
 	friend void setup();
 	friend void loop();
@@ -82,8 +76,6 @@ private:
 	double heading;
 	double x;
 	double y;
-
-	const int colorError = 10;
 
 	void waitForMotors();
 	void waitForEncoder(long target1, long target2);
