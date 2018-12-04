@@ -124,19 +124,10 @@ double OmniRobot::getHeading() {
 }
 
 void OmniRobot::goToPosition(Position p, int speed) {
-	goToPosition(p.x, p.y, speed, speed);
-}
-
-void OmniRobot::goToPosition(Position p, int speed, int turningSpeed) {
-	goToPosition(p.x, p.y, speed, turningSpeed);
+	goToPosition(p.x, p.y, speed);
 }
 
 void OmniRobot::goToPosition(double x2, double y2, int speed) {
-	goToPosition(x2, y2, speed, speed);
-}
-
-void OmniRobot::goToPosition(double x2, double y2, int speed,
-		int turningSpeed) {
 	DEBUG_PRINTLN(__PRETTY_FUNCTION__);
 	DEBUG_PRINTLN("");
 	DEBUG_PRINTLN("Current pos : ");
@@ -226,7 +217,6 @@ void OmniRobot::alignWithPing() {
 		pingRight = prizm.readSonicSensorIN(pingSensorLeft);
 		delay(10);
 		pingLeft = prizm.readSonicSensorIN(pingSensorRight);
-
 
 		if (pingRight > pingLeft) {
 			turnInDirection(speed);

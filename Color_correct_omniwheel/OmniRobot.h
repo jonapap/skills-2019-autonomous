@@ -43,9 +43,7 @@ public:
 	void setPosition(double x, double y);
 	void setPosition(Position p);
 	void goToPosition(double x, double y, int speed);
-	void goToPosition(double x, double y, int speed, int turningSpeed);
 	void goToPosition(Position p, int speed);
-	void goToPosition(Position p, int speed, int turningSpeed);
 	Position getPosition();
 	double getHeading();
 	void goToHeading(double heading, int speed);

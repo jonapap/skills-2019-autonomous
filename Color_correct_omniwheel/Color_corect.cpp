@@ -44,7 +44,7 @@ void loop() {
 
 void cycleBlocks() {
 	for (Block &b : blocks) {
-		robot.goToPosition(b.getLastPoint(), 100, 100);
+		robot.goToPosition(b.getLastPoint(), 100);
 		robot.goToHeading(b.heading, 100);
 
 		b.align(robot);
@@ -56,7 +56,7 @@ void cycleBlocks() {
 		robot.setPosition(b.getRobotAlignedPosition());
 
 		Square &s = b.getSquare();
-		robot.goToPosition(s.getApproachPosition(), 100, 100);
+		robot.goToPosition(s.getApproachPosition(), 100);
 		robot.goToHeading(s.getApproachHeading(), 100);
 
 		s.align(robot);
@@ -109,7 +109,7 @@ void serialBlocks() {
 		;
 	int n = Serial.parseInt();
 
-	robot.goToPosition(blocks[n].getLastPoint(), 100, 100);
+	robot.goToPosition(blocks[n].getLastPoint(), 100);
 	/*robot.goToHeading(blocks[n].getApproachHeading(), 100);
 	 grabBlock();
 
