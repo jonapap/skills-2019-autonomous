@@ -18,6 +18,8 @@ public:
 	static const RGB blue;
 	static const RGB yellow;
 
+	int numOfBlocks = 0;
+
 private:
 	Position position;
 	double heading;

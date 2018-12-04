@@ -62,12 +62,14 @@ void cycleBlocks() {
 		s.align(robot);
 		robot.setPosition(s.getRobotAlignedPosition());
 
-		depositBlock();
+		depositBlock(s);
 	}
 }
 
-void depositBlock(){
+void depositBlock(Square &s){
+	robot.advanceRelative(2, 100, s.numOfBlocks == 0 ? 0 : 180);
 
+	s.numOfBlocks++;
 }
 
 void grabBlock() {
