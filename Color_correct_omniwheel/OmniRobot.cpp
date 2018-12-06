@@ -2,6 +2,7 @@
 
 #include "DEBUG.h"
 #include "Functions.h"
+#include "Arduino_PID_Library/PID_v1.h"
 
 boolean RGB::isColor(const RGB &color, int error) {
 	if (inRange(color.red, red, error) && inRange(color.green, green, error)
@@ -208,7 +209,13 @@ void OmniRobot::advanceUntilColor(int speed, double direction, RGB color,
 }
 
 void OmniRobot::alignWithPing() {
-	int speed = 25;
+	double Setpoint = 0, Input = 0, Output = 0;
+
+	double Kp=100, Ki=1, Kd=0;
+	PID myPID(&Input, &Output, &Setpoint, Kp, Ki, Kd, DIRECT);
+
+	myPID.SetMode(AUTOMATIC);
+	myPID.SetOutputLimits(-300,300);
 
 	double pingRight;
 	double pingLeft;
@@ -218,11 +225,11 @@ void OmniRobot::alignWithPing() {
 		delay(10);
 		pingLeft = prizm.readSonicSensorIN(pingSensorRight);
 
-		if (pingRight > pingLeft) {
-			turnInDirection(speed);
-		} else if (pingLeft > pingRight) {
-			turnInDirection(-speed);
-		}
+		Input = pingLeft-pingRight;
+		myPID.Compute();
+
+		Serial.println(Output);
+		turnInDirection(Output);
 
 	} while (pingRight != pingLeft);
 

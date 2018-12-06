@@ -29,8 +29,9 @@ void setup() {
 	robot.invertMotor(1, 1);
 	robot.invertMotor(2, 1);
 
+	robot.alignWithPing();
 
-	cycleBlocks();
+	//cycleBlocks();
 	prizm.PrizmEnd();
 }
 
