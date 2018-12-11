@@ -12,7 +12,7 @@ void setup() {
 	Serial.begin(9600);
 #endif
 
-
+	setupCourt();
 
 	prizm.PrizmBegin();
 	robot.invertMotor(1, 1);

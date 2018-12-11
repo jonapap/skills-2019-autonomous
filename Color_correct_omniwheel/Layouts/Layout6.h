@@ -11,3 +11,7 @@ Block( { 15.5, 33 }, 180, RIGHTAPPROACH, yellowSquare), //block 5
 Block( { 29.5, 5.5 }, 270, LEFTAPPROACH, blueSquare), //block 4
 Block( { 90.75, 63.5 }, 0, RIGHTAPPROACH, blueSquare) //block 3
 		};
+
+void setupCourt() {
+
+}

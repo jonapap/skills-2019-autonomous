@@ -31,3 +31,13 @@ Position Block::getRobotAlignedPosition() {
 Square &Block::getSquare() {
 	return square;
 }
+
+void Block::setAfterPosition(Position p){
+	afterPosition = p;
+	hasAfterPos = true;
+}
+
+void Block::setBeforePosition(Position p){
+	beforePosition = p;
+	hasBeforePos = true;
+}

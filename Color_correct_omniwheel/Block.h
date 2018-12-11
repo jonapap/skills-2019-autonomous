@@ -17,6 +17,12 @@ public:
 
 
 	Position position;
+	Position beforePosition;
+	Position afterPosition;
+
+	boolean hasBeforePos = false;
+	boolean hasAfterPos = false;
+
 	double heading;
 	int approachSide;
 	Square &square;
@@ -26,6 +32,9 @@ public:
 	Position getRobotAlignedPosition();
 	Square &getSquare();
 	void align(OmniRobot &robot);
+
+	void setBeforePosition(Position p);
+	void setAfterPosition(Position p);
 
 private:
 	static constexpr double shiftLength = 15;
