@@ -1,6 +1,6 @@
 #include "Color_corect.h"
 
-#include "Layouts/Layout6.h"
+#include "Layouts/Layout1.h"
 
 PRIZM prizm;
 EXPANSION exc;
@@ -33,7 +33,7 @@ void loop() {
 
 void cycleBlocks() {
 	for (Block &b : blocks) {
-		robot.goToPosition(b.getLastPoint(), 100);
+		goToBlock(b);
 		robot.goToHeading(b.heading, 100);
 
 		b.align(robot);
@@ -45,7 +45,7 @@ void cycleBlocks() {
 		robot.setPosition(b.getRobotAlignedPosition());
 
 		Square &s = b.getSquare();
-		robot.goToPosition(s.getApproachPosition(), 100);
+		goToSquare(b);
 		robot.goToHeading(s.getApproachHeading(), 100);
 
 		s.align(robot);
@@ -53,6 +53,21 @@ void cycleBlocks() {
 
 		depositBlock(s);
 	}
+}
+
+void goToBlock(Block &b){
+	if(b.hasBeforePos){
+		robot.goToPosition(b.beforePosition, 100);
+	}
+
+	robot.goToPosition(b.getLastPoint(), 100);
+}
+
+void goToSquare(Block &b){
+	if(b.hasAfterPos){
+			robot.goToPosition(b.afterPosition, 100);
+		}
+	robot.goToPosition(b.getSquare().getApproachPosition(), 100);
 }
 
 void depositBlock(Square &s){
