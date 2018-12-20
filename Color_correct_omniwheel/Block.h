@@ -21,8 +21,8 @@ public:
 	Position *beforePosition = NULL;
 	Position *afterPosition = NULL;
 
-	boolean numBeforePos = false;
-	boolean numAfterPos = false;
+	int numBeforePos = 0;
+	int numAfterPos = 0;
 
 	double heading;
 	int approachSide;
