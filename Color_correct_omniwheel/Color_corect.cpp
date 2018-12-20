@@ -56,17 +56,18 @@ void cycleBlocks() {
 }
 
 void goToBlock(Block &b){
-	if(b.hasBeforePos){
-		robot.goToPosition(b.beforePosition, 100);
+	for(int i = 0; i<b.numBeforePos; i++){
+			robot.goToPosition(b.beforePosition[i], 100);
 	}
 
 	robot.goToPosition(b.getLastPoint(), 100);
 }
 
 void goToSquare(Block &b){
-	if(b.hasAfterPos){
-			robot.goToPosition(b.afterPosition, 100);
-		}
+	for(int i = 0; i<b.numAfterPos; i++){
+		robot.goToPosition(b.afterPosition[i], 100);
+	}
+
 	robot.goToPosition(b.getSquare().getApproachPosition(), 100);
 }
 

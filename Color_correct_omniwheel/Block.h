@@ -15,13 +15,14 @@ public:
 			position(p), heading(h), approachSide(s), square(c) {
 	}
 
+	~Block();
 
 	Position position;
-	Position beforePosition;
-	Position afterPosition;
+	Position *beforePosition = NULL;
+	Position *afterPosition = NULL;
 
-	boolean hasBeforePos = false;
-	boolean hasAfterPos = false;
+	boolean numBeforePos = false;
+	boolean numAfterPos = false;
 
 	double heading;
 	int approachSide;
@@ -33,8 +34,10 @@ public:
 	Square &getSquare();
 	void align(OmniRobot &robot);
 
-	void setBeforePosition(Position p);
+	void setBeforePosition(Position *p, int num);
+	void setAfterPosition(Position *p, int num);
 	void setAfterPosition(Position p);
+	void setBeforePosition(Position p);
 
 private:
 	static constexpr double shiftLength = 15;

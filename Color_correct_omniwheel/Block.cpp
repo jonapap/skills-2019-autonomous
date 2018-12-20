@@ -2,6 +2,16 @@
 #include "Functions.h"
 #include "DEBUG.h"
 
+Block::~Block(){
+	if(numAfterPos != 0){
+		delete []afterPosition;
+	}
+
+	if(numBeforePos != 0){
+			delete []beforePosition;
+		}
+}
+
 Position Block::getLastPoint() {
 	int angle = mod(mod(heading + 180, 360) + (shiftAngle * approachSide), 360);
 
@@ -32,12 +42,22 @@ Square &Block::getSquare() {
 	return square;
 }
 
-void Block::setAfterPosition(Position p){
-	afterPosition = p;
-	hasAfterPos = true;
+void Block::setAfterPosition(Position p) {
+	setAfterPosition(new Position[1]{p}, 1);
 }
 
-void Block::setBeforePosition(Position p){
+void Block::setBeforePosition(Position p) {
+	setBeforePosition(new Position[1]{p}, 1);
+}
+
+void Block::setAfterPosition(Position *p, int num) {
+	afterPosition = p;
+
+	numAfterPos = num;
+}
+
+void Block::setBeforePosition(Position *p, int num) {
 	beforePosition = p;
-	hasBeforePos = true;
+
+	numBeforePos = num;
 }
