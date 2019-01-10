@@ -63,11 +63,11 @@ private:
 	int dcControllerAddr = 1;
 
 	const double wheelcirIN = 4 * PI;
-	double turnvalue = 15.0;
+	double turnvalue = 11.5;
 
 	const unsigned int pingSensorRight = 3;
-	const unsigned int pingSensorLeft = 4;
-	const unsigned int lineSensor = 5;
+	const unsigned int pingSensorLeft = A1;
+	const unsigned int lineSensor = A2;
 
 	const unsigned int gripperHorizontal = 2;
 	const unsigned int gripperVertical = 6;

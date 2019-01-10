@@ -23,8 +23,8 @@ void setup() {
 	prizm.PrizmEnd();
 }
 
-void loop() {
-	/*RGB color = robot.readColor();
+void loop() {/*
+	RGB color = robot.readColor();
 	 Serial.println(color.red);
 	 Serial.println(color.green);
 	 Serial.println(color.blue);

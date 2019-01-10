@@ -7,7 +7,7 @@ Square yellowSquare( { 75.8, 18.5 }, 315, Square::yellow, 50);
 Block blocks[] = { Block( { 41.8, 46.4 }, 0, RIGHTAPPROACH, blueSquare), //block 1
 Block( { 89.9, 47.2}, 0, LEFTAPPROACH, blueSquare), //block 2
 Block( { 46, 90.1 }, 90, LEFTAPPROACH, redSquare),  //block 3
-Block( { 50.0, 51}, 240, RIGHTAPPROACH, yellowSquare), //block 4
+Block( { 50.0, 51}, 240, LEFTAPPROACH, yellowSquare), //block 4
 Block( { 50, 41.7 }, 120, RIGHTAPPROACH, redSquare), //block 5
 Block( { 46, 4.6 }, 270, RIGHTAPPROACH, yellowSquare) //block 6
 		};
