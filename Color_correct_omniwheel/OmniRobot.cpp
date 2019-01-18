@@ -286,10 +286,12 @@ void OmniRobot::invertMotor(int motor, int invert) {
 
 void OmniRobot::gripperHor(int direction) {
 	prizm.setServoPosition(gripperHorizontal, direction);
+	delay(GRIPPER_TIME);
 }
 
 void OmniRobot::gripperVert(int direction) {
 	prizm.setServoPosition(gripperVertical, direction);
+
 }
 
 void OmniRobot::goToPingDistance(int speed, int target) {

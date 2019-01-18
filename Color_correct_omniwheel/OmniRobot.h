@@ -1,8 +1,10 @@
 #ifndef ROBOT_H
 #define ROBOT_H
 
-#define OPEN 180
-#define CLOSE 0
+#define OPEN 0
+#define CLOSE 180
+#define GRIPPER_TIME 8000
+
 #define DOWN 180
 #define UP 0
 
@@ -63,14 +65,14 @@ private:
 	int dcControllerAddr = 1;
 
 	const double wheelcirIN = 4 * PI;
-	double turnvalue = 11.5;
+	const double turnvalue = 11.5; //15.0 for bigger robot
 
 	const unsigned int pingSensorRight = 3;
 	const unsigned int pingSensorLeft = A1;
 	const unsigned int lineSensor = A2;
 
 	const unsigned int gripperHorizontal = 2;
-	const unsigned int gripperVertical = 6;
+	const unsigned int gripperVertical = 1;
 
 	int motorinvert[4] = { 1, 1, 1, 1 };
 

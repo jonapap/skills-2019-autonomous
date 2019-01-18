@@ -18,12 +18,12 @@ void setup() {
 	robot.invertMotor(1, 1);
 	robot.invertMotor(2, 1);
 
-
 	cycleBlocks();
 	prizm.PrizmEnd();
 }
 
-void loop() {/*
+void loop() {
+	/*
 	RGB color = robot.readColor();
 	 Serial.println(color.red);
 	 Serial.println(color.green);
@@ -33,6 +33,8 @@ void loop() {/*
 
 void cycleBlocks() {
 	for (Block &b : blocks) {
+		robot.gripperVert(UP);
+		robot.gripperHor(OPEN);
 		goToBlock(b);
 		robot.goToHeading(b.heading, 100);
 
@@ -40,9 +42,9 @@ void cycleBlocks() {
 
 		robot.alignWithPing();
 
-		grabBlock();
-
 		robot.setPosition(b.getRobotAlignedPosition());
+
+		grabBlock();
 
 		Square &s = b.getSquare();
 		goToSquare(b);
@@ -78,7 +80,9 @@ void depositBlock(Square &s){
 }
 
 void grabBlock() {
-
+	robot.advanceRelative(4, 100, 0);
+	robot.gripperHor(CLOSE);
+	robot.advanceRelative(6, 100, 180);
 }
 /*
  void depositBlock() {
