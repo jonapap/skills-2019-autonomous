@@ -26,7 +26,7 @@ Position Block::getLastPoint() {
 void Block::align(OmniRobot &robot) {
 	robot.advanceUntilLine(100, approachSide == RIGHTAPPROACH ? 90 : 270);
 	robot.advanceRelative(1.5, 100, 90);
-	robot.goToPingDistance(100, 2);
+	robot.goToPingDistance(100, 4);
 }
 
 double Block::getApproachHeading() {

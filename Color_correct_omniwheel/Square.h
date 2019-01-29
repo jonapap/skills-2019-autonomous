@@ -29,7 +29,7 @@ private:
 
 	static constexpr int approachOffset = 12;
 
-	static constexpr double alignedOffsetLength = 6.5;
+	static constexpr double alignedOffsetLength = 5;
 	static constexpr double alignedOffsetAngle = 0;
 };
 

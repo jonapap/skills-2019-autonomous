@@ -1,12 +1,12 @@
 #ifndef ROBOT_H
 #define ROBOT_H
 
-#define OPEN 0
-#define CLOSE 180
+#define OPEN 0 //120
+#define CLOSE 180 //70
 #define GRIPPER_TIME 8000
 
-#define DOWN 180
-#define UP 0
+#define DOWN 180 //100
+#define UP 0 //125
 
 #include <Arduino.h>
 #include "TETRIX_PRIZM/PRIZM.h"

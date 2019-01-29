@@ -23,8 +23,7 @@ void setup() {
 }
 
 void loop() {
-	/*
-	RGB color = robot.readColor();
+	/*RGB color = robot.readColor();
 	 Serial.println(color.red);
 	 Serial.println(color.green);
 	 Serial.println(color.blue);
@@ -42,9 +41,11 @@ void cycleBlocks() {
 
 		robot.alignWithPing();
 
-		robot.setPosition(b.getRobotAlignedPosition());
-
 		grabBlock();
+
+		robot.goToPingDistance(100, 4);
+
+		robot.setPosition(b.getRobotAlignedPosition());
 
 		Square &s = b.getSquare();
 		goToSquare(b);
@@ -74,14 +75,21 @@ void goToSquare(Block &b){
 }
 
 void depositBlock(Square &s){
-	robot.advanceRelative(2, 100, s.numOfBlocks == 0 ? 0 : 180);
-
+	robot.advanceRelative(s.numOfBlocks == 0 ? 5 : 0, 100, s.numOfBlocks == 0 ? 0 : 180);
 	s.numOfBlocks++;
+
+	robot.gripperVert(DOWN);
+	delay(3000);
+	robot.gripperHor(OPEN);
+	delay(GRIPPER_TIME);
+
+	robot.advanceRelative(5, 100, 180);
 }
 
 void grabBlock() {
 	robot.advanceRelative(4, 100, 0);
 	robot.gripperHor(CLOSE);
+	delay(GRIPPER_TIME);
 	robot.advanceRelative(6, 100, 180);
 }
 /*

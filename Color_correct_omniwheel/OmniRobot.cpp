@@ -210,13 +210,14 @@ void OmniRobot::advanceUntilColor(int speed, double direction, RGB color,
 void OmniRobot::alignWithPing() {
 	int speed = 25;
 
-	double pingRight;
-	double pingLeft;
+	double diff;
 
 	do {
-		pingRight = prizm.readSonicSensorIN(pingSensorLeft);
+		double pingRight = prizm.readSonicSensorIN(pingSensorLeft);
 		delay(10);
-		pingLeft = prizm.readSonicSensorIN(pingSensorRight);
+		double pingLeft = prizm.readSonicSensorIN(pingSensorRight);
+
+		diff = pingRight-pingLeft;
 
 		if (pingRight > pingLeft) {
 			turnInDirection(speed);
@@ -224,7 +225,7 @@ void OmniRobot::alignWithPing() {
 			turnInDirection(-speed);
 		}
 
-	} while (pingRight != pingLeft);
+	} while (abs(diff) > 0.05);
 
 	stopAllMotors();
 }
@@ -286,7 +287,7 @@ void OmniRobot::invertMotor(int motor, int invert) {
 
 void OmniRobot::gripperHor(int direction) {
 	prizm.setServoPosition(gripperHorizontal, direction);
-	delay(GRIPPER_TIME);
+
 }
 
 void OmniRobot::gripperVert(int direction) {
