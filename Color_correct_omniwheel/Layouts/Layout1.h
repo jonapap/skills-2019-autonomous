@@ -19,6 +19,6 @@ void setupCourt() {
 
 	blocks[4].setAfterPosition(new Position[2]{{70, 48}, {60, 70}}, 2); //block 5
 
-	blocks[5].setBeforePosition({ 75, 48}); //block 6
+	blocks[5].setBeforePosition({ 30, 25 }); //block 6
 
 }
