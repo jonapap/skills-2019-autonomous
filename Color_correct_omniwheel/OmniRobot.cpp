@@ -2,6 +2,7 @@
 
 #include "DEBUG.h"
 #include "Functions.h"
+#include "Block.h"
 
 boolean RGB::isColor(const RGB &color, int error) {
 	if (inRange(color.red, red, error) && inRange(color.green, green, error)
@@ -183,7 +184,7 @@ void OmniRobot::advanceUntilLine(int speed, double direction, boolean stop) { //
 
 	goInRelativeDirection(speed, direction);
 
-	while (!readLineSensor(lineSensor))
+	while (!readLineSensor(lineSensorFront))
 		;
 
 	if (stop) {
@@ -295,14 +296,25 @@ void OmniRobot::gripperVert(int direction) {
 
 }
 
-void OmniRobot::goToPingDistance(int speed, int target) {
-	goInRelativeDirection(speed, 0);
+void OmniRobot::goToPingDistance(int speed, int target, int back) {
+	if(back == false){
+		goInRelativeDirection(speed, 0);
 
-	while (prizm.readSonicSensorIN(pingSensorRight) > target) {
-		delay(10);
+		while (prizm.readSonicSensorIN(pingSensorRight) > target) {
+			delay(10);
+		}
+
+		stopAllMotors();
+	} else {
+		int greater = prizm.readSonicSensorIN(pingSensorRight) > target;
+		goInRelativeDirection(speed, greater ? 0 : 180);
+
+		while (greater ? prizm.readSonicSensorIN(pingSensorRight) > target : prizm.readSonicSensorIN(pingSensorRight) < target) {
+			delay(10);
+		}
+
+		stopAllMotors();
 	}
-
-	stopAllMotors();
 }
 
 void OmniRobot::setPosition(Position p) {

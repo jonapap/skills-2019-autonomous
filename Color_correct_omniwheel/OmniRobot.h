@@ -41,7 +41,7 @@ public:
 	void invertMotor(int motor, int invert);
 	void gripperHor(int direction);
 	void gripperVert(int direction);
-	void goToPingDistance(int speed, int distance);
+	void goToPingDistance(int speed, int distance, int back = false);
 	void setPosition(double x, double y);
 	void setPosition(Position p);
 	void goToPosition(double x, double y, int speed);
@@ -54,9 +54,18 @@ public:
 	void rampSpeed(unsigned int speed, unsigned int time);
 	void stopAllMotors();
 	void alignWithPing();
+	boolean readLineSensor(int sensor);
 
 	friend void setup();
 	friend void loop();
+
+	const unsigned int pingSensorRight = 3;
+	const unsigned int pingSensorLeft = A1;
+	const unsigned int lineSensorFront = A2;
+	const unsigned int lineSensorMiddle = 4;
+
+	const unsigned int gripperHorizontal = 2;
+	const unsigned int gripperVertical = 1;
 
 private:
 	PRIZM prizm;
@@ -66,13 +75,6 @@ private:
 
 	const double wheelcirIN = 4 * PI;
 	const double turnvalue = 11.5; //15.0 for bigger robot
-
-	const unsigned int pingSensorRight = 3;
-	const unsigned int pingSensorLeft = A1;
-	const unsigned int lineSensor = A2;
-
-	const unsigned int gripperHorizontal = 2;
-	const unsigned int gripperVertical = 1;
 
 	int motorinvert[4] = { 1, 1, 1, 1 };
 
@@ -88,7 +90,6 @@ private:
 	void updateAngle(long encoder1, long encoder2);
 	void holdMotor(int motor);
 	void holdAllMotors();
-	boolean readLineSensor(int sensor);
 	int getMotorInvert(int motor);
 	double getRelativeAngle(double angle);
 	double getAbsoluteAngle(double angle);

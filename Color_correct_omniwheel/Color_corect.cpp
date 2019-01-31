@@ -37,13 +37,11 @@ void cycleBlocks() {
 		goToBlock(b);
 		robot.goToHeading(b.heading, 100);
 
-		b.align(robot);
-
-		robot.alignWithPing();
+		alignWithLine(b.approachSide);
 
 		grabBlock();
 
-		robot.goToPingDistance(100, 4);
+		robot.goToPingDistance(100, 4, true);
 
 		robot.setPosition(b.getRobotAlignedPosition());
 
@@ -92,13 +90,46 @@ void grabBlock() {
 	delay(GRIPPER_TIME);
 	robot.advanceRelative(6, 100, 180);
 }
-/*
- void depositBlock() {
- robot.advanceRelative(10, 100, 180);
- robot.gripperHor(OPEN);
- delay(1000);
- robot.advanceRelative(10, 100, 180);
- }*/
+
+void alignWithLine(int side) {
+	robot.goInRelativeDirection(50, side == RIGHTAPPROACH ? 90 : 270);
+
+	while (robot.readLineSensor(robot.lineSensorFront) == 0)
+		;
+
+	robot.goToPingDistance(50, 5);
+
+	robot.advanceRelative(3, 50, 270);
+
+	robot.goInRelativeDirection(50, 90);
+
+	int lineFront = 0;
+	while (robot.readLineSensor(robot.lineSensorMiddle) == 0) {
+		lineFront =
+				lineFront == 1 ?
+						1 : robot.readLineSensor(robot.lineSensorFront);
+	}
+
+	if (lineFront == 0) {
+		robot.turnInDirection(-50);
+		while (robot.readLineSensor(robot.lineSensorFront) == 0)
+			;
+		robot.stopAllMotors();
+	} else {
+		robot.turnInDirection(50);
+		while (robot.readLineSensor(robot.lineSensorFront) == 0)
+			;
+		while (robot.readLineSensor(robot.lineSensorFront) == 1)
+			;
+		robot.turnInDirection(-50);
+		while (robot.readLineSensor(robot.lineSensorFront) == 0)
+			;
+		robot.stopAllMotors();
+	}
+
+	robot.goToPingDistance(50, 4, true);
+
+}
 
 void testLocation() {
 	Serial.println("X :");
