@@ -7,10 +7,12 @@
 
 #define DOWN 180 //100
 #define UP 0 //125
+#define NEUTRAL 90
 
 #include <Arduino.h>
 #include "TETRIX_PRIZM/PRIZM.h"
 #include "Color_sensor/GroveColorSensor.h"
+#include "Wire.h"
 
 struct RGB {
 	int red, green, blue;

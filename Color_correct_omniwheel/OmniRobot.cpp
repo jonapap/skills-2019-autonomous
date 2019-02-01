@@ -421,3 +421,4 @@ double OmniRobot::getRelativeAngle(double angle) {
 double OmniRobot::getAbsoluteAngle(double angle) {
 	return mod(angle + heading, 360);
 }
+

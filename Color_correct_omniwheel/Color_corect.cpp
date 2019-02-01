@@ -89,8 +89,16 @@ void depositBlock(Square &s){
 
 void grabBlock() {
 	robot.advanceRelative(4, 100, 0);
+
+	robot.gripperVert(DOWN);
+	delay(500);
+	robot.gripperVert(NEUTRAL);
+
 	robot.gripperHor(CLOSE);
 	delay(GRIPPER_TIME);
+
+	robot.gripperVert(UP);
+
 	robot.advanceRelative(6, 100, 180);
 }
 
