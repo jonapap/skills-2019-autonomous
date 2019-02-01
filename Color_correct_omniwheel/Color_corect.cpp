@@ -44,6 +44,9 @@ void cycleBlocks() {
 		robot.goToPingDistance(100, 4, true);
 
 		robot.setPosition(b.getRobotAlignedPosition());
+		robot.setHeading(b.heading);
+
+		robot.advanceRelative(4, 100, 180);
 
 		Square &s = b.getSquare();
 		goToSquare(b);
