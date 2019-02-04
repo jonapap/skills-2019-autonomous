@@ -18,7 +18,8 @@ void setup() {
 	robot.invertMotor(1, 1);
 	robot.invertMotor(2, 1);
 
-	alignWithLine(RIGHTAPPROACH);
+	robot.turn(360, 100);
+
 	//cycleBlocks();
 	prizm.PrizmEnd();
 }

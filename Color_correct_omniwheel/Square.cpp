@@ -25,5 +25,5 @@ void Square::align(OmniRobot &robot) {
 	robot.advanceUntilColor(50, 0, color, colorError);
 	robot.advanceUntilColor(50, 270, white, 15);
 	//robot.advanceUntilColor(50, 90, color, colorError);
-	robot.advanceRelative(6.5, 100, 90);
+	robot.advanceRelative(5, 100, 90);
 }
