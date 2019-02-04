@@ -18,7 +18,8 @@ void setup() {
 	robot.invertMotor(1, 1);
 	robot.invertMotor(2, 1);
 
-	cycleBlocks();
+	alignWithLine(RIGHTAPPROACH);
+	//cycleBlocks();
 	prizm.PrizmEnd();
 }
 
@@ -103,30 +104,66 @@ void grabBlock() {
 }
 
 void alignWithLine(int side) {
-	robot.goInRelativeDirection(50, side == RIGHTAPPROACH ? 90 : 270);
+	long encoder1 = robot.getEncoderCount(1); //save position
+	long encoder2 = robot.getEncoderCount(2);
+	long encoder3 = robot.getEncoderCount(3);
+	long encoder4 = robot.getEncoderCount(4);
 
-	while (robot.readLineSensor(robot.lineSensorFront) == 0)
-		;
+	robot.goInRelativeDirection(50, side == RIGHTAPPROACH ? 90 : 270); //go in direction of line
 
-	robot.goToPingDistance(50, 5);
+	unsigned long timeStart = millis();
+	while (robot.readLineSensor(robot.lineSensorFront) == 0) {
+		if (millis() - timeStart > 10000) {
+			robot.stopAllMotors();
+			prizm.setMotorTargets(100, encoder1, 100, encoder2); //return to original position
+			exc.setMotorTargets(1, 100, encoder3, 100, encoder4);
+			robot.waitForMotors();
 
-	robot.advanceRelative(3, 50, 270);
+			robot.goInRelativeDirection(50, side == RIGHTAPPROACH ? 270 : 90); //check if line is in the other direction
+			unsigned long timeStart2 = millis();
+			while (robot.readLineSensor(robot.lineSensorFront) == 0
+					&& millis() - timeStart2 < 5000)
+				;
+
+			if (robot.readLineSensor(robot.lineSensorFront) == 1) //if the line is indeed there, get out of the loop
+				break;
+
+			robot.stopAllMotors();
+			prizm.setMotorTargets(100, encoder1, 100, encoder2); //else, return again to original position
+			exc.setMotorTargets(1, 100, encoder3, 100, encoder4);
+			robot.waitForMotors();
+
+			robot.advanceRelative(4, 100, 0); //advance a bit forward
+
+			encoder1 = robot.getEncoderCount(1); //save current position
+			encoder2 = robot.getEncoderCount(2);
+			encoder3 = robot.getEncoderCount(3);
+			encoder4 = robot.getEncoderCount(4);
+
+			robot.goInRelativeDirection(50, side == RIGHTAPPROACH ? 90 : 270); //search again for the line
+			timeStart = millis(); //reset time
+		}
+	}
+
+	robot.goToPingDistance(50, 5); //advance a bit
+
+	robot.advanceRelative(3, 50, 270); //go right
 
 	robot.goInRelativeDirection(50, 90);
 
 	int lineFront = 0;
-	while (robot.readLineSensor(robot.lineSensorMiddle) == 0) {
+	while (robot.readLineSensor(robot.lineSensorMiddle) == 0) { //looping until middle sensor hits. Also saves if the front sensor hit the line before the middle
 		lineFront =
 				lineFront == 1 ?
 						1 : robot.readLineSensor(robot.lineSensorFront);
 	}
 
-	if (lineFront == 0) {
+	if (lineFront == 0) { //if front sensor is at the right of the line
 		robot.turnInDirection(-50);
 		while (robot.readLineSensor(robot.lineSensorFront) == 0)
 			;
 		robot.stopAllMotors();
-	} else {
+	} else { //if the front sensor is at the left of the line
 		robot.turnInDirection(50);
 		while (robot.readLineSensor(robot.lineSensorFront) == 0)
 			;

@@ -69,6 +69,8 @@ public:
 	const unsigned int gripperHorizontal = 2;
 	const unsigned int gripperVertical = 1;
 
+	friend void alignWithLine(int side);
+
 private:
 	PRIZM prizm;
 	EXPANSION exc;
