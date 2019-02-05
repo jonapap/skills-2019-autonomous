@@ -92,6 +92,9 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Color_correct_omniwheel/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Color_correct_omniwheel/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Color_correct_omniwheel/libraries/Wire/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Robot_autonomous_2019/core/core}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Robot_autonomous_2019/core/variant}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Robot_autonomous_2019/libraries/Wire/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.cpp.sketch.input.1987175652" name="CPP source files" superClass="io.sloeber.compiler.cpp.sketch.input"/>
 							</tool>
@@ -103,6 +106,9 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Color_correct_omniwheel/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Color_correct_omniwheel/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Color_correct_omniwheel/libraries/Wire/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Robot_autonomous_2019/core/core}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Robot_autonomous_2019/core/variant}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Robot_autonomous_2019/libraries/Wire/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.c.sketch.input.1149488848" name="C Source Files" superClass="io.sloeber.compiler.c.sketch.input"/>
 							</tool>
@@ -114,6 +120,9 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Color_correct_omniwheel/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Color_correct_omniwheel/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Color_correct_omniwheel/libraries/Wire/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Robot_autonomous_2019/core/core}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Robot_autonomous_2019/core/variant}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Robot_autonomous_2019/libraries/Wire/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.S.sketch.input.512778539" name="Assembly source files" superClass="io.sloeber.compiler.S.sketch.input"/>
 							</tool>

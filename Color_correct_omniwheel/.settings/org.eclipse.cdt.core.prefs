@@ -523,7 +523,7 @@ environment/project/io.sloeber.core.toolChain.release.842113727/JANTJE.PACKAGE_I
 environment/project/io.sloeber.core.toolChain.release.842113727/JANTJE.PACKAGE_ID/value=arduino
 environment/project/io.sloeber.core.toolChain.release.842113727/JANTJE.PROJECT_NAME/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.842113727/JANTJE.PROJECT_NAME/operation=replace
-environment/project/io.sloeber.core.toolChain.release.842113727/JANTJE.PROJECT_NAME/value=Color_correct_omniwheel
+environment/project/io.sloeber.core.toolChain.release.842113727/JANTJE.PROJECT_NAME/value=Robot_autonomous_2019
 environment/project/io.sloeber.core.toolChain.release.842113727/JANTJE.SELECTED.PLATFORM/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.842113727/JANTJE.SELECTED.PLATFORM/operation=replace
 environment/project/io.sloeber.core.toolChain.release.842113727/JANTJE.SELECTED.PLATFORM/value=${eclipse_home}/arduinoPlugin/packages/arduino/hardware/avr/1.6.21
