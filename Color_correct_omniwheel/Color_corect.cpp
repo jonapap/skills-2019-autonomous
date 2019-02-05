@@ -111,7 +111,6 @@ void alignWithLine(int side) {
 	while (robot.readLineSensor(robot.lineSensorFront) == 0) {
 		if (millis() - timeStart > 10000) {
 			robot.goToPosition(encvals); //go to original position
-			robot.waitForMotors();
 
 			robot.goInRelativeDirection(50, side == RIGHTAPPROACH ? 270 : 90); //check if line is in the other direction
 			unsigned long timeStart2 = millis();
@@ -123,7 +122,6 @@ void alignWithLine(int side) {
 				break;
 
 			robot.goToPosition(encvals); //go to original position
-			robot.waitForMotors();
 
 			robot.advanceRelative(4, 100, 0); //advance a bit forward
 

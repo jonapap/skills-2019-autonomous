@@ -315,12 +315,8 @@ void OmniRobot::goToPingDistance(int speed, int target, int back) {
 		goInRelativeDirection(speed, greater ? 0 : 180);
 
 		while (greater ?
-				(readPing(pingSensorRight) > target
-						&& readPing(pingSensorLeft) > target) :
-				(readPing(pingSensorRight) < target
-						&& readPing(pingSensorLeft) < target)) {
-			delay(10);
-		}
+				(readPing(pingSensorRight) > target && readPing(pingSensorLeft) > target) :
+				(readPing(pingSensorRight) < target && readPing(pingSensorLeft) < target)) ;
 
 		stopAllMotors();
 	}

@@ -13,12 +13,12 @@ Block( { 46, 4.6 }, 270, RIGHTAPPROACH, yellowSquare) //block 6
 		};
 
 void setupCourt() {
-	blocks[0].setAfterPosition({30, 70}); //block 1
+	blocks[0].setAfterPosition({30, 70}); //block 1 - position intermédiaire après avoir pris le bloc
 
 	blocks[3].setAfterPosition({75, 51}); //block 4
 
 	blocks[4].setAfterPosition(new Position[2]{{70, 48}, {60, 70}}, 2); //block 5
 
-	blocks[5].setBeforePosition({ 30, 25 }); //block 6
+	blocks[5].setBeforePosition({ 30, 25 }); //block 6 - position intermédiaire avant d'avoir pris le bloc
 
 }
