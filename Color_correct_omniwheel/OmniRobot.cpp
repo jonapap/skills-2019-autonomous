@@ -296,20 +296,29 @@ void OmniRobot::gripperVert(int direction) {
 
 }
 
+double OmniRobot::readPing(int pin){
+	double dist = prizm.readSonicSensorIN(pin);
+	delay(10);
+	return dist;
+}
+
 void OmniRobot::goToPingDistance(int speed, int target, int back) {
 	if(back == false){
 		goInRelativeDirection(speed, 0);
 
-		while (prizm.readSonicSensorIN(pingSensorRight) > target && prizm.readSonicSensorIN(pingSensorLeft) > target) {
-			delay(10);
-		}
+		while (readPing(pingSensorRight) > target && readPing(pingSensorLeft) > target);
 
 		stopAllMotors();
 	} else {
-		int greater = prizm.readSonicSensorIN(pingSensorRight) > target;
+		int greater = readPing(pingSensorRight) > target
+				|| readPing(pingSensorLeft) > target;
 		goInRelativeDirection(speed, greater ? 0 : 180);
 
-		while (greater ? prizm.readSonicSensorIN(pingSensorRight) > target : prizm.readSonicSensorIN(pingSensorRight) < target) {
+		while (greater ?
+				(readPing(pingSensorRight) > target
+						&& readPing(pingSensorLeft) > target) :
+				(readPing(pingSensorRight) < target
+						&& readPing(pingSensorLeft) < target)) {
 			delay(10);
 		}
 

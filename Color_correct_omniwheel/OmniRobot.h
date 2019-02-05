@@ -68,6 +68,7 @@ public:
 	boolean readLineSensor(int sensor);
 	EncoderValues getEncoderValues();
 	Vector getDistance(EncoderValues values);
+	double readPing(int pin);
 
 
 	friend void setup();
