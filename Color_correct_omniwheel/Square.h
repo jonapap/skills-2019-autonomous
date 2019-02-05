@@ -20,6 +20,8 @@ public:
 
 	int numOfBlocks = 0;
 
+	friend void alignWithSquare(Square&);
+
 private:
 	Position position;
 	double heading;

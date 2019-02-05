@@ -25,6 +25,14 @@ struct Position {
 	double x, y;
 };
 
+struct EncoderValues {
+	long enc1, enc2, enc3, enc4;
+};
+
+struct Vector {
+	double distance, angle;
+};
+
 class OmniRobot {
 public:
 
@@ -48,6 +56,7 @@ public:
 	void setPosition(Position p);
 	void goToPosition(double x, double y, int speed);
 	void goToPosition(Position p, int speed);
+	void goToPosition(EncoderValues values);
 	Position getPosition();
 	double getHeading();
 	void goToHeading(double heading, int speed);
@@ -57,6 +66,9 @@ public:
 	void stopAllMotors();
 	void alignWithPing();
 	boolean readLineSensor(int sensor);
+	EncoderValues getEncoderValues();
+	Vector getDistance(EncoderValues values);
+
 
 	friend void setup();
 	friend void loop();

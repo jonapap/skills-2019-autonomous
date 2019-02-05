@@ -18,9 +18,7 @@ void setup() {
 	robot.invertMotor(1, 1);
 	robot.invertMotor(2, 1);
 
-	robot.turn(360, 100);
-
-	//cycleBlocks();
+	cycleBlocks();
 	prizm.PrizmEnd();
 }
 
@@ -105,19 +103,14 @@ void grabBlock() {
 }
 
 void alignWithLine(int side) {
-	long encoder1 = robot.getEncoderCount(1); //save position
-	long encoder2 = robot.getEncoderCount(2);
-	long encoder3 = robot.getEncoderCount(3);
-	long encoder4 = robot.getEncoderCount(4);
+	EncoderValues encvals = robot.getEncoderValues();
 
 	robot.goInRelativeDirection(50, side == RIGHTAPPROACH ? 90 : 270); //go in direction of line
 
 	unsigned long timeStart = millis();
 	while (robot.readLineSensor(robot.lineSensorFront) == 0) {
 		if (millis() - timeStart > 10000) {
-			robot.stopAllMotors();
-			prizm.setMotorTargets(100, encoder1, 100, encoder2); //return to original position
-			exc.setMotorTargets(1, 100, encoder3, 100, encoder4);
+			robot.goToPosition(encvals); //go to original position
 			robot.waitForMotors();
 
 			robot.goInRelativeDirection(50, side == RIGHTAPPROACH ? 270 : 90); //check if line is in the other direction
@@ -129,17 +122,12 @@ void alignWithLine(int side) {
 			if (robot.readLineSensor(robot.lineSensorFront) == 1) //if the line is indeed there, get out of the loop
 				break;
 
-			robot.stopAllMotors();
-			prizm.setMotorTargets(100, encoder1, 100, encoder2); //else, return again to original position
-			exc.setMotorTargets(1, 100, encoder3, 100, encoder4);
+			robot.goToPosition(encvals); //go to original position
 			robot.waitForMotors();
 
 			robot.advanceRelative(4, 100, 0); //advance a bit forward
 
-			encoder1 = robot.getEncoderCount(1); //save current position
-			encoder2 = robot.getEncoderCount(2);
-			encoder3 = robot.getEncoderCount(3);
-			encoder4 = robot.getEncoderCount(4);
+			encvals = robot.getEncoderValues(); //save position
 
 			robot.goInRelativeDirection(50, side == RIGHTAPPROACH ? 90 : 270); //search again for the line
 			timeStart = millis(); //reset time
@@ -178,6 +166,34 @@ void alignWithLine(int side) {
 
 	robot.goToPingDistance(50, 4, true);
 
+}
+
+void alignWithSquare(Square &s){
+
+	robot.advanceUntilColor(50, 0, s.color, s.colorError);
+	EncoderValues val = robot.getEncoderValues();
+
+	robot.advanceUntilColor(50, 270, s.white, 15);
+	robot.advanceRelative(2, 100, 90);
+	double distanceX = robot.getDistance(val).distance;
+
+	val = robot.getEncoderValues();
+	robot.advanceUntilColor(50, 180, s.white, 15);
+	robot.advanceUntilColor(50, 0, s.color, 15);
+	double distanceY = robot.getDistance(val).distance;
+
+	double angle = toDegrees(atan2(distanceY, distanceX));
+
+	Serial.println("Angle:");
+	Serial.println(angle);
+
+	robot.turn(-angle, 100);
+
+	robot.advanceUntilColor(50, 90, s.color, s.colorError);
+	robot.advanceUntilColor(50, 270, s.white, 15);
+	robot.advanceRelative(5, 100, 90);
+
+	robot.setHeading(s.heading);
 }
 
 void testLocation() {

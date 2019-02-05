@@ -300,7 +300,7 @@ void OmniRobot::goToPingDistance(int speed, int target, int back) {
 	if(back == false){
 		goInRelativeDirection(speed, 0);
 
-		while (prizm.readSonicSensorIN(pingSensorRight) > target) {
+		while (prizm.readSonicSensorIN(pingSensorRight) > target && prizm.readSonicSensorIN(pingSensorLeft) > target) {
 			delay(10);
 		}
 
@@ -422,3 +422,25 @@ double OmniRobot::getAbsoluteAngle(double angle) {
 	return mod(angle + heading, 360);
 }
 
+EncoderValues OmniRobot::getEncoderValues(){
+	return {getEncoderCount(1), getEncoderCount(2), getEncoderCount(3), getEncoderCount(4)};
+}
+
+void OmniRobot::goToPosition(EncoderValues values) {
+	prizm.setMotorTargets(100, values.enc1, 100, values.enc2); //return to original position
+	exc.setMotorTargets(1, 100, values.enc3, 100, values.enc4);
+	waitForMotors();
+}
+
+Vector OmniRobot::getDistance(EncoderValues values) {
+		double revolutionX = (getEncoderCount(1) + getEncoderCount(3))/2 - (values.enc1 + values.enc3)/2;
+		double revolutionY = (getEncoderCount(2) + getEncoderCount(4))/2 - (values.enc2 + values.enc4)/2;
+
+		double distanceX = (revolutionX/1440)*wheelcirIN;
+		double distanceY = (revolutionY/1440)*wheelcirIN;
+
+		double distance = sqrt(pow(distanceX, 2) + pow(distanceY, 2));
+		double angle = mod(toDegrees(atan2(distanceY, distanceX))-45, 360);
+
+		return {distance, angle};
+}
