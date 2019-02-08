@@ -4,14 +4,6 @@
 #include "Functions.h"
 #include "Block.h"
 
-boolean RGB::isColor(const RGB &color, int error) {
-	if (inRange(color.red, red, error) && inRange(color.green, green, error)
-			&& inRange(color.blue, blue, error)) {
-		return true;
-	}
-	return false;
-}
-
 void OmniRobot::advanceAbsolute(double distance, double motorSpeed,
 		double angle) {
 	advanceRelative(distance, motorSpeed, getRelativeAngle(angle));
@@ -112,8 +104,8 @@ void OmniRobot::turn(double degrees, int speed) {
 }
 
 void OmniRobot::turnInDirection(double motorSpeed) {
-	prizm.setMotorSpeeds(motorSpeed, motorSpeed); //set target of both motors
-	exc.setMotorSpeeds(dcControllerAddr, -motorSpeed, -motorSpeed);
+	prizm.setMotorSpeeds(-motorSpeed, -motorSpeed); //set target of both motors
+	exc.setMotorSpeeds(dcControllerAddr, motorSpeed, motorSpeed);
 }
 
 Position OmniRobot::getPosition() {
@@ -221,9 +213,9 @@ void OmniRobot::alignWithPing() {
 		diff = pingRight-pingLeft;
 
 		if (pingRight > pingLeft) {
-			turnInDirection(speed);
-		} else if (pingLeft > pingRight) {
 			turnInDirection(-speed);
+		} else if (pingLeft > pingRight) {
+			turnInDirection(speed);
 		}
 
 	} while (abs(diff) > 0.05);
@@ -448,4 +440,45 @@ Vector OmniRobot::getDistance(EncoderValues values) {
 		double angle = mod(toDegrees(atan2(distanceY, distanceX))-45, 360);
 
 		return {distance, angle};
+}
+
+void OmniRobot::turnUntilColor(int speed, RGB color, int colorError,
+		boolean invert, boolean stop) {
+	DEBUG_PRINTLN(__PRETTY_FUNCTION__);
+
+	turnInDirection(speed);
+
+	while (readColor().isColor(color, colorError) == invert)
+		;;
+
+	if (stop) {
+		stopAllMotors(); //stop when he sees the line
+	}
+}
+
+void OmniRobot::alignWithSquare(Square &s){
+	advanceUntilColor(50, 0, s.getColor(), s.getColorError(), 0, 0);
+	advanceRelative(2, 50, 0);
+	advanceUntilColor(50, 270, Square::white, 15);
+	advanceRelative(4, 50, 90);
+	advanceUntilColor(50, 180, Square::white, 15);
+
+	int offset = 2;
+	int colorSensorOffset = 1.5;
+
+	advanceRelative(offset, 50, 0);
+	turnUntilColor(50, Square::white, 15);
+
+	int angle = mod(toDegrees(atan2( robotradiusIN, robotradiusIN-offset)), 360);
+	int colorOffsetAngle = mod(toDegrees(atan2(colorSensorOffset, robotradiusIN)), 360);
+
+	turn(-(angle+colorOffsetAngle-3), 50);
+
+	advanceUntilColor(50, 180, Square::white, 15);
+	advanceUntilColor(50, 0, s.getColor(), s.getColorError());
+	advanceUntilColor(50, 270, Square::white, 15);
+	advanceRelative(5.5, 100, 90);
+
+	setPosition(s.getRobotAlignedPosition());
+	setHeading(s.getApproachHeading());
 }

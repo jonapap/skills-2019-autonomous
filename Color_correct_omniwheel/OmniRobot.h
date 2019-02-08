@@ -13,25 +13,10 @@
 #include "TETRIX_PRIZM/PRIZM.h"
 #include "Color_sensor/GroveColorSensor.h"
 #include "Wire.h"
+#include "Types.h"
+#include "Square.h"
 
-struct RGB {
-	int red, green, blue;
-
-	boolean isColor(const RGB &color, int error);
-
-};
-
-struct Position {
-	double x, y;
-};
-
-struct EncoderValues {
-	long enc1, enc2, enc3, enc4;
-};
-
-struct Vector {
-	double distance, angle;
-};
+class Square;
 
 class OmniRobot {
 public:
@@ -48,6 +33,7 @@ public:
 	void turnInDirection(double motorSpeed);
 	void advanceUntilLine(int speed, double direction, boolean stop = true);
 	void advanceUntilColor(int speed, double direction, RGB color, int colorError = 10, boolean invert = false, boolean stop = true);
+	void turnUntilColor(int speed, RGB color, int colorError = 10, boolean invert = false, boolean stop = true);
 	void invertMotor(int motor, int invert);
 	void gripperHor(int direction);
 	void gripperVert(int direction);
@@ -69,6 +55,7 @@ public:
 	EncoderValues getEncoderValues();
 	Vector getDistance(EncoderValues values);
 	double readPing(int pin);
+	void alignWithSquare(Square &color);
 
 
 	friend void setup();
@@ -92,6 +79,7 @@ private:
 
 	const double wheelcirIN = 4 * PI;
 	const double turnvalue = 11.2; //15.0 for bigger robot
+	const double robotradiusIN = (turnvalue*wheelcirIN)/(8*PI);
 
 	int motorinvert[4] = { 1, 1, 1, 1 };
 

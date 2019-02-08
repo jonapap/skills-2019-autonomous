@@ -1,17 +1,22 @@
 #ifndef SQUARE_H_
 #define SQUARE_H_
 
+#include "Types.h"
 #include "OmniRobot.h"
+
+class OmniRobot;
 
 class Square {
 public:
 	Square(Position p, double h, RGB c, int cE = 10) :
 			position(p), heading(h), color(c), colorError(cE){
 	}
+
 	Position getApproachPosition();
 	double getApproachHeading();
 	Position getRobotAlignedPosition();
-	void align(OmniRobot &robot);
+	RGB getColor();
+	int getColorError();
 
 	static const RGB white;
 	static const RGB red;
@@ -19,8 +24,6 @@ public:
 	static const RGB yellow;
 
 	int numOfBlocks = 0;
-
-	friend void alignWithSquare(Square&);
 
 private:
 	Position position;

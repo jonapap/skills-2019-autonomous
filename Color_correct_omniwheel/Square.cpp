@@ -21,9 +21,10 @@ Position Square::getRobotAlignedPosition() {
 	return {cos(toRadians(currentHeading))*alignedOffsetLength+position.x, sin(toRadians(currentHeading))*alignedOffsetLength+position.y};
 }
 
-void Square::align(OmniRobot &robot) {
-	robot.advanceUntilColor(50, 0, color, colorError);
-	robot.advanceUntilColor(50, 270, white, 15);
-	//robot.advanceUntilColor(50, 90, color, colorError);
-	robot.advanceRelative(5, 100, 90);
+RGB Square::getColor(){
+	return color;
+}
+
+int Square::getColorError(){
+	return colorError;
 }

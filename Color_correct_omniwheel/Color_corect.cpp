@@ -52,7 +52,7 @@ void cycleBlocks() {
 		goToSquare(b);
 		robot.goToHeading(s.getApproachHeading(), 100);
 
-		s.align(robot);
+		robot.alignWithSquare(s);
 		robot.setPosition(s.getRobotAlignedPosition());
 
 		depositBlock(s);
@@ -146,17 +146,17 @@ void alignWithLine(int side) {
 	}
 
 	if (lineFront == 0) { //if front sensor is at the right of the line
-		robot.turnInDirection(-50);
+		robot.turnInDirection(50);
 		while (robot.readLineSensor(robot.lineSensorFront) == 0)
 			;
 		robot.stopAllMotors();
 	} else { //if the front sensor is at the left of the line
-		robot.turnInDirection(50);
+		robot.turnInDirection(-50);
 		while (robot.readLineSensor(robot.lineSensorFront) == 0)
 			;
 		while (robot.readLineSensor(robot.lineSensorFront) == 1)
 			;
-		robot.turnInDirection(-50);
+		robot.turnInDirection(50);
 		while (robot.readLineSensor(robot.lineSensorFront) == 0)
 			;
 		robot.stopAllMotors();
@@ -168,7 +168,7 @@ void alignWithLine(int side) {
 
 void alignWithSquare(Square &s){
 
-	robot.advanceUntilColor(50, 0, s.color, s.colorError);
+	robot.advanceUntilColor(50, 0, s.getColor(), s.getColorError());
 	EncoderValues val = robot.getEncoderValues();
 
 	robot.advanceUntilColor(50, 270, s.white, 15);
@@ -177,7 +177,7 @@ void alignWithSquare(Square &s){
 
 	val = robot.getEncoderValues();
 	robot.advanceUntilColor(50, 180, s.white, 15);
-	robot.advanceUntilColor(50, 0, s.color, 15);
+	robot.advanceUntilColor(50, 0, s.getColor(), 15);
 	double distanceY = robot.getDistance(val).distance;
 
 	double angle = toDegrees(atan2(distanceY, distanceX));
@@ -187,11 +187,11 @@ void alignWithSquare(Square &s){
 
 	robot.turn(-angle, 100);
 
-	robot.advanceUntilColor(50, 90, s.color, s.colorError);
+	robot.advanceUntilColor(50, 90, s.getColor(), s.getColorError());
 	robot.advanceUntilColor(50, 270, s.white, 15);
 	robot.advanceRelative(5, 100, 90);
 
-	robot.setHeading(s.heading);
+	robot.setHeading(s.getApproachHeading());
 }
 
 void testLocation() {
