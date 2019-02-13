@@ -32,7 +32,7 @@ public:
 	void turn(double degrees, int speed);
 	void turnInDirection(double motorSpeed);
 	void advanceUntilLine(int speed, double direction, boolean stop = true);
-	void advanceUntilColor(int speed, double direction, RGB color, int colorError = 10, boolean invert = false, boolean stop = true);
+	boolean advanceUntilColor(int speed, double direction, RGB color, int colorError = 10, boolean invert = false, boolean stop = true, long timeout = 0);
 	void turnUntilColor(int speed, RGB color, int colorError = 10, boolean invert = false, boolean stop = true);
 	void invertMotor(int motor, int invert);
 	void gripperHor(int direction);
@@ -42,7 +42,7 @@ public:
 	void setPosition(Position p);
 	void goToPosition(double x, double y, int speed);
 	void goToPosition(Position p, int speed);
-	void goToPosition(EncoderValues values);
+	void goToPosition(EncoderValues values, int speed);
 	Position getPosition();
 	double getHeading();
 	void goToHeading(double heading, int speed);

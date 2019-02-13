@@ -185,19 +185,27 @@ void OmniRobot::advanceUntilLine(int speed, double direction, boolean stop) { //
 
 }
 
-void OmniRobot::advanceUntilColor(int speed, double direction, RGB color,
-		int colorError, boolean invert, boolean stop) { //advance (or move back if speed is negative) until he sees a line. If stop is true, robot will stop at line
+boolean OmniRobot::advanceUntilColor(int speed, double direction, RGB color,
+		int colorError, boolean invert, boolean stop, long timeout) { //advance (or move back if speed is negative) until he sees a line.
+	//If invert is true, the function will end when the robot stop seeing the specified color. If stop is true, robot will stop at line.
+	//timeout is how long the function will wait for reaching a square in millisecond. 0 if robot should check indefinitely.
+	//The function will return true if the color has been reached, false if it stopped because of the timeout.
 	DEBUG_PRINTLN(__PRETTY_FUNCTION__);
 
 	goInRelativeDirection(speed, direction);
 
-	while (readColor().isColor(color, colorError) == invert)
+	long timeStart = millis();
+	while (readColor().isColor(color, colorError) == invert && timeout == 0 ? true : millis()-timeStart < timeout)
 		;;
 
 	if (stop) {
 		stopAllMotors(); //stop when he sees the line
 	}
 
+	if(millis()-timeStart >= timeout)
+		return false;
+	else
+		return true;
 }
 
 void OmniRobot::alignWithPing() {
@@ -423,7 +431,7 @@ EncoderValues OmniRobot::getEncoderValues(){
 	return {getEncoderCount(1), getEncoderCount(2), getEncoderCount(3), getEncoderCount(4)};
 }
 
-void OmniRobot::goToPosition(EncoderValues values) {
+void OmniRobot::goToPosition(EncoderValues values, int speed) {
 	prizm.setMotorTargets(100, values.enc1, 100, values.enc2); //return to original position
 	exc.setMotorTargets(1, 100, values.enc3, 100, values.enc4);
 	waitForMotors();
@@ -456,29 +464,53 @@ void OmniRobot::turnUntilColor(int speed, RGB color, int colorError,
 	}
 }
 
-void OmniRobot::alignWithSquare(Square &s){
-	advanceUntilColor(50, 0, s.getColor(), s.getColorError(), 0, 0);
-	advanceRelative(2, 50, 0);
-	advanceUntilColor(50, 270, Square::white, 15);
-	advanceRelative(4, 50, 90);
-	advanceUntilColor(50, 180, Square::white, 15);
+void OmniRobot::alignWithSquare(Square &s) {
+	boolean reached = false;
+	int count = 0;
+	EncoderValues val = getEncoderValues(); //save robot's position
 
-	int offset = 2;
-	int colorSensorOffset = 1.5;
+	do {
+		reached = advanceUntilColor(50, 0, s.getColor(), s.getColorError(), 0,
+				0, 5000); //try to reach square color with a 5000 ms timeout
 
-	advanceRelative(offset, 50, 0);
-	turnUntilColor(50, Square::white, 15);
+		if (reached == false && (count == 0 || count == 1)) { //if we didn't hit the block and we are at our first or second try
+			goToPosition(val, 100); //return to orignial position
+			advanceRelative(4, 100, count == 0 ? 90 : 270); //try to move a bit to left(at first try) or right(at second try)
+		} else if (reached == false && count == 2) { //if we still didn't reach the square at the third try
+			goToPosition(val, 100); //return to original position
+			setPosition(s.getApproachPosition()); //make sure the robot's position is correct
+			goToPosition(s.getRobotAlignedPosition(), 100); //go to where we think the square is
+			break; //get out of the loop
+		}
 
-	int angle = mod(toDegrees(atan2( robotradiusIN, robotradiusIN-offset)), 360);
-	int colorOffsetAngle = mod(toDegrees(atan2(colorSensorOffset, robotradiusIN)), 360);
+		count++; //increase the amount of times the robot tried to rach the square
+	} while (reached == false); //stay in the loop as long as the robot didn't reach the square (or we didn't break out of the loop)
 
-	turn(-(angle+colorOffsetAngle-3), 50);
+	if (reached == true) { //continue aligning with square only if we have reached the square
+		advanceRelative(2, 50, 0); //the following four lines make sure the robot is at a certain distance from the bottom and right side of the square
+		advanceUntilColor(50, 270, Square::white, 15);
+		advanceRelative(4, 50, 90);
+		advanceUntilColor(50, 180, Square::white, 15);
 
-	advanceUntilColor(50, 180, Square::white, 15);
-	advanceUntilColor(50, 0, s.getColor(), s.getColorError());
-	advanceUntilColor(50, 270, Square::white, 15);
-	advanceRelative(5.5, 100, 90);
+		int offset = 2; //how much the robot will advance from bottom of square
+		int colorSensorOffset = 1.5; //how much the color is off from the center
 
-	setPosition(s.getRobotAlignedPosition());
-	setHeading(s.getApproachHeading());
+		advanceRelative(offset, 50, 0); //advance the specified offset
+		turnUntilColor(50, Square::white, 15); //turn until the color sees white
+
+		int angle = mod(toDegrees(atan2(robotradiusIN, robotradiusIN - offset)),
+				360); //calculate angle required base on offset and robot radius
+		int colorOffsetAngle = mod(
+				toDegrees(atan2(colorSensorOffset, robotradiusIN)), 360); //the angle of the color sensor from the center of the robot
+
+		turn(-(angle + colorOffsetAngle - 3), 50); //turn the calculated amount
+
+		advanceUntilColor(50, 180, Square::white, 15); //following four lines will place robot at the bottom center of the robot
+		advanceUntilColor(50, 0, s.getColor(), s.getColorError());
+		advanceUntilColor(50, 270, Square::white, 15);
+		advanceRelative(5.5, 100, 90);
+
+		setPosition(s.getRobotAlignedPosition()); //set the position
+		setHeading(s.getApproachHeading()); //set the heading
+	}
 }
