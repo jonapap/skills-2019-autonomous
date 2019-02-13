@@ -186,7 +186,7 @@ void OmniRobot::advanceUntilLine(int speed, double direction, boolean stop) { //
 }
 
 boolean OmniRobot::advanceUntilColor(int speed, double direction, RGB color,
-		int colorError, boolean invert, boolean stop, long timeout) { //advance (or move back if speed is negative) until he sees a line.
+		int colorError, boolean invert, boolean stop, unsigned long timeout) { //advance (or move back if speed is negative) until he sees a line.
 	//If invert is true, the function will end when the robot stop seeing the specified color. If stop is true, robot will stop at line.
 	//timeout is how long the function will wait for reaching a square in millisecond. 0 if robot should check indefinitely.
 	//The function will return true if the color has been reached, false if it stopped because of the timeout.
@@ -194,7 +194,7 @@ boolean OmniRobot::advanceUntilColor(int speed, double direction, RGB color,
 
 	goInRelativeDirection(speed, direction);
 
-	long timeStart = millis();
+	unsigned long timeStart = millis();
 	while (readColor().isColor(color, colorError) == invert && timeout == 0 ? true : millis()-timeStart < timeout)
 		;;
 
@@ -432,8 +432,8 @@ EncoderValues OmniRobot::getEncoderValues(){
 }
 
 void OmniRobot::goToPosition(EncoderValues values, int speed) {
-	prizm.setMotorTargets(100, values.enc1, 100, values.enc2); //return to original position
-	exc.setMotorTargets(1, 100, values.enc3, 100, values.enc4);
+	prizm.setMotorTargets(speed, values.enc1, speed, values.enc2); //return to original position
+	exc.setMotorTargets(1, speed, values.enc3, speed, values.enc4);
 	waitForMotors();
 }
 
