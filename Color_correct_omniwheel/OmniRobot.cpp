@@ -195,8 +195,7 @@ boolean OmniRobot::advanceUntilColor(int speed, double direction, RGB color,
 	goInRelativeDirection(speed, direction);
 
 	unsigned long timeStart = millis();
-	while (readColor().isColor(color, colorError) == invert && timeout == 0 ? true : millis()-timeStart < timeout)
-		;;
+	while (readColor().isColor(color, colorError) == invert && (timeout == 0 ? true : millis()-timeStart < timeout));
 
 	if (stop) {
 		stopAllMotors(); //stop when he sees the line
@@ -475,7 +474,7 @@ void OmniRobot::alignWithSquare(Square &s) {
 
 		if (reached == false && (count == 0 || count == 1)) { //if we didn't hit the block and we are at our first or second try
 			goToPosition(val, 100); //return to orignial position
-			advanceRelative(4, 100, count == 0 ? 90 : 270); //try to move a bit to left(at first try) or right(at second try)
+			advanceRelative(8, 100, count == 0 ? 90 : 270); //try to move a bit to left(at first try) or right(at second try)
 		} else if (reached == false && count == 2) { //if we still didn't reach the square at the third try
 			goToPosition(val, 100); //return to original position
 			setPosition(s.getApproachPosition()); //make sure the robot's position is correct
