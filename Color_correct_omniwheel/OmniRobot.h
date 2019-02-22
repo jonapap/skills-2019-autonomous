@@ -77,8 +77,8 @@ private:
 
 	int dcControllerAddr = 1;
 
-	const double wheelcirIN = 4 * PI;
-	const double turnvalue = 11.2; //15.0 for bigger robot
+	const double wheelcirIN = (4 * PI)-0.2;
+	const double turnvalue = 11.65; //15.0 for bigger robot
 	const double robotradiusIN = (turnvalue*wheelcirIN)/(8*PI);
 
 	int motorinvert[4] = { 1, 1, 1, 1 };
