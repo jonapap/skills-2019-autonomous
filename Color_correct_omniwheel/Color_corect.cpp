@@ -18,8 +18,19 @@ void setup() {
 	robot.invertMotor(1, 1);
 	robot.invertMotor(2, 1);
 
+	long timeStart = millis();
 	cycleBlocks();
-	prizm.PrizmEnd();
+
+	if(millis()-timeStart > 600000){
+		while(true){
+			prizm.setRedLED(HIGH);
+			delay(500);
+			prizm.setRedLED(LOW);
+			delay(500);
+		}
+	} else {
+		prizm.PrizmEnd();
+	}
 }
 
 void loop() {
