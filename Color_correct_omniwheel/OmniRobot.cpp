@@ -492,22 +492,19 @@ void OmniRobot::alignWithSquare(Square &s) {
 		advanceUntilColor(50, 180, Square::white, 15);
 
 		int offset = 2; //how much the robot will advance from bottom of square
-		int colorSensorOffset = 1.5; //how much the color is off from the center
 
 		advanceRelative(offset, 50, 0); //advance the specified offset
 		turnUntilColor(50, Square::white, 15); //turn until the color sees white
 
 		int angle = mod(toDegrees(atan2(robotradiusIN, robotradiusIN - offset)),
 				360); //calculate angle required base on offset and robot radius
-		int colorOffsetAngle = mod(
-				toDegrees(atan2(colorSensorOffset, robotradiusIN)), 360); //the angle of the color sensor from the center of the robot
 
-		turn(-(angle + colorOffsetAngle - 3), 50); //turn the calculated amount
+		turn(-(angle-3), 50); //turn the calculated amount (with a small offset)
 
 		advanceUntilColor(50, 180, Square::white, 15); //following four lines will place robot at the bottom center of the robot
 		advanceUntilColor(50, 0, s.getColor(), s.getColorError());
 		advanceUntilColor(50, 270, Square::white, 15);
-		advanceRelative(5.5, 100, 90);
+		advanceRelative(6.5, 100, 90);
 
 		setPosition(s.getRobotAlignedPosition()); //set the position
 		setHeading(s.getApproachHeading()); //set the heading
