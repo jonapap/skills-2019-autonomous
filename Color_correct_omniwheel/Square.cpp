@@ -1,10 +1,10 @@
 #include "Square.h"
 #include "Functions.h"
 
-const RGB Square::white = { 243, 214, 26 };
-const RGB Square::red = { 150, 13, 7 };
-const RGB Square::blue = { 22, 82, 83 };
-const RGB Square::yellow = { 246, 199, 6 };
+const RGB Square::white = { 222, 197, 24 };
+const RGB Square::red = { 140, 11, 6 };
+const RGB Square::blue = { 20, 75, 72 };
+const RGB Square::yellow = { 253, 204, 6 };
 
 Position Square::getApproachPosition() {
 	int offsetHeading = mod(heading + 180, 360);
