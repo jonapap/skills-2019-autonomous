@@ -5,6 +5,7 @@
 PRIZM prizm;
 EXPANSION exc;
 
+const unsigned int startBlock = 4;
 
 void setup() {
 
@@ -42,11 +43,16 @@ void loop() {
 }
 
 void cycleBlocks() {
-	for (Block &b : blocks) {
+	int firstTime = true;
+	for (unsigned int i = startBlock; i<(sizeof(blocks)/sizeof(blocks[0])); i++) {
+		Block &b = blocks[i];
+
 		robot.gripperVert(UP);
 		robot.gripperHor(OPEN);
-		goToBlock(b);
-		robot.goToHeading(b.heading, 100);
+		if (!firstTime || i == 0) {
+			goToBlock(b);
+			robot.goToHeading(b.heading, 100);
+		}
 
 		alignWithLine(b.approachSide);
 
@@ -67,6 +73,8 @@ void cycleBlocks() {
 		robot.setPosition(s.getRobotAlignedPosition());
 
 		depositBlock(s);
+
+		firstTime = false;
 	}
 }
 
