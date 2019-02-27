@@ -5,7 +5,7 @@
 PRIZM prizm;
 EXPANSION exc;
 
-const unsigned int startBlock = 4;
+const unsigned int startBlock = 0;
 
 void setup() {
 
@@ -35,6 +35,10 @@ void setup() {
 }
 
 void loop() {
+	/*while(Serial.available() == 0);
+	int data = Serial.parseInt();
+	Serial.println(data);
+	prizm.setServoPosition(robot.gripperHorizontal, data);*/
 	/*RGB color = robot.readColor();
 	 Serial.println(color.red);
 	 Serial.println(color.green);
@@ -99,7 +103,7 @@ void depositBlock(Square &s){
 	s.numOfBlocks++;
 
 	robot.gripperVert(DOWN);
-	delay(3000);
+	delay(4000);
 	robot.gripperHor(OPEN);
 	delay(GRIPPER_TIME);
 
