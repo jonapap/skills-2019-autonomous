@@ -19,6 +19,7 @@ void setup() {
 	robot.invertMotor(1, 1);
 	robot.invertMotor(2, 1);
 
+
 	long timeStart = millis();
 	cycleBlocks();
 
@@ -99,15 +100,23 @@ void goToSquare(Block &b){
 }
 
 void depositBlock(Square &s){
-	robot.advanceRelative(s.numOfBlocks == 0 ? 5 : 0, 100, s.numOfBlocks == 0 ? 0 : 180);
+	if(s.numOfBlocks == 0){
+		robot.advanceRelative(3, 100, 0);
+		robot.gripperVert(DOWN);
+		delay(4000);
+		robot.gripperHor(OPEN);
+		delay(GRIPPER_TIME);
+		robot.advanceRelative(5, 100, 180);
+	} else {
+		robot.advanceRelative(3, 100, 180);
+		robot.gripperVert(DOWN);
+		delay(4000);
+		robot.advanceRelative(3.75, 100, 0);
+		robot.gripperHor(OPEN);
+		delay(GRIPPER_TIME);
+		robot.advanceRelative(5, 100, 180);
+	}
 	s.numOfBlocks++;
-
-	robot.gripperVert(DOWN);
-	delay(4000);
-	robot.gripperHor(OPEN);
-	delay(GRIPPER_TIME);
-
-	robot.advanceRelative(5, 100, 180);
 }
 
 void grabBlock() {
