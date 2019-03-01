@@ -84,18 +84,18 @@ void cycleBlocks() {
 
 void goToBlock(Block &b){
 	for(int i = 0; i<b.numBeforePos; i++){
-			robot.goToPosition(b.beforePosition[i], 100);
+			robot.goToPosition(b.beforePosition[i], 200);
 	}
 
-	robot.goToPosition(b.getLastPoint(), 100);
+	robot.goToPosition(b.getLastPoint(), 200);
 }
 
 void goToSquare(Block &b){
 	for(int i = 0; i<b.numAfterPos; i++){
-		robot.goToPosition(b.afterPosition[i], 100);
+		robot.goToPosition(b.afterPosition[i], 200);
 	}
 
-	robot.goToPosition(b.getSquare().getApproachPosition(), 100);
+	robot.goToPosition(b.getSquare().getApproachPosition(), 200);
 }
 
 void depositBlock(Square &s){
