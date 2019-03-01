@@ -73,7 +73,7 @@ void cycleBlocks() {
 		goToSquare(b);
 		robot.goToHeading(s.getApproachHeading(), 100);
 
-		robot.alignWithSquare(s);
+		alignWithSquare(s);
 		robot.setPosition(s.getRobotAlignedPosition());
 
 		depositBlock(s);
@@ -189,32 +189,52 @@ void alignWithLine(int side) {
 
 }
 
-void alignWithSquare(Square &s){
+void alignWithSquare(Square &s) {
+	boolean reached = false;
+	int count = 0;
+	EncoderValues val = robot.getEncoderValues(); //save robot's position
 
-	robot.advanceUntilColor(50, 0, s.getColor(), s.getColorError());
-	EncoderValues val = robot.getEncoderValues();
+	do {
+		reached = robot.advanceUntilColor(50, 0, s.getColor(), s.getColorError(), 0,
+				0, 5000); //try to reach square color with a 5000 ms timeout
 
-	robot.advanceUntilColor(50, 270, s.white, 15);
-	robot.advanceRelative(2, 100, 90);
-	double distanceX = robot.getDistance(val).distance;
+		if (reached == false && (count == 0 || count == 1)) { //if we didn't hit the block and we are at our first or second try
+			robot.goToPosition(val, 100); //return to orignial position
+			robot.advanceRelative(8, 100, count == 0 ? 90 : 270); //try to move a bit to left(at first try) or right(at second try)
+		} else if (reached == false && count == 2) { //if we still didn't reach the square at the third try
+			robot.goToPosition(val, 100); //return to original position
+			robot.setPosition(s.getApproachPosition()); //make sure the robot's position is correct
+			robot.goToPosition(s.getRobotAlignedPosition(), 100); //go to where we think the square is
+			break; //get out of the loop
+		}
 
-	val = robot.getEncoderValues();
-	robot.advanceUntilColor(50, 180, s.white, 15);
-	robot.advanceUntilColor(50, 0, s.getColor(), 15);
-	double distanceY = robot.getDistance(val).distance;
+		count++; //increase the amount of times the robot tried to rach the square
+	} while (reached == false); //stay in the loop as long as the robot didn't reach the square (or we didn't break out of the loop)
 
-	double angle = toDegrees(atan2(distanceY, distanceX));
+	if (reached == true) { //continue aligning with square only if we have reached the square
+		robot.advanceRelative(2, 50, 0); //the following four lines make sure the robot is at a certain distance from the bottom and right side of the square
+		robot.advanceUntilColor(50, 270, Square::white, 15);
+		robot.advanceRelative(4, 50, 90);
+		robot.advanceUntilColor(50, 180, Square::white, 15);
 
-	Serial.println("Angle:");
-	Serial.println(angle);
+		int offset = 2; //how much the robot will advance from bottom of square
 
-	robot.turn(-angle, 100);
+		robot.advanceRelative(offset, 50, 0); //advance the specified offset
+		robot.turnUntilColor(50, Square::white, 15); //turn until the color sees white
 
-	robot.advanceUntilColor(50, 90, s.getColor(), s.getColorError());
-	robot.advanceUntilColor(50, 270, s.white, 15);
-	robot.advanceRelative(5, 100, 90);
+		int angle = mod(toDegrees(atan2(robot.robotradiusIN, robot.robotradiusIN - offset)),
+				360); //calculate angle required base on offset and robot radius
 
-	robot.setHeading(s.getApproachHeading());
+		robot.turn(-(angle-3), 50); //turn the calculated amount (with a small offset)
+
+		robot.advanceUntilColor(50, 180, Square::white, 15); //following four lines will place robot at the bottom center of the robot
+		robot.advanceUntilColor(50, 0, s.getColor(), s.getColorError());
+		robot.advanceUntilColor(50, 270, Square::white, 15);
+		robot.advanceRelative(6.5, 100, 90);
+
+		robot.setPosition(s.getRobotAlignedPosition()); //set the position
+		robot.setHeading(s.getApproachHeading()); //set the heading
+	}
 }
 
 void testLocation() {

@@ -55,7 +55,6 @@ public:
 	EncoderValues getEncoderValues();
 	Vector getDistance(EncoderValues values);
 	double readPing(int pin);
-	void alignWithSquare(Square &color);
 
 
 	friend void setup();
@@ -71,15 +70,15 @@ public:
 
 	friend void alignWithLine(int side);
 
+	const double wheelcirIN = (4 * PI)-0.2;
+	const double turnvalue = 11.65; //15.0 for bigger robot
+	const double robotradiusIN = (turnvalue*wheelcirIN)/(8*PI);
+
 private:
 	PRIZM prizm;
 	EXPANSION exc;
 
 	int dcControllerAddr = 1;
-
-	const double wheelcirIN = (4 * PI)-0.2;
-	const double turnvalue = 11.65; //15.0 for bigger robot
-	const double robotradiusIN = (turnvalue*wheelcirIN)/(8*PI);
 
 	int motorinvert[4] = { 1, 1, 1, 1 };
 

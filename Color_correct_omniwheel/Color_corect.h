@@ -19,7 +19,7 @@ void depositBlock(Square &s);
 void goToBlock(Block &b);
 void goToSquare(Block &b);
 void alignWithLine(int side);
-void alginWithSquare(Square &s);
+void alignWithSquare(Square &s);
 
 
 #endif /* _Color_corect_H_ */
