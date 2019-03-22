@@ -32,8 +32,8 @@ public:
 	void turn(double degrees, int speed);
 	void turnInDirection(double motorSpeed);
 	void advanceUntilLine(int speed, double direction, boolean stop = true);
-	boolean advanceUntilColor(int speed, double direction, RGB color, int colorError = 10, boolean invert = false, boolean stop = true, unsigned long timeout = 0);
-	void turnUntilColor(int speed, RGB color, int colorError = 10, boolean invert = false, boolean stop = true);
+	boolean advanceUntilColor(int speed, double direction, RGB color, int colorError = 20, boolean invert = false, boolean stop = true, unsigned long timeout = 0);
+	void turnUntilColor(int speed, RGB color, int colorError = 20, boolean invert = false, boolean stop = true);
 	void invertMotor(int motor, int invert);
 	void gripperHor(int direction);
 	void gripperVert(int direction);
