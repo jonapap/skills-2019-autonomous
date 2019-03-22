@@ -1,6 +1,6 @@
 #include "Color_corect.h"
 
-#include "Layouts/Layout1.h"
+#include "Layouts/Layout2.h"
 
 PRIZM prizm;
 EXPANSION exc;
