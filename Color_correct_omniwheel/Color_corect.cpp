@@ -5,7 +5,7 @@
 PRIZM prizm;
 EXPANSION exc;
 
-const unsigned int startBlock = 4;
+const unsigned int startBlock = 0;
 
 void setup() {
 
@@ -226,7 +226,7 @@ void alignWithSquare(Square &s) {
 	} while (reached == false); //stay in the loop as long as the robot didn't reach the square (or we didn't break out of the loop)
 
 	if (reached == true) { //continue aligning with square only if we have reached the square
-		robot.advanceRelative(2, 50, 0); //the following four lines make sure the robot is at a certain distance from the bottom and right side of the square
+		/*robot.advanceRelative(2, 50, 0); //the following four lines make sure the robot is at a certain distance from the bottom and right side of the square
 		robot.advanceUntilColor(50, 270, Square::white);
 		robot.advanceRelative(4, 50, 90);
 		robot.advanceUntilColor(50, 180, Square::white);
@@ -242,7 +242,7 @@ void alignWithSquare(Square &s) {
 		robot.turn(-(angle-3), 50); //turn the calculated amount (with a small offset)
 
 		robot.advanceUntilColor(50, 180, Square::white); //following four lines will place robot at the bottom center of the robot
-		robot.advanceUntilColor(50, 0, s.getColor(), s.getColorError());
+		robot.advanceUntilColor(50, 0, s.getColor(), s.getColorError());*/
 		robot.advanceUntilColor(50, 270, Square::white);
 		robot.advanceRelative(6.5, 100, 90);
 
