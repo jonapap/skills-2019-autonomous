@@ -1,11 +1,11 @@
 #include "Color_corect.h"
 
-#include "Layouts/Layout2.h"
+#include "Layouts/Layout3.h"
 
 PRIZM prizm;
 EXPANSION exc;
 
-const unsigned int startBlock = 0;
+const unsigned int startBlock = 4;
 
 void setup() {
 
@@ -116,6 +116,11 @@ void depositBlock(Square &s){
 		delay(GRIPPER_TIME);
 		robot.advanceRelative(5, 100, 180);
 	}
+
+	if(s.afterFunction != NULL){
+		s.afterFunction();
+	}
+
 	s.numOfBlocks++;
 }
 
@@ -222,23 +227,23 @@ void alignWithSquare(Square &s) {
 
 	if (reached == true) { //continue aligning with square only if we have reached the square
 		robot.advanceRelative(2, 50, 0); //the following four lines make sure the robot is at a certain distance from the bottom and right side of the square
-		robot.advanceUntilColor(50, 270, Square::white, 15);
+		robot.advanceUntilColor(50, 270, Square::white);
 		robot.advanceRelative(4, 50, 90);
-		robot.advanceUntilColor(50, 180, Square::white, 15);
+		robot.advanceUntilColor(50, 180, Square::white);
 
 		int offset = 2; //how much the robot will advance from bottom of square
 
 		robot.advanceRelative(offset, 50, 0); //advance the specified offset
-		robot.turnUntilColor(50, Square::white, 15); //turn until the color sees white
+		robot.turnUntilColor(50, Square::white); //turn until the color sees white
 
 		int angle = mod(toDegrees(atan2(robot.robotradiusIN, robot.robotradiusIN - offset)),
 				360); //calculate angle required base on offset and robot radius
 
 		robot.turn(-(angle-3), 50); //turn the calculated amount (with a small offset)
 
-		robot.advanceUntilColor(50, 180, Square::white, 15); //following four lines will place robot at the bottom center of the robot
+		robot.advanceUntilColor(50, 180, Square::white); //following four lines will place robot at the bottom center of the robot
 		robot.advanceUntilColor(50, 0, s.getColor(), s.getColorError());
-		robot.advanceUntilColor(50, 270, Square::white, 15);
+		robot.advanceUntilColor(50, 270, Square::white);
 		robot.advanceRelative(6.5, 100, 90);
 
 		robot.setPosition(s.getRobotAlignedPosition()); //set the position

@@ -25,6 +25,8 @@ public:
 
 	int numOfBlocks = 0;
 
+	void (*afterFunction)() = NULL;
+
 private:
 	Position position;
 	double heading;
