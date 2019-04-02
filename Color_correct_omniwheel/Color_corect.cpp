@@ -19,7 +19,9 @@ void setup() {
 	robot.invertMotor(1, 1);
 	robot.invertMotor(2, 1);
 
-
+	Serial.begin(9600);
+	alignWithSquare(redSquare);
+	prizm.PrizmEnd();
 
 	long timeStart = millis();
 	cycleBlocks();
@@ -242,7 +244,16 @@ void alignWithSquare(Square &s) {
 
 		robot.advanceUntilColor(50, 180, Square::white); //following four lines will place robot at the bottom center of the robot
 		robot.advanceUntilColor(50, 0, s.getColor(), s.getColorError());*/
-		robot.advanceUntilColor(50, 270, Square::white);
+
+		//this loop make sure we are the end of the square, and not at the bottom
+
+		while (!robot.readColor().isColor(Square::white, 20)) { //while we didn't reach white
+			robot.advanceUntilColor(50, 270, Square::white); //advance until we reach white
+			robot.advanceRelative(0.5, 100, 315); //advance a bit to check if it is still white at the top
+		}
+
+		robot.advanceRelative(0.5, 100, 135);
+
 		robot.advanceRelative(6.5, 100, 90);
 
 		robot.setPosition(s.getRobotAlignedPosition()); //set the position
