@@ -35,4 +35,8 @@ void sendln(T first, Args ... args) {
 	sendln(args...);
 }
 
+inline boolean isZero(int a){
+	return a == 0 ? true : false;
+}
+
 #endif

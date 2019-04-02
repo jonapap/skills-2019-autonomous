@@ -26,8 +26,14 @@ void OmniRobot::advanceRelative(double distance, double motorSpeed,
 	long revolution3 = getEncoderCount(3) + revolutionX;
 	long revolution4 = getEncoderCount(4) + revolutionY;
 
-	double speedX = cos(toRadians(angleOffset)) * motorSpeed;
+	double speedX = cos(toRadians(angleOffset)) * motorSpeed; //calculate speed based on angle
 	double speedY = sin(toRadians(angleOffset)) * motorSpeed;
+
+	speedX = isZero(speedX) ? 100 : speedX; //Make sure the speed is never zero.
+	speedY = isZero(speedY) ? 100 : speedY; //If it is zero, the controller will try to reach the target,
+										    //but will not be able to turn the wheel (speed=0), staying stuck forever.
+
+
 
 	prizm.setMotorTargets(speedX, revolution1, speedY, revolution2);
 	exc.setMotorTargets(dcControllerAddr, speedX, revolution3, speedY,
