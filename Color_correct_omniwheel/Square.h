@@ -17,6 +17,8 @@ public:
 	Position getRobotAlignedPosition();
 	RGB getColor();
 	int getColorError();
+	void setAfterFunction(void(*)(Square&));
+	void callAfterFunction();
 
 	static const RGB white;
 	static const RGB red;
@@ -25,7 +27,7 @@ public:
 
 	int numOfBlocks = 0;
 
-	void (*afterFunction)() = NULL;
+
 
 private:
 	Position position;
@@ -33,6 +35,8 @@ private:
 	RGB color;
 
 	int colorError;
+
+	void (*afterFunction)(Square&) = NULL;
 
 	static constexpr int approachOffset = 12;
 

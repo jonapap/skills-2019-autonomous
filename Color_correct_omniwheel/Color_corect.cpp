@@ -118,11 +118,9 @@ void depositBlock(Square &s){
 		robot.advanceRelative(5, 100, 180);
 	}
 
-	if(s.afterFunction != NULL){
-		s.afterFunction();
-	}
-
 	s.numOfBlocks++;
+
+	s.callAfterFunction();
 }
 
 void grabBlock() {
