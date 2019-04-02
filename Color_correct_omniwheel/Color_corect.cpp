@@ -1,6 +1,6 @@
 #include "Color_corect.h"
 
-#include "Layouts/Layout3.h"
+#include "Layouts/Layout4.h"
 
 PRIZM prizm;
 EXPANSION exc;
@@ -18,6 +18,7 @@ void setup() {
 	prizm.PrizmBegin();
 	robot.invertMotor(1, 1);
 	robot.invertMotor(2, 1);
+
 
 
 	long timeStart = millis();
@@ -125,7 +126,7 @@ void depositBlock(Square &s){
 }
 
 void grabBlock() {
-	robot.advanceRelative(4, 100, 0);
+	robot.advanceRelative(3, 100, 0);
 
 	robot.gripperVert(DOWN);
 	delay(500);
