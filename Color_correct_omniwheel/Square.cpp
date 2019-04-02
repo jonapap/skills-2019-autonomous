@@ -1,7 +1,7 @@
 #include "Square.h"
 #include "Functions.h"
 
-const RGB Square::white = { 166, 147, 46 };
+const RGB Square::white = { 139, 122, 38 };
 const RGB Square::red = { 78, 6, 4 };
 const RGB Square::blue = { 10, 12, 41 };
 const RGB Square::yellow = { 166, 52, 5 };
