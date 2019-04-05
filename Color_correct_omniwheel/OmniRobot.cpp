@@ -13,6 +13,8 @@ void OmniRobot::advanceAbsolute(double distance, double motorSpeed,
 void OmniRobot::advanceRelative(double distance, double motorSpeed,
 		double angle) {
 
+	DEBUG_PRINTLN(__PRETTY_FUNCTION__);
+
 	double angleOffset = mod(angle + 45, 360); //offset angle so 0 is the gripper
 
 	double distanceX = cos(toRadians(angleOffset)) * distance;
@@ -29,31 +31,45 @@ void OmniRobot::advanceRelative(double distance, double motorSpeed,
 	double speedX = cos(toRadians(angleOffset)) * motorSpeed; //calculate speed based on angle
 	double speedY = sin(toRadians(angleOffset)) * motorSpeed;
 
+	DEBUG_PRINTLN("Speed (uncorrected)");
+	DEBUG_PRINTLN(speedX);
+	DEBUG_PRINTLN(speedY);
+	DEBUG_PRINTLN(isZero(speedX));
+	DEBUG_PRINTLN(isZero(speedY));
+
 	speedX = isZero(speedX) ? 100 : speedX; //Make sure the speed is never zero.
 	speedY = isZero(speedY) ? 100 : speedY; //If it is zero, the controller will try to reach the target,
 										    //but will not be able to turn the wheel (speed=0), staying stuck forever.
-
-
 
 	prizm.setMotorTargets(speedX, revolution1, speedY, revolution2);
 	exc.setMotorTargets(dcControllerAddr, speedX, revolution3, speedY,
 			revolution4);
 
-	waitForMotors();
 
-	DEBUG_PRINTLN(__PRETTY_FUNCTION__);
 	DEBUG_PRINTLN("");
+	DEBUG_PRINTLN("Current Encoders values :");
+	DEBUG_PRINTLN(getEncoderCount(1));
+	DEBUG_PRINTLN(getEncoderCount(2));
+	DEBUG_PRINTLN(getEncoderCount(3));
+	DEBUG_PRINTLN(getEncoderCount(4));
 	DEBUG_PRINTLN("Encoders target :");
 	DEBUG_PRINTLN(revolution1);
 	DEBUG_PRINTLN(revolution2);
 	DEBUG_PRINTLN(revolution3);
 	DEBUG_PRINTLN(revolution4);
 	DEBUG_PRINTLN("");
+	DEBUG_PRINTLN("Speed :");
+	DEBUG_PRINTLN(speedX);
+	DEBUG_PRINTLN(speedY);
 	DEBUG_PRINTLN("Distance : ");
 	DEBUG_PRINTLN(distance);
-
 	DEBUG_PRINTLN("Angle : ");
 	DEBUG_PRINTLN(angle);
+	DEBUG_PRINTLN("Angle offset : ");
+	DEBUG_PRINTLN(angleOffset);
+
+	waitForMotors();
+	DEBUG_PRINTLN("Reached target");
 
 	x += cos(toRadians(getAbsoluteAngle(angle))) * distance;
 	y += sin(toRadians(getAbsoluteAngle(angle))) * distance;
@@ -202,6 +218,74 @@ boolean OmniRobot::advanceUntilColor(int speed, double direction, RGB color,
 
 	unsigned long timeStart = millis();
 	while (readColor().isColor(color, colorError) == invert && (timeout == 0 ? true : millis()-timeStart < timeout));
+
+	if (stop) {
+		stopAllMotors(); //stop when he sees the line
+	}
+
+	if(millis()-timeStart >= timeout)
+		return false;
+	else
+		return true;
+}
+
+boolean OmniRobot::advanceUntilColor(int speed, double direction, boolean stop, unsigned long timeout) { //advance (or move back if speed is negative) until he sees a color contrast.
+	//If invert is true, the function will end when the robot stop seeing the specified color. If stop is true, robot will stop at line.
+	//timeout is how long the function will wait for reaching a square in millisecond. 0 if robot should check indefinitely.
+	//The function will return true if the color has been reached, false if it stopped because of the timeout.
+	DEBUG_PRINTLN(__PRETTY_FUNCTION__);
+
+	goInRelativeDirection(speed, direction);
+
+	RGB buffer[24]; //create buffer for holding past color values. Robot reads 24 color / second, so buffer will overwrite each second
+
+	int samecolorcount = 0;
+	RGB color1 = readColor();
+	while(samecolorcount < 7){ //while we dont see the same color 7 times
+		RGB color2 = readColor(); //read current color
+
+		if(color1.isColor(color2, 20)){ //if the two color are the same
+			samecolorcount++; //increase the counter
+		} else {
+			color1 = color2; //if not, change the color
+			samecolorcount = 0; //reset counter
+		}
+	}
+
+	sendln("Color reference (RGB) : ", color1.red, ", ", color1.green, ", ", color1.blue);
+
+
+	for(int i = 0; i < 24; i++){
+		buffer[i] = color1; //initialize the array to present color
+	}
+
+	int hitcount = 0;
+	int buffercount = 0;
+	unsigned long timeStart = millis();
+	while (timeout == 0 ? true : millis() - timeStart < timeout) {
+		RGB color = readColor();
+		RGB &pastcolor = buffer[buffercount];
+
+		//calculate the difference between current color and the color from a second ago.
+		int diff = (abs(color.red - pastcolor.red)
+				+ abs(color.green - pastcolor.green)
+				+ abs(color.blue - pastcolor.blue)) / 3;
+
+		if (diff > 35) {//if diff is greater then 25, get out of loop
+			DEBUG_PRINT("Diff : ");
+			DEBUG_PRINTLN(diff);
+			hitcount++;
+		}
+
+		if(hitcount == 10) {
+			break;
+		}
+
+		buffer[buffercount] = color; //update the buffer
+		buffercount = buffercount == 23 ? 0 : buffercount + 1; //if count equals 23, get back to 0, else add one to buffercount
+	}
+
+	DEBUG_PRINTLN("");
 
 	if (stop) {
 		stopAllMotors(); //stop when he sees the line

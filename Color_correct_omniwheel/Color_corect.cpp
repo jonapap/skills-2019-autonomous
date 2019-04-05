@@ -19,10 +19,6 @@ void setup() {
 	robot.invertMotor(1, 1);
 	robot.invertMotor(2, 1);
 
-	Serial.begin(9600);
-	alignWithSquare(redSquare);
-	prizm.PrizmEnd();
-
 	long timeStart = millis();
 	cycleBlocks();
 
@@ -47,7 +43,8 @@ void loop() {
 	 Serial.println(color.red);
 	 Serial.println(color.green);
 	 Serial.println(color.blue);
-	 Serial.println("");*/
+	 Serial.println("");
+	 delay(1000);*/
 }
 
 void cycleBlocks() {
@@ -210,8 +207,8 @@ void alignWithSquare(Square &s) {
 	EncoderValues val = robot.getEncoderValues(); //save robot's position
 
 	do {
-		reached = robot.advanceUntilColor(50, 0, s.getColor(), s.getColorError(), 0,
-				0, 5000); //try to reach square color with a 5000 ms timeout
+		reached = robot.advanceUntilColor(50, 0,
+				false, 5000); //try to reach square color with a 5000 ms timeout
 
 		if (reached == false && (count == 0 || count == 1)) { //if we didn't hit the block and we are at our first or second try
 			robot.goToPosition(val, 100); //return to orignial position
@@ -247,14 +244,28 @@ void alignWithSquare(Square &s) {
 
 		//this loop make sure we are the end of the square, and not at the bottom
 
-		while (!robot.readColor().isColor(Square::white, 20)) { //while we didn't reach white
-			robot.advanceUntilColor(50, 270, Square::white); //advance until we reach white
-			robot.advanceRelative(0.5, 100, 315); //advance a bit to check if it is still white at the top
+		robot.advanceRelative(0.75, 50, 0);
+		robot.advanceUntilColor(50, 270);
+
+		/*RGB pastcolor = robot.readColor(); //read current color
+
+		while (robot.readColor().isColor(pastcolor, 20)) { //while the color didin't change
+			robot.advanceUntilColor(50, 270); //advance until we reach a contrast
+			robot.advanceRelative(1, 50, 315); //advance a bit to check if it is still the same color
 		}
 
-		robot.advanceRelative(0.5, 100, 135);
+		robot.advanceRelative(1, 50, 135);*/
 
 		robot.advanceRelative(6.5, 100, 90);
+
+		/*if(robot.readColor().isColor(pastcolor, 20)) { //if we are still on square
+			robot.advanceUntilColor(50, 180);
+			robot.advanceUntilColor(50, 0, pastcolor);
+		}*/
+
+		robot.advanceUntilColor(50, 180);
+
+		robot.advanceRelative(1, 100, 0);
 
 		robot.setPosition(s.getRobotAlignedPosition()); //set the position
 		robot.setHeading(s.getApproachHeading()); //set the heading
