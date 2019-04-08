@@ -19,6 +19,7 @@ void setup() {
 	robot.invertMotor(1, 1);
 	robot.invertMotor(2, 1);
 
+
 	long timeStart = millis();
 	cycleBlocks();
 
@@ -245,16 +246,16 @@ void alignWithSquare(Square &s) {
 		//this loop make sure we are the end of the square, and not at the bottom
 
 		robot.advanceRelative(0.75, 50, 0);
-		robot.advanceUntilColor(50, 270);
+		//robot.advanceUntilColor(50, 270);
 
-		/*RGB pastcolor = robot.readColor(); //read current color
+		RGB pastcolor = robot.readColor(); //read current color
 
 		while (robot.readColor().isColor(pastcolor, 20)) { //while the color didin't change
 			robot.advanceUntilColor(50, 270); //advance until we reach a contrast
 			robot.advanceRelative(1, 50, 315); //advance a bit to check if it is still the same color
 		}
 
-		robot.advanceRelative(1, 50, 135);*/
+		robot.advanceRelative(1, 50, 135);
 
 		robot.advanceRelative(6.5, 100, 90);
 

@@ -23,6 +23,9 @@ void OmniRobot::advanceRelative(double distance, double motorSpeed,
 	double revolutionX = (distanceX / wheelcirIN) * 1440; //get how many wheel turn we need to make, and multiply by 1440 (one revolution for encoder)
 	double revolutionY = (distanceY / wheelcirIN) * 1440;
 
+	revolutionX = isZero(revolutionX) ? 5 : revolutionX; //Make sure all wheels turn a bit to prevent a possible bug in the PRIZM.
+	revolutionY = isZero(revolutionY) ? 5 : revolutionY;
+
 	long revolution1 = getEncoderCount(1) + revolutionX; //add to current encoder value of motor 1. Here, the current encoder count is inverted because we inverted this motor at the beginning, but this function is not inverted by default
 	long revolution2 = getEncoderCount(2) + revolutionY; //add to current encoder value of motor 2
 	long revolution3 = getEncoderCount(3) + revolutionX;
@@ -37,8 +40,8 @@ void OmniRobot::advanceRelative(double distance, double motorSpeed,
 	DEBUG_PRINTLN(isZero(speedX));
 	DEBUG_PRINTLN(isZero(speedY));
 
-	speedX = isZero(speedX) ? 100 : speedX; //Make sure the speed is never zero.
-	speedY = isZero(speedY) ? 100 : speedY; //If it is zero, the controller will try to reach the target,
+	speedX = isZero(speedX) ? 10 : speedX; //Make sure the speed is never zero.
+	speedY = isZero(speedY) ? 10 : speedY; //If it is zero, the controller will try to reach the target,
 										    //but will not be able to turn the wheel (speed=0), staying stuck forever.
 
 	prizm.setMotorTargets(speedX, revolution1, speedY, revolution2);
