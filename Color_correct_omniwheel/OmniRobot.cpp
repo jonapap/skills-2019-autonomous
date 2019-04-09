@@ -23,8 +23,8 @@ void OmniRobot::advanceRelative(double distance, double motorSpeed,
 	double revolutionX = (distanceX / wheelcirIN) * 1440; //get how many wheel turn we need to make, and multiply by 1440 (one revolution for encoder)
 	double revolutionY = (distanceY / wheelcirIN) * 1440;
 
-	revolutionX = isZero(revolutionX) ? 5 : revolutionX; //Make sure all wheels turn a bit to prevent a possible bug in the PRIZM.
-	revolutionY = isZero(revolutionY) ? 5 : revolutionY;
+	//revolutionX = isZero(revolutionX) ? 5 : revolutionX; //Make sure all wheels turn a bit to prevent a possible bug in the PRIZM.
+	//revolutionY = isZero(revolutionY) ? 5 : revolutionY;
 
 	long revolution1 = getEncoderCount(1) + revolutionX; //add to current encoder value of motor 1. Here, the current encoder count is inverted because we inverted this motor at the beginning, but this function is not inverted by default
 	long revolution2 = getEncoderCount(2) + revolutionY; //add to current encoder value of motor 2
@@ -40,13 +40,30 @@ void OmniRobot::advanceRelative(double distance, double motorSpeed,
 	DEBUG_PRINTLN(isZero(speedX));
 	DEBUG_PRINTLN(isZero(speedY));
 
-	speedX = isZero(speedX) ? 10 : speedX; //Make sure the speed is never zero.
-	speedY = isZero(speedY) ? 10 : speedY; //If it is zero, the controller will try to reach the target,
+	//speedX = isZero(speedX) ? 10 : speedX; //Make sure the speed is never zero.
+	//speedY = isZero(speedY) ? 10 : speedY; //If it is zero, the controller will try to reach the target,
 										    //but will not be able to turn the wheel (speed=0), staying stuck forever.
 
-	prizm.setMotorTargets(speedX, revolution1, speedY, revolution2);
-	exc.setMotorTargets(dcControllerAddr, speedX, revolution3, speedY,
-			revolution4);
+	if(!isZero(revolutionX) && !isZero(revolutionY)){
+		DEBUG_PRINTLN("Not zero");
+		prizm.setMotorTargets(speedX, revolution1, speedY, revolution2);
+		exc.setMotorTargets(dcControllerAddr, speedX, revolution3, speedY,
+				revolution4);
+	} else {
+		DEBUG_PRINTLN("Zero");
+		if(!isZero(revolutionX)){
+			DEBUG_PRINTLN("Setting X targets");
+			prizm.setMotorTarget(1, speedX, revolution1);
+			exc.setMotorTarget(dcControllerAddr, 1, speedX, revolution3);
+		}
+
+		if(!isZero(revolutionY)){
+			DEBUG_PRINTLN("Setting Y targets");
+			prizm.setMotorTarget(2, speedY, revolution2);
+			exc.setMotorTarget(dcControllerAddr, 2, speedY, revolution4);
+		}
+
+	}
 
 
 	DEBUG_PRINTLN("");
