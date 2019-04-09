@@ -244,7 +244,7 @@ boolean OmniRobot::advanceUntilColor(int speed, double direction, boolean stop, 
 
 	int samecolorcount = 0;
 	RGB color1 = readColor();
-	while(samecolorcount < 7){ //while we dont see the same color 7 times
+	while(samecolorcount < 4){ //while we dont see the same color 7 times
 		RGB color2 = readColor(); //read current color
 
 		if(color1.isColor(color2, 20)){ //if the two color are the same
