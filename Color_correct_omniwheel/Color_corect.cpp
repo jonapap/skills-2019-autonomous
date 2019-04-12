@@ -124,7 +124,8 @@ void depositBlock(Square &s){
 }
 
 void grabBlock() {
-	robot.advanceRelative(3, 100, 0);
+	//robot.advanceRelative(3, 100, 0);
+	robot.goToPingDistance(50, 0.5);
 
 	robot.gripperVert(DOWN);
 	delay(500);
