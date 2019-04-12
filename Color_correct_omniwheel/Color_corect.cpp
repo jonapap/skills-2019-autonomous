@@ -258,7 +258,7 @@ void alignWithSquare(Square &s) {
 
 		robot.advanceRelative(1, 50, 135);*/
 
-		robot.advanceRelative(6.5, 100, 90);
+		robot.advanceRelative(7, 100, 90);
 
 		/*if(robot.readColor().isColor(pastcolor, 20)) { //if we are still on square
 			robot.advanceUntilColor(50, 180);
