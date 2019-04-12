@@ -210,7 +210,7 @@ void alignWithSquare(Square &s) {
 
 	do {
 		reached = robot.advanceUntilColor(50, 0,
-				false, 5000); //try to reach square color with a 5000 ms timeout
+				false, 8000); //try to reach square color with a 5000 ms timeout
 
 		if (reached == false && (count == 0 || count == 1)) { //if we didn't hit the block and we are at our first or second try
 			robot.goToPosition(val, 100); //return to orignial position
