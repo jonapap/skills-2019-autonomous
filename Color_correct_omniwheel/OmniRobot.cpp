@@ -412,7 +412,7 @@ double OmniRobot::readPing(int pin){
 	return dist;
 }
 
-void OmniRobot::goToPingDistance(int speed, int target, int back) {
+void OmniRobot::goToPingDistance(int speed, double target, int back) {
 	if(back == false){
 		goInRelativeDirection(speed, 0);
 
