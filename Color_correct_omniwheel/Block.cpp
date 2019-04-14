@@ -61,3 +61,27 @@ void Block::setBeforePosition(Position *p, int num) { //set after positions. The
 
 	numBeforePos = num;
 }
+
+//Sets the function to be used after placing block
+void Block::setAfterFunction(void (*f)(Block&)){
+	afterFunction = f;
+}
+
+//Call the function to be used after placing block
+void Block::callAfterFunction(){
+	if(afterFunction != NULL){
+		afterFunction(*this);
+	}
+}
+
+//Sets the function to be used after placing block
+void Block::setBeforeFunction(void (*f)(Block&)){
+	beforeFunction = f;
+}
+
+//Call the function to be used after placing block
+void Block::callBeforeFunction(){
+	if(beforeFunction != NULL){
+		beforeFunction(*this);
+	}
+}

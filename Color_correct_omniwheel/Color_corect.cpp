@@ -66,6 +66,7 @@ void cycleBlocks() {
 		alignWithLine(b.approachSide);
 
 		grabBlock();
+		b.callAfterFunction(); //call after function if there is any
 
 		robot.goToPingDistance(100, 4, true);
 
@@ -93,6 +94,8 @@ void goToBlock(Block &b){
 	}
 
 	robot.goToPosition(b.getLastPoint(), 200); //go to the block
+
+	b.callBeforeFunction(); //call before function (if there is any)
 }
 
 void goToSquare(Block &b){

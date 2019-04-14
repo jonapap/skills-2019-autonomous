@@ -39,7 +39,15 @@ public:
 	void setAfterPosition(Position p);
 	void setBeforePosition(Position p);
 
+	void setAfterFunction(void (*)(Block&));
+	void callAfterFunction();
+	void setBeforeFunction(void (*)(Block&));
+	void callBeforeFunction();
+
 private:
+	void (*afterFunction)(Block&) = NULL;
+	void (*beforeFunction)(Block&) = NULL;
+
 	static constexpr double shiftLength = 15; //length and angle from middle of block to where the robot should go before aligning with the block
 	static constexpr double shiftAngle = 20;
 
