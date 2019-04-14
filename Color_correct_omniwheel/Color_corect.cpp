@@ -101,6 +101,8 @@ void goToSquare(Block &b){
 	}
 
 	robot.goToPosition(b.getSquare().getApproachPosition(), 200); //go to square
+
+	b.getSquare().callBeforeFunction(); //call before function (if there is any)
 }
 
 void depositBlock(Square &s){

@@ -39,9 +39,21 @@ void Square::setAfterFunction(void (*f)(Square&)){
 	afterFunction = f;
 }
 
-//Call the function to be sued after placing block
+//Call the function to be used after placing block
 void Square::callAfterFunction(){
 	if(afterFunction != NULL){
 		afterFunction(*this);
+	}
+}
+
+//Sets the function to be used after placing block
+void Square::setBeforeFunction(void (*f)(Square&)){
+	beforeFunction = f;
+}
+
+//Call the function to be used after placing block
+void Square::callBeforeFunction(){
+	if(beforeFunction != NULL){
+		beforeFunction(*this);
 	}
 }
