@@ -5,19 +5,19 @@
 #include "Block.h"
 
 void OmniRobot::advanceAbsolute(double distance, double motorSpeed,
-		double angle) {
+		double angle) { //advance robot in specified direction and distance. The angle is relative to the entire court, independent of the robot's heading
 	advanceRelative(distance, motorSpeed, getRelativeAngle(angle));
 }
 
 //advance distance in IN
 void OmniRobot::advanceRelative(double distance, double motorSpeed,
-		double angle) {
+		double angle) { //advance robot in specified direction and distance. The angle is relative to the robot
 
 	DEBUG_PRINTLN(__PRETTY_FUNCTION__);
 
 	double angleOffset = mod(angle + 45, 360); //offset angle so 0 is the gripper
 
-	double distanceX = cos(toRadians(angleOffset)) * distance;
+	double distanceX = cos(toRadians(angleOffset)) * distance; //get the distance to travel in X and Y
 	double distanceY = sin(toRadians(angleOffset)) * distance;
 
 	double revolutionX = (distanceX / wheelcirIN) * 1440; //get how many wheel turn we need to make, and multiply by 1440 (one revolution for encoder)
@@ -44,12 +44,12 @@ void OmniRobot::advanceRelative(double distance, double motorSpeed,
 	//speedY = isZero(speedY) ? 10 : speedY; //If it is zero, the controller will try to reach the target,
 										    //but will not be able to turn the wheel (speed=0), staying stuck forever.
 
-	if(!isZero(revolutionX) && !isZero(revolutionY)){
+	if(!isZero(revolutionX) && !isZero(revolutionY)){ //check if all wheels should turn. This a workaround to a PRIZM bug.
 		DEBUG_PRINTLN("Not zero");
-		prizm.setMotorTargets(speedX, revolution1, speedY, revolution2);
+		prizm.setMotorTargets(speedX, revolution1, speedY, revolution2); //if so, set the target and speed for all wheel
 		exc.setMotorTargets(dcControllerAddr, speedX, revolution3, speedY,
 				revolution4);
-	} else {
+	} else { //else, just set the target and speed for the wheels that will turn
 		DEBUG_PRINTLN("Zero");
 		if(!isZero(revolutionX)){
 			DEBUG_PRINTLN("Setting X targets");
@@ -91,12 +91,12 @@ void OmniRobot::advanceRelative(double distance, double motorSpeed,
 	waitForMotors();
 	DEBUG_PRINTLN("Reached target");
 
-	x += cos(toRadians(getAbsoluteAngle(angle))) * distance;
+	x += cos(toRadians(getAbsoluteAngle(angle))) * distance; //update the robot's position
 	y += sin(toRadians(getAbsoluteAngle(angle))) * distance;
 
 }
 
-void OmniRobot::goInRelativeDirection(double motorSpeed, double angle) {
+void OmniRobot::goInRelativeDirection(double motorSpeed, double angle) { //advance robot in direction relative to the robot
 	DEBUG_PRINTLN(__PRETTY_FUNCTION__);
 	DEBUG_PRINTLN("");
 	DEBUG_PRINTLN("Angle :");
@@ -113,16 +113,16 @@ void OmniRobot::goInRelativeDirection(double motorSpeed, double angle) {
 
 }
 
-void OmniRobot::goInAbsoluteDirection(double motorSpeed, double angle) {
+void OmniRobot::goInAbsoluteDirection(double motorSpeed, double angle) { //advance robot in direction relative to the court (independent of robot's heading)
 	goInRelativeDirection(motorSpeed, getRelativeAngle(angle));
 }
 
-void OmniRobot::stopAllMotors() {
+void OmniRobot::stopAllMotors() { //stop all motors
 	prizm.setMotorSpeeds(0, 0);
 	exc.setMotorSpeeds(1, 0, 0);
 }
 
-void OmniRobot::rampSpeed(unsigned int speed, unsigned int time) {
+void OmniRobot::rampSpeed(unsigned int speed, unsigned int time) { //gradually accelerate motors. Not used and probably not working
 	for (unsigned int i = 0; i < speed; i += speed / (time / 10)) {
 		prizm.setMotorSpeeds(i, i);
 	}
@@ -142,10 +142,10 @@ void OmniRobot::turn(double degrees, int speed) {
 			revolution4);
 	waitForMotors(); //wait here while robot is turning
 
-	heading = mod(heading + degrees, 360);
+	heading = mod(heading + degrees, 360); //update heading
 }
 
-void OmniRobot::turnInDirection(double motorSpeed) {
+void OmniRobot::turnInDirection(double motorSpeed) { //turn robot in a direction
 	prizm.setMotorSpeeds(-motorSpeed, -motorSpeed); //set target of both motors
 	exc.setMotorSpeeds(dcControllerAddr, motorSpeed, motorSpeed);
 }
@@ -158,11 +158,11 @@ double OmniRobot::getHeading() {
 	return heading;
 }
 
-void OmniRobot::goToPosition(Position p, int speed) {
+void OmniRobot::goToPosition(Position p, int speed) { //go to the specified position
 	goToPosition(p.x, p.y, speed);
 }
 
-void OmniRobot::goToPosition(double x2, double y2, int speed) {
+void OmniRobot::goToPosition(double x2, double y2, int speed) { //go to the specified position
 	DEBUG_PRINTLN(__PRETTY_FUNCTION__);
 	DEBUG_PRINTLN("");
 	DEBUG_PRINTLN("Current pos : ");
@@ -193,7 +193,7 @@ void OmniRobot::goToPosition(double x2, double y2, int speed) {
 	advanceAbsolute(distance, speed, angle);
 }
 
-void OmniRobot::goToHeading(double h, int speed) {
+void OmniRobot::goToHeading(double h, int speed) { //go to the specified heading
 	double diff = mod(h, 360) - heading;
 
 	DEBUG_PRINTLN(__PRETTY_FUNCTION__);
@@ -205,7 +205,7 @@ void OmniRobot::goToHeading(double h, int speed) {
 	turn(diff > 180 ? -360 + diff : ((diff < -180) ? 360 + diff : diff), speed);
 }
 
-void OmniRobot::setHeading(double h) {
+void OmniRobot::setHeading(double h) { //updates the robot's heading
 	DEBUG_PRINTLN(__PRETTY_FUNCTION__);
 
 	heading = mod(h, 360);
@@ -213,7 +213,7 @@ void OmniRobot::setHeading(double h) {
 	DEBUG_PRINTLN("");
 }
 
-void OmniRobot::advanceUntilLine(int speed, double direction, boolean stop) { //advance (or move back if speed is negative) until he sees a line. If stop is true, robot will stop at line
+void OmniRobot::advanceUntilLine(int speed, double direction, boolean stop) { //advance (or move back if speed is negative) until robot sees a line. If stop is true, robot will stop at line
 	DEBUG_PRINTLN(__PRETTY_FUNCTION__);
 
 	goInRelativeDirection(speed, direction);
@@ -228,25 +228,27 @@ void OmniRobot::advanceUntilLine(int speed, double direction, boolean stop) { //
 }
 
 boolean OmniRobot::advanceUntilColor(int speed, double direction, RGB color,
-		int colorError, boolean invert, boolean stop, unsigned long timeout) { //advance (or move back if speed is negative) until he sees a line.
-	//If invert is true, the function will end when the robot stop seeing the specified color. If stop is true, robot will stop at line.
-	//timeout is how long the function will wait for reaching a square in millisecond. 0 if robot should check indefinitely.
-	//The function will return true if the color has been reached, false if it stopped because of the timeout.
+		int colorError, boolean invert, boolean stop, unsigned long timeout) { //advance (or move back if speed is negative) until he sees the specified color (within the color error)
+	//If invert is true, the function will end when the robot stop seeing the specified color. If stop is true, robot will stop at the color.
+	//timeout is how long the function will wait for reaching a square in millisecond. Set to 0 if robot should check indefinitely.
+	//The function will return true if the color has been reached, false if it has stopped because of the timeout.
 	DEBUG_PRINTLN(__PRETTY_FUNCTION__);
 
-	goInRelativeDirection(speed, direction);
+	goInRelativeDirection(speed, direction); //start going in the direction
 
 	unsigned long timeStart = millis();
-	while (readColor().isColor(color, colorError) == invert && (timeout == 0 ? true : millis()-timeStart < timeout));
+	while (readColor().isColor(color, colorError) == invert
+			&& (timeout == 0 ? true : millis() - timeStart < timeout))
+		; //do nothing until we reached the color, or we have been here longer then the timeout
 
-	if (stop) {
-		stopAllMotors(); //stop when he sees the line
+	if (stop) { //stop motors if we need to
+		stopAllMotors();
 	}
 
 	if(millis()-timeStart >= timeout)
-		return false;
+		return false; //return false if we stopped because of the timeout
 	else
-		return true;
+		return true; //return true if we reached the color
 }
 
 boolean OmniRobot::advanceUntilColor(int speed, double direction, boolean stop, unsigned long timeout) { //advance (or move back if speed is negative) until he sees a color contrast.
@@ -255,7 +257,7 @@ boolean OmniRobot::advanceUntilColor(int speed, double direction, boolean stop, 
 	//The function will return true if the color has been reached, false if it stopped because of the timeout.
 	DEBUG_PRINTLN(__PRETTY_FUNCTION__);
 
-	goInRelativeDirection(speed, direction);
+	goInRelativeDirection(speed, direction); //move in the direction
 
 	RGB buffer[24]; //create buffer for holding past color values. Robot reads 24 color / second, so buffer will overwrite each second
 
@@ -291,14 +293,14 @@ boolean OmniRobot::advanceUntilColor(int speed, double direction, boolean stop, 
 				+ abs(color.green - pastcolor.green)
 				+ abs(color.blue - pastcolor.blue)) / 3;
 
-		if (diff > 35) {//if diff is greater then 35, get out of loop
+		if (diff > 35) {//if diff is greater then 35
 			DEBUG_PRINT("Diff : ");
 			DEBUG_PRINTLN(diff);
-			hitcount++;
-			timeStart = millis();
+			hitcount++; //add one to hitcount
+			timeStart = millis(); //reset the timer so we don't timeout too soon
 		}
 
-		if(hitcount == 10) {
+		if(hitcount == 10) { //if we saw a contrast 10 times, get out of loop
 			break;
 		}
 
@@ -309,16 +311,16 @@ boolean OmniRobot::advanceUntilColor(int speed, double direction, boolean stop, 
 	DEBUG_PRINTLN("");
 
 	if (stop) {
-		stopAllMotors(); //stop when he sees the line
+		stopAllMotors(); //stop if needed
 	}
 
 	if(millis()-timeStart >= timeout)
-		return false;
+		return false; //return false if we stopped because of the timeout
 	else
-		return true;
+		return true; //return true if we reached the color
 }
 
-void OmniRobot::alignWithPing() {
+void OmniRobot::alignWithPing() { //function to aligning using the two ping. No longer used
 	int speed = 25;
 
 	double diff;
@@ -341,7 +343,7 @@ void OmniRobot::alignWithPing() {
 	stopAllMotors();
 }
 
-void OmniRobot::waitForMotors() { //when called, function will only finish when both motors are at rest.
+void OmniRobot::waitForMotors() { //when called, function will only finish when all motors are at rest.
 
 	while (prizm.readMotorBusy(1) == 1 || prizm.readMotorBusy(2) == 1
 			|| exc.readMotorBusy(dcControllerAddr, 1) == 1
@@ -350,7 +352,7 @@ void OmniRobot::waitForMotors() { //when called, function will only finish when 
 		;
 }
 
-void OmniRobot::waitForEncoder(long target1, long target2) { //this function takes the target we want to go for each. Function will finish only when we are at the correct encoder count for both motors. This function can only be used if both motors go in the same direction
+void OmniRobot::waitForEncoder(long target1, long target2) { //Not used. this function takes the target we want to go for each. Function will finish only when we are at the correct encoder count for both motors. This function can only be used if both motors go in the same direction
 	signed long diff = target1 - (prizm.readEncoderCount(1) * -1); //check which side robot will go. This only check for one motor and assumes it is the same for the other.
 	if (diff > 0) { //if target is greater then current count
 		while (target1 >= (prizm.readEncoderCount(1) * getMotorInvert(1))
@@ -365,7 +367,7 @@ void OmniRobot::waitForEncoder(long target1, long target2) { //this function tak
 	}
 }
 
-boolean OmniRobot::checkForEncoder(long target1, long target2, long diff) {
+boolean OmniRobot::checkForEncoder(long target1, long target2, long diff) { //Not used.
 	if (diff > 0) { //if target is greater then current count
 		if (target1 >= (prizm.readEncoderCount(1) * getMotorInvert(1))
 				&& target2 >= (prizm.readEncoderCount(2) * getMotorInvert(2)))
@@ -380,6 +382,7 @@ boolean OmniRobot::checkForEncoder(long target1, long target2, long diff) {
 	return true; //if none of the others returned false, we reached target so return true
 }
 
+//Invert the motor's direction. Use this instead of prizm's function so this class will have the correct encoders values.
 void OmniRobot::invertMotor(int motor, int invert) {
 	motorinvert[motor - 1] = invert == 1 ? -1 : 1;
 
@@ -396,22 +399,24 @@ void OmniRobot::invertMotor(int motor, int invert) {
 
 }
 
-void OmniRobot::gripperHor(int direction) {
+void OmniRobot::gripperHor(int direction) { //open or close gripper
 	prizm.setServoPosition(gripperHorizontal, direction);
 
 }
 
-void OmniRobot::gripperVert(int direction) {
+void OmniRobot::gripperVert(int direction) {//move gripper up or down
 	prizm.setServoPosition(gripperVertical, direction);
 
 }
 
-double OmniRobot::readPing(int pin){
+double OmniRobot::readPing(int pin){ //read ping in inches
 	double dist = prizm.readSonicSensorIN(pin);
 	delay(10);
 	return dist;
 }
 
+//go to specified distance (target) using ping
+//if back is false, the robot will only go forward. If true, it will go forward or backward to reach the target
 void OmniRobot::goToPingDistance(int speed, double target, int back) {
 	if(back == false){
 		goInRelativeDirection(speed, 0);
@@ -432,11 +437,11 @@ void OmniRobot::goToPingDistance(int speed, double target, int back) {
 	}
 }
 
-void OmniRobot::setPosition(Position p) {
+void OmniRobot::setPosition(Position p) { //set position
 	setPosition(p.x, p.y);
 }
 
-void OmniRobot::setPosition(double x, double y) {
+void OmniRobot::setPosition(double x, double y) { //set position
 	DEBUG_PRINTLN(__PRETTY_FUNCTION__);
 	DEBUG_PRINTLN("");
 	DEBUG_PRINTLN("Setting position :");
@@ -447,7 +452,7 @@ void OmniRobot::setPosition(double x, double y) {
 	this->y = y;
 }
 
-RGB OmniRobot::readColor() {
+RGB OmniRobot::readColor() { //read color sensor
 	GroveColorSensor colorSensor;
 
 	int red, green, blue;
@@ -460,6 +465,8 @@ RGB OmniRobot::readColor() {
 	return RGB { red, green, blue };
 }
 
+//return the encoder count for the motor (value between 1 to 4)
+//this takes into account if the motor is inverted
 long OmniRobot::getEncoderCount(int motor) {
 	switch (motor) {
 	case 1:
@@ -475,6 +482,7 @@ long OmniRobot::getEncoderCount(int motor) {
 	return 0;
 }
 
+//No longer used. Calculate the distance the robot has moved based on past encoder values, and updates his position
 void OmniRobot::updatePosition(long encoder1, long encoder2) {
 	long revolutions = ((getEncoderCount(1) - encoder1)
 			+ (getEncoderCount(2) - encoder2)) / 2; //take the average of the two encoders
@@ -489,6 +497,7 @@ void OmniRobot::updatePosition(long encoder1, long encoder2) {
 	y += sin(heading) * distance;
 }
 
+//No longer used. Update his heading based on past encoder values
 void OmniRobot::updateAngle(long encoder1, long encoder2) {
 	long revolutions = ((-getEncoderCount(1) + encoder1)
 			+ (getEncoderCount(2) - encoder2)) / 2;
@@ -502,15 +511,18 @@ void OmniRobot::updateAngle(long encoder1, long encoder2) {
 	heading = mod(heading + degrees, 360);
 }
 
+//Hold motor in place. Not used
 void OmniRobot::holdMotor(int motor) {
 	prizm.setMotorTarget(motor, 5, prizm.readEncoderCount(motor));
 }
 
+//Hold all motors in place. Not used
 void OmniRobot::holdAllMotors() {
 	prizm.setMotorTargets(5, prizm.readEncoderCount(1), 5,
 			prizm.readEncoderCount(2));
 }
 
+//Return if a line sensor sees a line. This function will return true only if it gets 3 hits on a total of 10 (to avoid false positives)
 boolean OmniRobot::readLineSensor(int sensor) {
 	int line = 0;
 	for (int i = 0; i < 10; i++) {
@@ -525,28 +537,34 @@ boolean OmniRobot::readLineSensor(int sensor) {
 		return false;
 }
 
+//Get if a motor is inverted
 int OmniRobot::getMotorInvert(int motor) {
 	return motorinvert[motor - 1];
 }
 
+//From an absolute angle (relative to the court), get angle relative to robot
 double OmniRobot::getRelativeAngle(double angle) {
 	return mod(angle - heading, 360);
 }
 
+//From an angle relative to robot, get an absolute angle (relative to the court)
 double OmniRobot::getAbsoluteAngle(double angle) {
 	return mod(angle + heading, 360);
 }
 
+//Returns the current encoder values
 EncoderValues OmniRobot::getEncoderValues(){
 	return {getEncoderCount(1), getEncoderCount(2), getEncoderCount(3), getEncoderCount(4)};
 }
 
+//Go to the position when the encoder values were taken. The robot should not have turned.
 void OmniRobot::goToPosition(EncoderValues values, int speed) {
 	prizm.setMotorTargets(speed, values.enc1, speed, values.enc2); //return to original position
 	exc.setMotorTargets(1, speed, values.enc3, speed, values.enc4);
 	waitForMotors();
 }
 
+//Get the distance and angle traveled based on past encoder values
 Vector OmniRobot::getDistance(EncoderValues values) {
 		double revolutionX = (getEncoderCount(1) + getEncoderCount(3))/2 - (values.enc1 + values.enc3)/2;
 		double revolutionY = (getEncoderCount(2) + getEncoderCount(4))/2 - (values.enc2 + values.enc4)/2;
@@ -560,6 +578,7 @@ Vector OmniRobot::getDistance(EncoderValues values) {
 		return {distance, angle};
 }
 
+//turn robot until he sees the color. Refer to comments on advanceUntilColor() for more info.
 void OmniRobot::turnUntilColor(int speed, RGB color, int colorError,
 		boolean invert, boolean stop) {
 	DEBUG_PRINTLN(__PRETTY_FUNCTION__);

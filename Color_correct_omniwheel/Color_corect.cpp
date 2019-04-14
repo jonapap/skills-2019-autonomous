@@ -5,12 +5,13 @@
 PRIZM prizm;
 EXPANSION exc;
 
-const unsigned int startBlock = 0;
+const unsigned int startBlock = 0; //Value from 0 to 5. This will be the block where the robot starts
+								   //If this is 0, robot will start at black square, any other values, will start right next to the specified block
 
 void setup() {
 
 #ifdef DEBUG
-	Serial.begin(9600);
+	Serial.begin(9600); //Start serial if DEBUG is defined
 #endif
 
 	setupCourt();
@@ -20,17 +21,17 @@ void setup() {
 	robot.invertMotor(2, 1);
 
 
-	long timeStart = millis();
+	long timeStart = millis(); //get the time we are starting
 	cycleBlocks();
 
-	if(millis()-timeStart > 600000){
-		while(true){
+	if(millis()-timeStart > 600000){ //if it took more then 10 min
+		while(true){ //flash the red light
 			prizm.setRedLED(HIGH);
 			delay(500);
 			prizm.setRedLED(LOW);
 			delay(500);
 		}
-	} else {
+	} else { //else, end the program
 		prizm.PrizmEnd();
 	}
 }
@@ -55,7 +56,9 @@ void cycleBlocks() {
 
 		robot.gripperVert(UP);
 		robot.gripperHor(OPEN);
-		if (!firstTime || i == 0) {
+		if (!firstTime || i == 0) { //this loop is to make it easier to start at another block then the first
+									//if we specified another block else then the first one to start at,
+									//this condition will skip the part where the robot goes to that block
 			goToBlock(b);
 			robot.goToHeading(b.heading, 100);
 		}
@@ -66,7 +69,7 @@ void cycleBlocks() {
 
 		robot.goToPingDistance(100, 4, true);
 
-		robot.setPosition(b.getRobotAlignedPosition());
+		robot.setPosition(b.getRobotAlignedPosition()); //update robot's position and heading
 		robot.setHeading(b.heading);
 
 		robot.advanceRelative(4, 100, 180);
@@ -76,7 +79,7 @@ void cycleBlocks() {
 		robot.goToHeading(s.getApproachHeading(), 100);
 
 		alignWithSquare(s);
-		robot.setPosition(s.getRobotAlignedPosition());
+		robot.setPosition(s.getRobotAlignedPosition()); //update robot's position
 
 		depositBlock(s);
 
@@ -85,30 +88,30 @@ void cycleBlocks() {
 }
 
 void goToBlock(Block &b){
-	for(int i = 0; i<b.numBeforePos; i++){
+	for(int i = 0; i<b.numBeforePos; i++){ //check if there is any other positions to go before the block
 			robot.goToPosition(b.beforePosition[i], 200);
 	}
 
-	robot.goToPosition(b.getLastPoint(), 200);
+	robot.goToPosition(b.getLastPoint(), 200); //go to the block
 }
 
 void goToSquare(Block &b){
-	for(int i = 0; i<b.numAfterPos; i++){
+	for(int i = 0; i<b.numAfterPos; i++){ //check if there is any other position to go after the block
 		robot.goToPosition(b.afterPosition[i], 200);
 	}
 
-	robot.goToPosition(b.getSquare().getApproachPosition(), 200);
+	robot.goToPosition(b.getSquare().getApproachPosition(), 200); //go to square
 }
 
 void depositBlock(Square &s){
-	if(s.numOfBlocks == 0){
+	if(s.numOfBlocks == 0){ //if it is the first block
 		robot.advanceRelative(3, 100, 0);
 		robot.gripperVert(DOWN);
 		delay(4000);
 		robot.gripperHor(OPEN);
 		delay(GRIPPER_TIME);
 		robot.advanceRelative(5, 100, 180);
-	} else {
+	} else { //second block
 		robot.advanceRelative(3, 100, 180);
 		robot.gripperVert(DOWN);
 		delay(4000);
@@ -118,9 +121,9 @@ void depositBlock(Square &s){
 		robot.advanceRelative(5, 100, 180);
 	}
 
-	s.numOfBlocks++;
+	s.numOfBlocks++; //add one to number of blocks deposited
 
-	s.callAfterFunction();
+	s.callAfterFunction(); //call the function to execute after placing block (if there is any)
 }
 
 void grabBlock() {
@@ -140,16 +143,16 @@ void grabBlock() {
 }
 
 void alignWithLine(int side) {
-	EncoderValues encvals = robot.getEncoderValues();
+	EncoderValues encvals = robot.getEncoderValues(); //store current robot's position
 
 	robot.goInRelativeDirection(50, side == RIGHTAPPROACH ? 90 : 270); //go in direction of line
 
-	unsigned long timeStart = millis();
-	while (robot.readLineSensor(robot.lineSensorFront) == 0) {
-		if (millis() - timeStart > 10000) {
-			robot.goToPosition(encvals, 100); //go to original position
+	unsigned long timeStart = millis(); //get the current time
+	while (robot.readLineSensor(robot.lineSensorFront) == 0) { //while the front sensor didin't reach a line
+		if (millis() - timeStart > 10000) { //check if it has been more then 10 s
+			robot.goToPosition(encvals, 100); //if yes, go to original position
 
-			robot.goInRelativeDirection(50, side == RIGHTAPPROACH ? 270 : 90); //check if line is in the other direction
+			robot.goInRelativeDirection(50, side == RIGHTAPPROACH ? 270 : 90); //following code will check for 5 s if line is at the left of the robot
 			unsigned long timeStart2 = millis();
 			while (robot.readLineSensor(robot.lineSensorFront) == 0
 					&& millis() - timeStart2 < 5000)
@@ -158,18 +161,18 @@ void alignWithLine(int side) {
 			if (robot.readLineSensor(robot.lineSensorFront) == 1) //if the line is indeed there, get out of the loop
 				break;
 
-			robot.goToPosition(encvals, 100); //go to original position
+			robot.goToPosition(encvals, 100); //else, go to original position
 
 			robot.advanceRelative(4, 100, 0); //advance a bit forward
 
 			encvals = robot.getEncoderValues(); //save position
 
-			robot.goInRelativeDirection(50, side == RIGHTAPPROACH ? 90 : 270); //search again for the line
+			robot.goInRelativeDirection(50, side == RIGHTAPPROACH ? 90 : 270); //start searching again for the line
 			timeStart = millis(); //reset time
 		}
 	}
 
-	robot.goToPingDistance(50, 5); //advance a bit
+	robot.goToPingDistance(50, 5); //when we are at line, advance until the robot is at 5 in of block
 
 	robot.advanceRelative(3, 50, 270); //go right
 
@@ -210,10 +213,10 @@ void alignWithSquare(Square &s) {
 
 	do {
 		reached = robot.advanceUntilColor(50, 0,
-				false, 8000); //try to reach square color with a 5000 ms timeout
+				false, 8000); //try to reach square color with a 8000 ms timeout
 
 		if (reached == false && (count == 0 || count == 1)) { //if we didn't hit the block and we are at our first or second try
-			robot.goToPosition(val, 100); //return to orignial position
+			robot.goToPosition(val, 100); //return to original position
 			robot.advanceRelative(8, 100, count == 0 ? 90 : 270); //try to move a bit to left(at first try) or right(at second try)
 		} else if (reached == false && count == 2) { //if we still didn't reach the square at the third try
 			robot.goToPosition(val, 100); //return to original position
@@ -244,11 +247,8 @@ void alignWithSquare(Square &s) {
 		robot.advanceUntilColor(50, 180, Square::white); //following four lines will place robot at the bottom center of the robot
 		robot.advanceUntilColor(50, 0, s.getColor(), s.getColorError());*/
 
+
 		//this loop make sure we are the end of the square, and not at the bottom
-
-		robot.advanceRelative(0.75, 50, 0);
-		robot.advanceUntilColor(50, 270);
-
 		/*RGB pastcolor = robot.readColor(); //read current color
 
 		while (robot.readColor().isColor(pastcolor, 20)) { //while the color didin't change
@@ -258,12 +258,15 @@ void alignWithSquare(Square &s) {
 
 		robot.advanceRelative(1, 50, 135);*/
 
-		robot.advanceRelative(7, 100, 90);
-
 		/*if(robot.readColor().isColor(pastcolor, 20)) { //if we are still on square
 			robot.advanceUntilColor(50, 180);
 			robot.advanceUntilColor(50, 0, pastcolor);
-		}*/
+		 }*/
+
+		robot.advanceRelative(0.75, 50, 0);
+		robot.advanceUntilColor(50, 270);
+
+		robot.advanceRelative(7, 100, 90);
 
 		robot.advanceUntilColor(50, 180);
 
@@ -295,22 +298,4 @@ void printXY() {
 	while (prizm.readStartButton() == 0)
 		;
 	delay(500);
-}
-
-void serialBlocks() {
-	while (Serial.available() == 0)
-		;
-	int n = Serial.parseInt();
-
-	robot.goToPosition(blocks[n].getLastPoint(), 100);
-	/*robot.goToHeading(blocks[n].getApproachHeading(), 100);
-	 grabBlock();
-
-	 robot.setPosition(blocks[n].getRobotLinePosition());
-	 robot.setHeading(blocks[n].heading);
-
-	 Square &s = blocks[n].getSquare();
-	 robot.goToPosition(s.getApproachPosition(), 100, 100);
-	 robot.goToHeading(s.getApproachHeading(), 100);
-	 depositBlock();*/
 }

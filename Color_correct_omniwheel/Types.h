@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 
-struct RGB {
+struct RGB { //Class to hold a color value
 	int red, green, blue;
 
 	boolean isColor(const RGB &color, int error);

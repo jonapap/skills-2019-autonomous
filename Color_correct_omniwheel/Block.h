@@ -17,11 +17,11 @@ public:
 
 	~Block();
 
-	Position position;
-	Position *beforePosition = NULL;
-	Position *afterPosition = NULL;
+	Position position; //block's position
+	Position *beforePosition = NULL; //positions before going to block
+	Position *afterPosition = NULL; //positions after going to block
 
-	int numBeforePos = 0;
+	int numBeforePos = 0; //keep track of how many positions we have for each
 	int numAfterPos = 0;
 
 	double heading;
@@ -40,10 +40,10 @@ public:
 	void setBeforePosition(Position p);
 
 private:
-	static constexpr double shiftLength = 15;
+	static constexpr double shiftLength = 15; //length and angle from middle of block to where the robot should go before aligning with the block
 	static constexpr double shiftAngle = 20;
 
-	static constexpr double blockGrabOffsetLength = 10;
+	static constexpr double blockGrabOffsetLength = 10; //length and angle to robot's center when aligned with block
 	static constexpr double blockGrabOffsetAngle = 0;
 
 };
