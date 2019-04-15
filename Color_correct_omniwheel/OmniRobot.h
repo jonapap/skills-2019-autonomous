@@ -47,6 +47,7 @@ public:
 	Position getPosition();
 	double getHeading();
 	void goToHeading(double heading, int speed);
+	void goToModHeading(double heading, int speed);
 	void setHeading(double heading);
 	RGB readColor();
 	void rampSpeed(unsigned int speed, unsigned int time);

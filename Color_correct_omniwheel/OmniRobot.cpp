@@ -190,6 +190,7 @@ void OmniRobot::goToPosition(double x2, double y2, int speed) { //go to the spec
 	DEBUG_PRINTLN(distance);
 	DEBUG_PRINTLN("");
 
+	goToModHeading(angle+45, 100);
 	advanceAbsolute(distance, speed, angle);
 }
 
@@ -203,6 +204,31 @@ void OmniRobot::goToHeading(double h, int speed) { //go to the specified heading
 	DEBUG_PRINTLN("");
 
 	turn(diff > 180 ? -360 + diff : ((diff < -180) ? 360 + diff : diff), speed);
+}
+
+//This function will turn the robot the quickest way where the heading is h, 2h, 3h or 4h. If h is greater then 90, h will become the reminder of h/90.
+//For example, if h is 45, the robot will be turned to 45, 135, 225, or 315 depending on which is the closest.
+//Another example, 180. The robot will turn to 0, 90, 180, or 270
+void OmniRobot::goToModHeading(double h, int speed) {
+	h = mod(h, 90); //make sure h is between 0 to 90
+	double lowesth = h; //initialize this value to be h
+	double lowestdiff = h - heading; //initialize this value to some valid diff
+
+	//Loop from i = -1 to i = 4. While this loop will run 6 times, this is to have an extra run for h and 3h
+	//If there is not extra run for these two, they might not get included in some instances because degrees loop back at 360
+	//For example, if h is 80 and the robot's heading is 10, if there is not these extra runs, the result of the loop would be 80, but should be -10 (or 350 degrees)
+	for (int i = -1; i < 5; i++) {
+		double h2 = h + i * 90; //get heading to test
+
+		double diff = h2 - heading; //calculate the difference
+
+		if (abs(diff) < abs(lowestdiff)) { //if it is quicker with this heading
+			lowesth = h2; //set this to be the lowest heading
+			lowestdiff = diff; //with the lowest difference
+		}
+	}
+
+	goToHeading(mod(lowesth, 360), speed); //go to the calculated heading, making sure the angle is between 0-360
 }
 
 void OmniRobot::setHeading(double h) { //updates the robot's heading
