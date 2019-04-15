@@ -76,6 +76,9 @@ public:
 	const double robotradiusIN = (turnvalue*wheelcirIN)/(8*PI);
 
 private:
+	OmniRobot(const OmniRobot&); //make sure we don't copy an object by accident
+	OmniRobot& operator=(const OmniRobot&);
+
 	PRIZM prizm;
 	EXPANSION exc;
 
