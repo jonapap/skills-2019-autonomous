@@ -12,6 +12,26 @@ Block::~Block() { //deconstructor. It will delete the variables bellow if they a
 	}
 }
 
+Block::Block(const Block &old_block) : square(old_block.square) {
+	position = old_block.position;
+	heading = old_block.heading;
+	approachSide = old_block.approachSide;
+	beforeFunction = old_block.beforeFunction;
+	afterFunction = old_block.afterFunction;
+
+	numBeforePos = old_block.numBeforePos;
+	if (numBeforePos != 0) {
+		beforePosition = new Position[numBeforePos];
+		memcpy(beforePosition, old_block.beforePosition, sizeof(Position) * numBeforePos);
+	}
+
+	numAfterPos = old_block.numAfterPos;
+	if (numAfterPos != 0) {
+		afterPosition = new Position[numAfterPos];
+		memcpy(afterPosition, old_block.afterPosition, sizeof(Position) * numAfterPos);
+	}
+}
+
 Position Block::getLastPoint() { //return the last point the robot should go before aligning with block
 	int angle = mod(mod(heading + 180, 360) + (shiftAngle * approachSide), 360);
 

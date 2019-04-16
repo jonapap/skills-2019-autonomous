@@ -16,6 +16,7 @@ public:
 	}
 
 	~Block();
+	Block(const Block &old_block);
 
 	Position position; //block's position
 	Position *beforePosition = NULL; //positions before going to block
