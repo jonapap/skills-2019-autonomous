@@ -73,7 +73,7 @@ public:
 	friend void alignWithLine(int side);
 
 	const double wheelcirIN = (4 * PI)-0.2;
-	const double turnvalue = 11.65; //15.0 for bigger robot
+	const double turnvalue = 11.3; //15.0 for bigger robot
 	const double robotradiusIN = (turnvalue*wheelcirIN)/(8*PI);
 
 private:
