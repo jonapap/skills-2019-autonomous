@@ -158,11 +158,11 @@ double OmniRobot::getHeading() {
 	return heading;
 }
 
-void OmniRobot::goToPosition(Position p, int speed) { //go to the specified position
-	goToPosition(p.x, p.y, speed);
+void OmniRobot::goToPosition(Position p, int speed, boolean turn) { //go to the specified position
+	goToPosition(p.x, p.y, speed, turn);
 }
 
-void OmniRobot::goToPosition(double x2, double y2, int speed) { //go to the specified position
+void OmniRobot::goToPosition(double x2, double y2, int speed, boolean turn) { //go to the specified position
 	DEBUG_PRINTLN(__PRETTY_FUNCTION__);
 	DEBUG_PRINTLN("");
 	DEBUG_PRINTLN("Current pos : ");
@@ -190,7 +190,9 @@ void OmniRobot::goToPosition(double x2, double y2, int speed) { //go to the spec
 	DEBUG_PRINTLN(distance);
 	DEBUG_PRINTLN("");
 
-	goToModHeading(angle+45, 100);
+	if(turn)
+		goToModHeading(angle+45, 100);
+
 	advanceAbsolute(distance, speed, angle);
 }
 

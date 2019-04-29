@@ -41,8 +41,8 @@ public:
 	void goToPingDistance(int speed, double distance, int back = false);
 	void setPosition(double x, double y);
 	void setPosition(Position p);
-	void goToPosition(double x, double y, int speed);
-	void goToPosition(Position p, int speed);
+	void goToPosition(double x, double y, int speed, boolean turn = true);
+	void goToPosition(Position p, int speed, boolean turn = true);
 	void goToPosition(EncoderValues values, int speed);
 	Position getPosition();
 	double getHeading();

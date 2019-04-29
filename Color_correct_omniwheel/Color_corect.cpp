@@ -226,7 +226,7 @@ void alignWithSquare(Square &s) {
 		} else if (reached == false && count == 2) { //if we still didn't reach the square at the third try
 			robot.goToPosition(val, 100); //return to original position
 			robot.setPosition(s.getApproachPosition()); //make sure the robot's position is correct
-			robot.goToPosition(s.getRobotAlignedPosition(), 100); //go to where we think the square is
+			robot.goToPosition(s.getRobotAlignedPosition(), 100, false); //go to where we think the square is
 			break; //get out of the loop
 		}
 
