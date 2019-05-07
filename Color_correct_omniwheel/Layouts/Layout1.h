@@ -1,16 +1,22 @@
-OmniRobot robot(14.2, 14.5, 45);
+OmniRobot robot(14.5, 14.5, 45);
 
-Square redSquare( { 18.5, 75.8 }, 135, Square::red);
-Square blueSquare( { 75.8, 75.8 }, 45, Square::blue);
-Square yellowSquare( { 75.8, 18.5 }, 315, Square::yellow, 50);
+Square redSquare( { 17.5, 76.25 }, 135, Square::red);
+Square blueSquare( { 75.5, 76.5 }, 45, Square::blue);
+Square yellowSquare( { 76.5, 19.5 }, 315, Square::yellow, 50);
 
-Block blocks[] = { Block( { 41.8, 46.4 }, 0, RIGHTAPPROACH, blueSquare), //block 1
-Block( { 89.9, 47.2}, 0, LEFTAPPROACH, blueSquare), //block 2
-Block( { 46, 90.1 }, 90, LEFTAPPROACH, redSquare),  //block 3
-Block( { 50.0, 51}, 240, LEFTAPPROACH, yellowSquare), //block 4
-Block( { 50.5, 42.5 }, 120, RIGHTAPPROACH, redSquare), //block 5
-Block( { 46, 4.6 }, 270, RIGHTAPPROACH, yellowSquare) //block 6
+Block blocks[] = { Block( { 42, 47 }, 0, RIGHTAPPROACH, blueSquare), //block 1
+Block( { 90.5, 46.75}, 0, LEFTAPPROACH, blueSquare), //block 2
+Block( { 48.5, 90 }, 90, LEFTAPPROACH, redSquare),  //block 3
+Block( { 50, 52}, 240, LEFTAPPROACH, yellowSquare), //block 4
+Block( { 50.5, 43 }, 120, RIGHTAPPROACH, redSquare), //block 5
+Block( { 47.5, 4.5 }, 270, RIGHTAPPROACH, yellowSquare) //block 6
 		};
+
+void beforeRedSquare(Square &s){
+	if(s.numOfBlocks == 1) {
+		robot.advanceRelative(5, 100, 90);
+	}
+}
 
 void setupCourt() {
 	blocks[0].setAfterPosition({30, 70}); //block 1 - position intermédiaire après avoir pris le bloc
@@ -21,4 +27,5 @@ void setupCourt() {
 
 	blocks[5].setBeforePosition({ 30, 25 }); //block 6 - position intermédiaire avant d'avoir pris le bloc
 
+	//redSquare.setBeforeFunction(beforeRedSquare);
 }
