@@ -2,6 +2,20 @@
 
 #include "Layouts/Layout2.h"
 
+/*
+ * Motor configuration:
+ * 		Connected to PRIZM:
+ *
+ * 		Motor 1: Drive front-left
+ * 		Motor 2: Drive back-left
+ *
+ * 		Connected to Expansion:
+ *
+ * 		Motor 1: Drive back-right
+ * 		Motor 2: Drive front-right
+ *
+ */
+
 PRIZM prizm;
 EXPANSION exc;
 
